@@ -105,7 +105,7 @@ def run(root, simulation_python, training_python, isaac_source, groot_source, pr
                 if file_digest(asset_root/name) != item['sha256']: raise ValueError('Panda USD cache integrity failure')
             environment['VIPER_PANDA_USD'] = str(usd)
         if reader_library_path and (stage in ('g3', 'g3_preflight') or stage.startswith(('train_', 'evaluate_'))):
-            environment['LD_LIBRARY_PATH'] = str(reader_library_path)
+            environment['LD_LIBRARY_PATH'] = os.pathsep.join(filter(None, (str(reader_library_path), environment.get('LD_LIBRARY_PATH'))))
         timeout = 15000 if stage.startswith(('train_', 'evaluate_')) else (7200 if stage in ('pilot', 'baseline') or stage.startswith('manipulation') else 3600)
         measured = execute(planned[stage], attempt, timeout, environment)
         result.update(status='PROCESS_COMPLETED' if measured['returncode'] == 0 else 'BLOCKED', stage=stage, process=measured,
