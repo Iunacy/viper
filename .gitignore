@@ -13,8 +13,10 @@
 *.o
 *.a
 *.lib
-
+!/experiments/double_s/README.md
+!/experiments/double_s/results.csv
 /adaptive/data/
 /adaptive/runs/
 /adaptive/__pycache__/
+!/adaptive/*.md
 !/README.md
