@@ -1,0 +1,66 @@
+{
+  "schema": "viper.bootstrap.v1",
+  "role": "reader",
+  "prefix": "/workspace/viper",
+  "source": "/workspace/viper/sources/GR00T",
+  "url": "https://github.com/NVIDIA/Isaac-GR00T.git",
+  "commit": "944fe70c4fd54e3fcb80a7d7258a328f9c061176",
+  "uv_version": "0.13.4",
+  "python": "/workspace/viper/reader/bin/python",
+  "commands": [
+    [
+      "uv",
+      "venv",
+      "--python",
+      "3.12.15",
+      "/workspace/viper/reader"
+    ],
+    [
+      "uv",
+      "pip",
+      "install",
+      "--python",
+      "/workspace/viper/reader/bin/python",
+      "torch==2.9.0",
+      "torchvision==0.24.0",
+      "--index-url",
+      "https://download.pytorch.org/whl/cpu"
+    ],
+    [
+      "uv",
+      "pip",
+      "install",
+      "--python",
+      "/workspace/viper/reader/bin/python",
+      "-r",
+      "/home/iris/.codex/worktrees/isaac-session-readiness/RELIC/embodiment/reader_requirements.txt"
+    ],
+    [
+      "/workspace/viper/reader/bin/python",
+      "-m",
+      "embodiment.codec_runtime",
+      "--root",
+      "/workspace/viper/reader_codec"
+    ],
+    [
+      "uv",
+      "pip",
+      "check",
+      "--python",
+      "/workspace/viper/reader/bin/python"
+    ],
+    [
+      "/workspace/viper/reader/bin/python",
+      "-m",
+      "embodiment.first_session",
+      "--reader-probe",
+      "/workspace/viper/sources/GR00T",
+      "--root",
+      "/workspace/viper"
+    ]
+  ],
+  "minimum_free_disk_gib": 12,
+  "cache": "/workspace/viper/cache/uv",
+  "downloads_models": false,
+  "provisions_hardware": false
+}

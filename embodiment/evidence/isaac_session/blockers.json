@@ -1,0 +1,18 @@
+{
+  "schema": "viper.first_session_blockers.v1",
+  "development_blocked": false,
+  "local_gpu_execution_blocked": true,
+  "blockers": [
+    {
+      "stage": "simulation_host",
+      "reasons": [
+        "Isaac runtime license must be accepted through OMNI_KIT_ACCEPT_EULA before unattended Kit startup",
+        "insufficient total or free GPU memory for simulation",
+        "insufficient available host RAM",
+        "insufficient storage reserve"
+      ]
+    }
+  ],
+  "weights_or_training_dependencies_block_this_phase": false,
+  "simulation_executed": false
+}

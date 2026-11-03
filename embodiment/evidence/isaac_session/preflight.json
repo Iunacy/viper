@@ -1,0 +1,384 @@
+{
+  "schema": "viper.first_session.v1",
+  "status": "BLOCKED",
+  "blockers": [
+    {
+      "stage": "simulation_host",
+      "reasons": [
+        "Isaac runtime license must be accepted through OMNI_KIT_ACCEPT_EULA before unattended Kit startup",
+        "insufficient total or free GPU memory for simulation",
+        "insufficient available host RAM",
+        "insufficient storage reserve"
+      ]
+    }
+  ],
+  "simulation_executed": false,
+  "physical_pilot_verified": false,
+  "training_executed": false,
+  "model_weights_required": false,
+  "provisions_hardware": false,
+  "downloads_models": false,
+  "commands": {
+    "simulation_host": [
+      "/home/iris/.local/share/relic-isaac/venv/bin/python",
+      "-m",
+      "embodiment.host",
+      "--stage",
+      "simulation",
+      "--volume",
+      "/tmp/viper-first-session-release"
+    ],
+    "reader": [
+      "/home/iris/.local/share/relic-groot-preflight/bin/python",
+      "-m",
+      "embodiment.first_session",
+      "--reader-probe",
+      "/home/iris/.cache/relic-groot-source",
+      "--root",
+      "/tmp/viper-first-session-release"
+    ],
+    "qualification": [
+      "/home/iris/.local/share/relic-groot-preflight/bin/python",
+      "-m",
+      "embodiment.qualification_pair",
+      "--root",
+      "/tmp/viper-first-session-release/qualification",
+      "--python",
+      "/home/iris/.local/share/relic-isaac/venv/bin/python",
+      "--timeout",
+      "2400",
+      "--max-attempts",
+      "2",
+      "--execute"
+    ],
+    "pilot": [
+      "/home/iris/.local/share/relic-groot-preflight/bin/python",
+      "-m",
+      "embodiment.pilot",
+      "--root",
+      "/tmp/viper-first-session-release/pilot",
+      "--python",
+      "/home/iris/.local/share/relic-isaac/venv/bin/python",
+      "--data-python",
+      "/home/iris/.local/share/relic-groot-preflight/bin/python",
+      "--groot-source",
+      "/home/iris/.cache/relic-groot-source",
+      "--episodes",
+      "12",
+      "--timeout",
+      "2400",
+      "--execute",
+      "--reader-library-path",
+      "/home/iris/.local/share/relic-groot-preflight/ffmpeg7"
+    ]
+  },
+  "stages": {
+    "simulation_host": {
+      "schema": "viper.host_preflight.v1",
+      "stage": "simulation",
+      "ready": false,
+      "blockers": [
+        "Isaac runtime license must be accepted through OMNI_KIT_ACCEPT_EULA before unattended Kit startup",
+        "insufficient total or free GPU memory for simulation",
+        "insufficient available host RAM",
+        "insufficient storage reserve"
+      ],
+      "requirements": {
+        "total_gib": 16,
+        "free_gib": 12,
+        "ram_gib": 24,
+        "disk_gib": 12
+      },
+      "python": "3.11.17 (main, Oct 14 2026, 01:05:33) [Clang 23.1.3 ]",
+      "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+      "compute_started": false,
+      "cuda_probe_executed": false,
+      "packages": {
+        "isaacsim": "5.1.0.0",
+        "isaaclab": "0.47.2",
+        "torch": "2.7.0+cu128",
+        "numpy": "1.26.0",
+        "pillow": "11.3.0"
+      },
+      "isaac_requirements_source": "https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/requirements.html",
+      "isaaclab_commit": "3c6e67bb5c7ada942a6d1884ab69338f57596f77",
+      "gpu": {
+        "name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+        "driver": "615.78.08",
+        "total_mib": 4096,
+        "free_mib": 2060
+      },
+      "memory_bytes": {
+        "MemTotal": 16364085248,
+        "MemAvailable": 6402383872
+      },
+      "volume": "/tmp/viper-first-session-release",
+      "storage_free_bytes": 8095567872
+    },
+    "reader": {
+      "schema": "viper.host_preflight.v1",
+      "stage": "reader",
+      "ready": true,
+      "blockers": [],
+      "requirements": {
+        "total_gib": 0,
+        "free_gib": 0,
+        "ram_gib": 4,
+        "disk_gib": 2
+      },
+      "python": "3.12.15 (main, Oct 14 2026, 01:05:27) [Clang 23.1.3 ]",
+      "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+      "compute_started": false,
+      "cuda_probe_executed": false,
+      "packages": {
+        "numpy": "1.26.4",
+        "pandas": "2.2.3",
+        "scipy": "1.15.3",
+        "transformers": "4.57.3",
+        "torchvision": "0.24.0+cpu",
+        "pyarrow": "19.0.1",
+        "av": "14.2.0",
+        "torchcodec": "0.8.0",
+        "torch": "2.9.0+cpu",
+        "pillow": "12.3.0"
+      },
+      "isaac_requirements_source": "https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/requirements.html",
+      "memory_bytes": {
+        "MemTotal": 16364085248,
+        "MemAvailable": 6396190720
+      },
+      "volume": "/tmp/viper-first-session-release",
+      "storage_free_bytes": 8095563776,
+      "reader_requirements_sha256": "20990ac6da6bb8a947da00f3622c7b4a62af3f727ee4fdaa2f156f5c7bad73f6",
+      "imports": {
+        "gr00t.data.dataset.lerobot_episode_loader": "IMPORTED",
+        "gr00t.data.state_action.state_action_processor": "IMPORTED",
+        "gr00t.data.dataset.sharded_single_step_dataset": "IMPORTED",
+        "embodiment.groot_modalities": "IMPORTED",
+        "torchcodec.decoders": "IMPORTED",
+        "av": "IMPORTED"
+      },
+      "ffmpeg": "ffmpeg version n9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+      "model_weights_required": false,
+      "training_imports_required": false
+    },
+    "isaac_source": {
+      "schema": "viper.isaac_source_interfaces.v1",
+      "commit": "3c6e67bb5c7ada942a6d1884ab69338f57596f77",
+      "checked": {
+        "source/isaaclab/isaaclab/assets/articulation/articulation.py": {
+          "sha256": "9cc03b85642c36c801ff9683e94b8ccc3fbef1178761338974b433dacc78ef75",
+          "interfaces": [
+            "find_joints",
+            "find_bodies",
+            "set_joint_position_target",
+            "write_joint_state_to_sim"
+          ]
+        },
+        "source/isaaclab/isaaclab/assets/articulation/articulation_data.py": {
+          "sha256": "bfe53518d1c511455b3538dcee487845ccfe1b62ddbd9c2cd92794137d390994",
+          "interfaces": [
+            "body_pose_w",
+            "joint_pos_limits"
+          ]
+        },
+        "source/isaaclab/isaaclab/sensors/contact_sensor/contact_sensor_data.py": {
+          "sha256": "bf357bf45d6372b26fd62d64ea9734cf20755756bc49b7474f9a298245a62b46",
+          "interfaces": [
+            "net_forces_w",
+            "force_matrix_w"
+          ]
+        },
+        "source/isaaclab/isaaclab/sensors/camera/camera.py": {
+          "sha256": "6c1c27e7f6c0fb7fe464e7104c5d14517ea8364f70d336aac3f9b7f038c9295a",
+          "interfaces": [
+            "set_world_poses_from_view",
+            "frame"
+          ]
+        },
+        "source/isaaclab/isaaclab/sim/converters/urdf_converter.py": {
+          "sha256": "b5a91427712cf63a8a5a8359a442909741f72f7763e06ef4c8cf114d2e1a2b51",
+          "interfaces": [
+            "_get_urdf_import_config"
+          ]
+        }
+      },
+      "source_interfaces_present": true,
+      "simulation_executed": false,
+      "runtime_compatibility_verified": false,
+      "remaining_gate": "Kit initialization, URDF/USD import, contact reporters and PhysX tensor methods on qualified GPU"
+    },
+    "assets": {
+      "files": {
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/open_manipulator_description/package.xml": "fcf7a23efaf7263f42708ff0fcb075704ddbf35ebb460bff60043c067025b5a6",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/open_manipulator_description/urdf/open_manipulator_x/open_manipulator_x.urdf": "784078c2a5bb16accd2ca4cbcf0d340403d6d343f047b433b503aeae85ef17d3",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/open_manipulator_description/meshes/open_manipulator_x/gripper_left_palm.stl": "fb4dfabe68712bbba34deb9f8469f9187009c07579dccd5401b82d08de425267",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/open_manipulator_description/meshes/open_manipulator_x/gripper_right_palm.stl": "a5bfc10a067c806a19062e2fcb58989623a09edc0e9bbc4fd735a56d83f99752",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/open_manipulator_description/meshes/open_manipulator_x/link1.stl": "d2b84e13ccd3f923148bb26c95723bb3c9e7af0a7cc85cd315ee70ce7629dd1f",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/open_manipulator_description/meshes/open_manipulator_x/link2.stl": "20a6cc8a673b90ab02f97e4c2f0437ff692e71daded8a82a77b54254ae877c66",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/open_manipulator_description/meshes/open_manipulator_x/link3.stl": "e6904447bca7888acb6a3a170d220b12e92f6dbf53c560987527cfd115f6eb19",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/open_manipulator_description/meshes/open_manipulator_x/link4.stl": "9da72baf0854e0335bf0fe199da3676c57625e17277a4fa455b995130b29ffab",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/open_manipulator_description/meshes/open_manipulator_x/link5.stl": "75e7596295dd5f5cbc68d81b2c875058f28721f98d7402d2d431ccf2334b57a6",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/open_manipulator_description/meshes/open_manipulator_x/plate.stl": "e665dce646cb07f6124846f79be0943d3a42e791b0867fb569007b49db2eb3b8",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/open_manipulator_moveit_config/config/open_manipulator_x/open_manipulator_x.srdf": "3968d9c2edf97cdaa1716add827dadb5d54fcee24c9d9f941829071a43374b23",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/package.xml": "f1a4e3d2728abec627f28b6afaf66ab8cc9ad9e9e3b3a77b928f6d900af6a8fe",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/robots/panda_arm_hand.urdf": "ad9f5298a4d1a375cf16824b0de4f0d1c7cc446597964b80aa639ca830e998a1",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/collision/finger.stl": "eade0765d87446c8833d88511a4c46573baba2e8eacc15b975aecd123d740296",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/collision/hand.stl": "94493e94f30fe940f2c8ca2f155c3bbe67bbff406d3edf5e261670d2f0f6e2ed",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/collision/link0.stl": "dfc6d94330de8ddb005b311bfdba9f3b8e1aa7c256b71592ee7ff32cb9a9a5aa",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/collision/link1.stl": "e41a39a94108fcf56aacff603fc91ec80541f4c1af17b51a0de5617f5566e6d2",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/collision/link2.stl": "370f7605a0fae3529db169ded50f52f171024aa792d4d773bc84197301f6a039",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/collision/link3.stl": "0a8d638b9349c6c0eefc4e888636ac4838c4b27170f18a51699321118af709c1",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/collision/link4.stl": "0180ebb5772ec9840cb049750cffb29a9ddc90311752a16ea34757782ef9e48d",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/collision/link5.stl": "dd17e688c7870e722283525879643d53a74c0024d328b0e14b034b54c8b6c31a",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/collision/link6.stl": "20b768e99a0e0440b5754dcca108016434e57937cc356acd9c352ccd3cb27f77",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/collision/link7.stl": "92ac6afcf7574c034d3170d8a68e95ac9048ab9d0dd5bbd8311b86e551b9ab1c",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/visual/finger.dae": "a9d5471e9cdf76f85493df6fe6c76d29810edd21577c204009160496d5b77fbb",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/visual/hand.dae": "9602bbad114cfefd4bbb0cd0a57f3021bce9efbaaa1604a5e72bfb76926bb019",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/visual/link0.dae": "d9ceaa66bb3a734e3a32f2f737ae57a29e922f4a962ed77b9bb8d8e25cd33159",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/visual/link1.dae": "9c8b7b7c1217d620a811fc0ee52d1d1b0e1470de955e7453872aac3f15cf7c5e",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/visual/link2.dae": "c44d0364f0030007e427106a4e842d835ca43902716cc46ee4f3342dab189e12",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/visual/link3.dae": "dab39a126153fb82f3650cca6de63a8e978f851aa5020a8e91b3d9d548dbba3d",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/visual/link4.dae": "9e03d680e3a4a4555d673bcb8cb466e479f5cb069a5fc8a0b0f99c089c50fd63",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/visual/link5.dae": "0be76681192578a14d6ace89527e4ee418f7395e825e285125e05fd998d24e3e",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/visual/link6.dae": "ed9c57432b079d55b9954775f2ddfe34e8b904f683949b8eb6314238f8afa46e",
+        "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache/panda_replay/meshes/visual/link7.dae": "71be614f734bd27b2d7dec3e8bb022251cbbfce38b0a12dbfc1b88bc0513822a",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/panda_instanceable.usd": "7f5a0c0aa6760cfbd348e08bc464d4b94341f027f51c2d9e42406ceefcc7787f",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/panda_leftfinger.usd": "53725ac396c13d8f90960780626c00ef05acdf1d1a6043f7bd7bd879750e6270",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Materials/Materials.usd": "163ad21137370dfa8f8fda6337fa5a84aab3b7dbcdd134c91792239272c33691",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/panda_link6.usd": "ca05c47f20b3711dea3a36aa27c70d9047ce8fbdf5945eb2fbdb4069cd76308c",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/instanceable_collision_meshes.usd": "e2d053fdd789ea000f04c243d2323167038a4aa0883a9e418c92d936c771417e",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/panda_link0.usd": "4b46e614cf37f745ef5f8212137ac6af06aaef34b3858ae02f2f67d2f2c988a7",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/panda_rightfinger.usd": "c156a8aa36191c5debacb1048fd17a0d6d1939403d936db2235c8fd4ebcec926",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/panda_link1.usd": "9f3f8b7d980865d2023ead815fd2faed9727af533959077b5700e28f6242187b",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/panda_link2.usd": "f05fd2f8ce2533f06bb6b5bf916a0e8e8b151e5d1f58e270ce5617507590b27e",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/panda_hand.usd": "9bead1ccc72d702d333074ae30e5352f4328290e7e64dbf072696f052ba12a90",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/panda_link7.usd": "2f18324e59305650cf650d24d37e5bbe04e8f7e781da6e309105f6ec99840e0f",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/panda_link5.usd": "4b67be8b886c6705455b389ce6be7d710c75187397a8607381f1515c7b1e626c",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/panda_link4.usd": "9dc792ca5a4fc5506cec8b7be83332d121727c0f32e3b133ad5a8478ab6a10e0",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/Props/panda_link3.usd": "bf5b30913f51811cd7f772651d25ead0f48ed37d994a25c9fbccb38c8479dbf8",
+        "/home/iris/.local/share/viper-cloud-ubuntu/assets/assets.json": "1dbc331ae5c41f818ccf19141affef81da3b7f5154c50b7adc1010cbbfe6253f"
+      },
+      "panda_usd": "/home/iris/.local/share/viper-cloud-ubuntu/assets/Isaac/IsaacLab/Robots/FrankaEmika/panda_instanceable.usd",
+      "model_weights_required": false,
+      "license_scope": "cached upstream notices retained; Isaac runtime license accepted independently"
+    }
+  },
+  "source": {
+    "relic_commit": "7a69b23232eaffe3318cd8b3deca6dcea2f41021",
+    "relic_worktree_dirty": false,
+    "source_sha256": {
+      "__init__.py": "7ad4e0a2933c402c44a1681393d2e72c42a5e6276b5657c0ed8eeb3c74739c7a",
+      "artifacts.py": "082cf023c558750b5234666d4502b77a6925eb4281c23fb961edc10976433451",
+      "asset_cache.py": "b3601c8cea7e161c4055424909c1fbe34a519439fe0a90dafc440d4735d14548",
+      "assets/groot_model_config.json": "54c0367060cd310d0b3343fe72a589860a8b6e8173810164a4ffd6253f52e689",
+      "assets/manifest.json": "12b6ac5255f337f8b1ce090fc4ce0304cd53fb3fe63f73afd6f1b1d906ae1084",
+      "assets/open_manipulator_x.urdf": "784078c2a5bb16accd2ca4cbcf0d340403d6d343f047b433b503aeae85ef17d3",
+      "assets/panda_replay_manifest.json": "7ec456ae9e2c63d42b017aaddccabcaf18d15402051d57cc1c8e51e9d111eee1",
+      "assets.py": "621ed06239ed5eca1646b75ee06b8767452dec5d3894e86c647eeb684e4f56c8",
+      "benchmark.py": "b91c7cfd4c3b36be325ce25a511244c93d88b54bb72b9c42eb720de4d858fbe4",
+      "benchmark_report.py": "075e7e3ffbc6bdd3296bc9ba3cd376ab9fee9907a40c846367298c6d715fe5f3",
+      "bootstrap.py": "b1c9fa06dd84ec5ca819556e1e607a5ef39b834cc707253884c7117238981659",
+      "campaign_report.py": "96799079078ca283fb9ef1b5e676482061d6389c3df23c6bff582aa4c9854f52",
+      "checkpoint_compatibility.py": "78aabbb96642b9b0a65d972578d0aac8d26bdb46908be27d1b40c9c1f30c11c6",
+      "closed_loop_smoke.py": "e0343940cd37d4cbff3638b4180a630016ea323f5cdbd62708e693036a38b24c",
+      "cloud.py": "3e81e39ac7cee22fce26121641a84a1379b7d41c7c0102c58312cdf6065e412e",
+      "cloud_run.py": "38dd14e135bbdeb46285a260b172a65ba14a0d12bc6af87a79dc09ea10790c94",
+      "cloud_workflow.py": "40be5ddf8961970e80df933df1642fe95ba2270d2ec709b7ddb13dd49a6f6a3e",
+      "codec_runtime.py": "4608db889ca543e09e031fd87080273301b89d08afbf0209899c85bafcdfb72a",
+      "collection.py": "32e9595b3dc7e6edc615841d6842fca0df5b65323bbfd8e9ecf10294dada392e",
+      "collision.py": "c4b35eedae3478194fc7f1933880d8afd98091bfaf75a00283c4638f84029b5f",
+      "completion.py": "3b8b9beb947fb6095af0154cbbf805f716cf58df31390e0068b5df328bce3465",
+      "contact_probe.py": "33f0d2dcc83173b88916ae5c1e06374f9fe75c13ed74d2eb007bd4aa9d3b3347",
+      "contract.py": "31516a65e66f82c08a5894e4c46b688e4e4248e5b05abc59eb8b48b1dc0a0e0e",
+      "cross_smoke.py": "21ccf4c719af69a5ff7473484460b5a148f95f090b2166e15a4624543c1f86f7",
+      "dataset.py": "fa5e2e65f329b2886d15bf94de47d7cb34aa1d07fb218f570558f6e6a7041aff",
+      "demo.py": "c57c4f7b4d2c83c1cc8b5f5cbaf6607ecde14ad83e6b892d44d148e56ff41978",
+      "dual_media.py": "24fcaaa9f72e7153e25c6261df5ad63a454a3ef021c465797c883b5c66b400f3",
+      "evaluate.py": "3a1669ec9bc71cbeb864b5c46931b373aaa30b1f11e0f33514f3ccc09c34fe6e",
+      "evaluation.py": "dd609d0e7187aeab25264d9e0f60cf7398de4d02b50db2530583ac7f20932527",
+      "execution.py": "af4e4b736423ff5c522a81c17e42cc2b1df9878f826dea0b5f51c17cbd3138f1",
+      "experiment.py": "15e927cd830877c280f32febfe2648cd0bdd7a1855766e23227e62914da910da",
+      "expert.py": "12171e028ff53c88df5b47ad0f25010cab0db725e4eee9e9ddf39d94be77ace5",
+      "first_session.py": "dc631c88319087ad5504f5201cbfc64ed3b5eb779897ec2e52f552bc804b5924",
+      "groot_modalities.py": "8efbd2ca0a9e271bc4cb1d50c480452c555a64ab3280cad4e9ab36238ab44dfa",
+      "host.py": "a7d5e1478e4454c383f50825881706799224ddb499dc19d24fe2edc7026b4a2b",
+      "inventory.py": "8eaa664b07b45c2c3c955ebfd3b156aba9224c33c33d6495ab087a5e53b231c8",
+      "isaac_backend.py": "34c0c2b299f9a15306f37407a900021ee842a07f2b404c64a5d4a860237b71ad",
+      "isaac_interfaces.py": "8cfd097a36444d2a50e605b907aad6a5021d5c165ae72a67c9d750058be89916",
+      "kinematics.py": "811449623c574e5e1c572adf1a8c3cd175b5b506e38daef8153910a4e1e29e82",
+      "manipulation.py": "93cc901bbd2949fb396fe4feb382b821f0cad57d4553f43c7441eb9d773db6fe",
+      "models.py": "69886e9df68036f99e9fee27f9ca04e1cd880e582a022a48bcd78ef406c4d993",
+      "native/CMakeLists.txt": "1b39f4f424de23cb6dd62c2fecfa2c6f42568ff0908f2ad2b8bd828a89b8f026",
+      "native/action_contract.cpp": "0ff216e1d3e434653a784847216956aeb8d7f1374fcc0e0da4c319ddf55400f8",
+      "native/action_contract.h": "7f2107bf27f7a2c588c60a0395c7acb9874e79c95f423290f2ac8a3a3c95053f",
+      "native/action_contract_test.cpp": "a0db73a59289793bd39080988e621807010e7ff02813252bde0982a668ec64f0",
+      "native_contract.py": "307141f78fee53c7e4936dc96252df79b3d5f6379cdad3ce875a56c80ee6ad9b",
+      "openmanipulator.py": "3b29570ec62ba7743342bebb1132d30012c09ac8e4255b80ba3264768bb56dc6",
+      "paired.py": "6849fda1b086d4748e7a981c57e4c3433655dd2ae3a9c155dff9dcf0bc0aa7ca",
+      "panda.py": "a08a8707920e79bb78d5d0b79c33bf40ac824f184033ad0722f53a7a6de0c913",
+      "perception.py": "d7863fedea40a102eb16b984d7b17a42d51f7782b466b7b3003f7a4ecf3d230d",
+      "perturbations.py": "54ba2d5b9016f9315dcd489e07f8ae9b7cc8b9dcd8f1444e6fbde7acc7f490d9",
+      "pilot.py": "04775f246d2d167fefb118c88da1b314d96c83420bc031911495b3ccd0011cf3",
+      "planner.py": "33a1b8be07df38bd74c224e6144bb069da64c33c95dab98f11f4141035348dfe",
+      "policy.py": "f3ac5952bab17231cf6b94d840e7e6bdd63ad92402b951962237d04a6ec2e177",
+      "policy_service.py": "7b18939037ff88e2109c4c2c022237451f91ca998c44be8394bf937c7ccde60b",
+      "preflight.py": "a02a1d10d97c8935585333fab3ce50c6c5d8271a7495807f2015b849435462bb",
+      "provenance.py": "5cb523db03917fb86a4fe432795689b06c1a7c49aceaf86b3aebe5cbb21c57ef",
+      "qualification_evidence.py": "1e0b83397b884c5d1694d35d7ef35dda911d9c300626ea5b896c16f5ff29f862",
+      "qualification_pair.py": "6cc335d0b502847226ee8c6c555194b44e286cad346cbb6360d03e4ed749452b",
+      "qualify.py": "f29c62fdc96711c90445999e1509c98ca3398c837ee19764073a6bfb8a86e181",
+      "reader_requirements.txt": "20990ac6da6bb8a947da00f3622c7b4a62af3f727ee4fdaa2f156f5c7bad73f6",
+      "recording.py": "40cb4360f9641d5f9ee0efb8fc45b2d622ca32e771e496888b8862f2158854fb",
+      "reference_comparison.py": "c6233e7dc5c210cd0a7dcf28534f4d0271427c352baeee958a722c84cba43871",
+      "replay.py": "3fcd66c490fc79d472328f47817428a0588266d803269f76e55127bc7d0e0753",
+      "replay_render.py": "ed5ecd6fa60d3663a4fe3076f4e4bf768763b7f0f72dfe57d7f3fcbf36d74847",
+      "runtime_config.py": "674a7e82035b8cf6e4024f13e8f9ce347a51b041fffa07245f4bda4ff093725a",
+      "runtime_constraints.txt": "55d96faf7fe9713c7ceac71482c0ed305564a2fece6dbdd671dfbacb84782199",
+      "runtime_probe.py": "a79dafc8ee97af2e60d31a3eb2adcd420bf524deb3eeac116b797b222e19fdc9",
+      "safety.py": "c6e4f5f4fb92db377a717c91e804d9efa3d5daf8d311e402acf51f618608d832",
+      "scenarios.py": "fbdae9401d91dfa99580a460ec35fc938c754a27f10214561db98a0cf9dfd597",
+      "scene.py": "db5410ed911446a6cd1c1902f354d69cbff7a850355a238d50316c67e277f9eb",
+      "training.py": "206ee2b45984ec66815186916542227d232bb9b813cd3410350476774eb56fe0",
+      "training_campaign.py": "6b84dded486b343a9ca8f149234804e3ae0ef500f1de0b08fe4d1a5d2262ceef",
+      "training_smoke.py": "a4d0dc273c6c877592efb0420af8bcd47e3f9c53548d3ad469d405ee1879ec62",
+      "training_worker.py": "a5913addc978a3b10c04b96410d3179bc63a8dfd013023ca9fa94e58095922a2",
+      "transfer.py": "812be222efa40dc3caccd7e4854b2b1dde5d167bd64fe8fa7c3b936b2c579c82",
+      "upstream_validation.py": "18281d057dafb7c08fa4a493bd246e11facb9befb709df7782cfb7236cc00efc",
+      "weights.py": "3641e5fedfc46ea086f0dcd23491765ac9ea39bb5568ee96650c9cfeea60bea2"
+    }
+  },
+  "execute_command": [
+    "/home/iris/.local/share/relic-data-venv/bin/python",
+    "-m",
+    "embodiment.first_session",
+    "--root",
+    "/tmp/viper-first-session-release",
+    "--simulation-python",
+    "/home/iris/.local/share/relic-isaac/venv/bin/python",
+    "--reader-python",
+    "/home/iris/.local/share/relic-groot-preflight/bin/python",
+    "--isaac-source",
+    "/home/iris/.local/share/viper-cloud-ubuntu/sources/IsaacLab",
+    "--groot-source",
+    "/home/iris/.cache/relic-groot-source",
+    "--robot-cache",
+    "/home/iris/.local/share/viper-cloud-ubuntu/robot_cache",
+    "--panda-assets",
+    "/home/iris/.local/share/viper-cloud-ubuntu/assets",
+    "--episodes",
+    "12",
+    "--timeout",
+    "2400",
+    "--max-attempts",
+    "2",
+    "--total-timeout",
+    "14400",
+    "--reader-library-path",
+    "/home/iris/.local/share/relic-groot-preflight/ffmpeg7",
+    "--execute"
+  ],
+  "wall_seconds": 9.889573063999705,
+  "artifact_bytes": 49292
+}
