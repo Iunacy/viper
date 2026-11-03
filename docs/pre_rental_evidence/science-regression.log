@@ -1,0 +1,22 @@
+test_known_outcomes_and_reordering (embodiment.tests.test_paired.Paired.test_known_outcomes_and_reordering) ... ok
+test_missing_duplicates_and_interventions (embodiment.tests.test_paired.Paired.test_missing_duplicates_and_interventions) ... ok
+test_null_and_discordance (embodiment.tests.test_paired.Paired.test_null_and_discordance) ... ok
+test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) ... ok
+test_report_without_raw_trial_hashes_cannot_be_published (embodiment.tests.test_paired.PhysicalEvidenceGate.test_report_without_raw_trial_hashes_cannot_be_published) ... ok
+test_counts_and_intervals (embodiment.tests.test_benchmark_report.BenchmarkReport.test_counts_and_intervals) ... ok
+test_fallback_cannot_count_as_vla_only (embodiment.tests.test_benchmark_report.BenchmarkReport.test_fallback_cannot_count_as_vla_only) ... ok
+test_policy_condition_trial_and_training_embodiments_must_agree (embodiment.tests.test_benchmark_report.BenchmarkReport.test_policy_condition_trial_and_training_embodiments_must_agree) ... ok
+test_rejects_incomplete_duplicate_unsafe_and_false_success (embodiment.tests.test_benchmark_report.BenchmarkReport.test_rejects_incomplete_duplicate_unsafe_and_false_success) ... ok
+test_rejection_before_any_step_remains_failed_physical_evidence_not_a_demo (embodiment.tests.test_m0.FirstActionRejection.test_rejection_before_any_step_remains_failed_physical_evidence_not_a_demo) ... ok
+test_completed_evaluation_does_not_imply_learning_and_instructions_are_required (embodiment.tests.test_m0.M0Admission.test_completed_evaluation_does_not_imply_learning_and_instructions_are_required) ... ok
+test_counterfactuals_change_only_instruction_on_three_disjoint_validation_layouts (embodiment.tests.test_m0.M0Admission.test_counterfactuals_change_only_instruction_on_three_disjoint_validation_layouts) ... ok
+test_summary_only_or_wrong_robot_cannot_claim_learning (embodiment.tests.test_m0.M0Admission.test_summary_only_or_wrong_robot_cannot_claim_learning) ... ok
+test_common_qualification_dryrun_cannot_reuse_legacy_pass (embodiment.tests.test_research_workflows.ResearchWorkflows.test_common_qualification_dryrun_cannot_reuse_legacy_pass) ... ok
+test_pilot_is_deterministic_and_never_a_training_dataset (embodiment.tests.test_research_workflows.ResearchWorkflows.test_pilot_is_deterministic_and_never_a_training_dataset) ... ok
+test_completed_checkpoint_recovers_missing_final_snapshot_without_an_extra_step (embodiment.tests.test_training_campaign.TrainingCampaign.test_completed_checkpoint_recovers_missing_final_snapshot_without_an_extra_step) ... ok
+test_plan_is_zero_compute_and_real_smoke_is_required (embodiment.tests.test_training_campaign.TrainingCampaign.test_plan_is_zero_compute_and_real_smoke_is_required) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 1.712s
+
+OK

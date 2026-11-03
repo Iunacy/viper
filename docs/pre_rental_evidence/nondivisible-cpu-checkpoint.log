@@ -1,0 +1,6 @@
+Current global step: 0
+Creating custom train dataloader
+{'train_runtime': 0.0208, 'train_samples_per_second': 144.543, 'train_steps_per_second': 144.543, 'train_loss': 0.8396109739939371}
+FINAL_GLOBAL_STEP 3
+CHECKPOINTS ['checkpoint-2', 'checkpoint-3']
+PASS final nondivisible optimizer checkpoint saved

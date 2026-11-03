@@ -1,0 +1,11 @@
+usage: python -m embodiment.paired [-h] --baseline BASELINE
+                                   --transfer TRANSFER --output OUTPUT
+
+Scene-paired, deterministic analysis. Synthetic inputs never become measured
+evidence.
+
+options:
+  -h, --help           show this help message and exit
+  --baseline BASELINE
+  --transfer TRANSFER
+  --output OUTPUT

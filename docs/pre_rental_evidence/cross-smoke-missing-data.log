@@ -1,0 +1,12 @@
+{
+  "schema": "viper.cross_robot_smoke.v1",
+  "status": "BLOCKED",
+  "errors": [
+    "FileNotFoundError: [Errno 2] No such file or directory: '/tmp/viper-final-audit-absent-data-a/meta/info.json'"
+  ],
+  "training_executed": false,
+  "closed_loop_executed": false,
+  "stages": {},
+  "paid_compute_go": false,
+  "wall_seconds": 0.2655324030019983
+}

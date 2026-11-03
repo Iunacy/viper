@@ -1,0 +1,10 @@
+-- The CXX compiler identification is GNU 16.2.1
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Python3: /home/iris/.local/share/relic-groot-preflight/bin/python (found version "3.12.15") found components: Interpreter
+-- Configuring done (1.4s)
+-- Generating done (0.0s)
+-- Build files have been written to: /tmp/viper-final-audit-build

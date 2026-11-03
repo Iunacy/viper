@@ -1,0 +1,3 @@
+seed=90457586090802 start=0 generated=100000 valid=29163 invalid=70837 ambiguous=9973 metamorphic=145815 mismatches=0
+Valid=29163 EmptyPath=6250 InvalidConstraints=24612 WrongJointCount=7627 NonFiniteJoint=11528 JointLimitViolation=6604 ExcessiveJointStep=14216 
+PASS fuzz checks=245818 validator_calls=245815

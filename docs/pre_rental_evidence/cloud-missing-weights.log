@@ -1,0 +1,83 @@
+{
+  "schema": "viper.cloud_preflight.v1",
+  "billing_started": false,
+  "training_executed": false,
+  "model_downloads": false,
+  "blockers": [
+    "training interpreter contains a CPU-only PyTorch build",
+    "CUDA 12.8 development compiler required by installed DeepSpeed compatibility checks; use the pinned cloud image",
+    "insufficient total or free GPU memory for training",
+    "insufficient available host RAM",
+    "insufficient storage reserve",
+    "ValueError: local GR00T checkpoint configuration required"
+  ],
+  "python": "3.12.15 (main, Oct 14 2026, 01:05:27) [Clang 23.1.3 ]",
+  "persistent_volume": "/tmp",
+  "packages": {
+    "torch": "2.9.0+cpu",
+    "transformers": "4.57.3",
+    "safetensors": "0.8.0",
+    "pyarrow": "19.0.1",
+    "av": "14.2.0",
+    "torchcodec": "0.8.0",
+    "tyro": "0.9.17"
+  },
+  "groot_lock_sha256": "0d67d3b0dd41b28375bbc2351eefc9e064cbad2d1c40682a52b97fc625a60f19",
+  "host": {
+    "schema": "viper.host_preflight.v1",
+    "stage": "training",
+    "ready": false,
+    "blockers": [
+      "training interpreter contains a CPU-only PyTorch build",
+      "CUDA 12.8 development compiler required by installed DeepSpeed compatibility checks; use the pinned cloud image",
+      "insufficient total or free GPU memory for training",
+      "insufficient available host RAM",
+      "insufficient storage reserve"
+    ],
+    "requirements": {
+      "total_gib": 40,
+      "free_gib": 38,
+      "ram_gib": 32,
+      "disk_gib": 32
+    },
+    "python": "3.12.15 (main, Oct 14 2026, 01:05:27) [Clang 23.1.3 ]",
+    "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+    "compute_started": false,
+    "cuda_probe_executed": false,
+    "packages": {
+      "torch": "2.9.0+cpu",
+      "transformers": "4.57.3",
+      "safetensors": "0.8.0",
+      "pyarrow": "19.0.1",
+      "av": "14.2.0",
+      "torchcodec": "0.8.0",
+      "tyro": "0.9.17"
+    },
+    "isaac_requirements_source": "https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/requirements.html",
+    "torch_cuda_build": null,
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+      "driver": "615.78.08",
+      "total_mib": 4096,
+      "free_mib": 1915
+    },
+    "memory_bytes": {
+      "MemTotal": 16364085248,
+      "MemAvailable": 4542214144
+    },
+    "volume": "/tmp",
+    "storage_free_bytes": 7640969216
+  },
+  "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU, 615.78.08, 4096 MiB, 1915 MiB",
+  "ready_for_training_preflight": false,
+  "paid_compute_go": false,
+  "setup_command": [
+    "uv",
+    "sync",
+    "--project",
+    "/home/iris/.local/share/viper-cloud-ubuntu/sources/GR00T",
+    "--frozen",
+    "--no-dev"
+  ],
+  "compute_policy": "training and simulator stages run separately; cross_smoke enforces memory and explicit execution opt-in"
+}

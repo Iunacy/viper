@@ -1,0 +1,4 @@
+[1/4] Building CXX object CMakeFiles/action_contract_test.dir/action_contract_test.cpp.o
+[2/4] Building CXX object CMakeFiles/viper_action_contract.dir/action_contract.cpp.o
+[3/4] Linking CXX shared library libviper_action_contract.so
+[4/4] Linking CXX executable action_contract_test

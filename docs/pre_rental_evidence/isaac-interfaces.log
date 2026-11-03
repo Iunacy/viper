@@ -1,0 +1,46 @@
+{
+  "schema": "viper.isaac_source_interfaces.v1",
+  "commit": "3c6e67bb5c7ada942a6d1884ab69338f57596f77",
+  "checked": {
+    "source/isaaclab/isaaclab/assets/articulation/articulation.py": {
+      "sha256": "9cc03b85642c36c801ff9683e94b8ccc3fbef1178761338974b433dacc78ef75",
+      "interfaces": [
+        "find_joints",
+        "find_bodies",
+        "set_joint_position_target",
+        "write_joint_state_to_sim"
+      ]
+    },
+    "source/isaaclab/isaaclab/assets/articulation/articulation_data.py": {
+      "sha256": "bfe53518d1c511455b3538dcee487845ccfe1b62ddbd9c2cd92794137d390994",
+      "interfaces": [
+        "body_pose_w",
+        "joint_pos_limits"
+      ]
+    },
+    "source/isaaclab/isaaclab/sensors/contact_sensor/contact_sensor_data.py": {
+      "sha256": "bf357bf45d6372b26fd62d64ea9734cf20755756bc49b7474f9a298245a62b46",
+      "interfaces": [
+        "net_forces_w",
+        "force_matrix_w"
+      ]
+    },
+    "source/isaaclab/isaaclab/sensors/camera/camera.py": {
+      "sha256": "6c1c27e7f6c0fb7fe464e7104c5d14517ea8364f70d336aac3f9b7f038c9295a",
+      "interfaces": [
+        "set_world_poses_from_view",
+        "frame"
+      ]
+    },
+    "source/isaaclab/isaaclab/sim/converters/urdf_converter.py": {
+      "sha256": "b5a91427712cf63a8a5a8359a442909741f72f7763e06ef4c8cf114d2e1a2b51",
+      "interfaces": [
+        "_get_urdf_import_config"
+      ]
+    }
+  },
+  "source_interfaces_present": true,
+  "simulation_executed": false,
+  "runtime_compatibility_verified": false,
+  "remaining_gate": "Kit initialization, URDF/USD import, contact reporters and PhysX tensor methods on qualified GPU"
+}

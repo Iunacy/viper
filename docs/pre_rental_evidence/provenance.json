@@ -1,0 +1,1957 @@
+{
+  "schema": "viper.git_provenance.v1",
+  "historical_project": "RELIC",
+  "project": "VIPER",
+  "head": "5c66c95ec48c101a2d4af55df8d917ff5a72bcac",
+  "commits": [
+    {
+      "commit": "9d7837327c50f189126994e11ca921956cf127d9",
+      "parents": [],
+      "author_date": "2026-10-18T14:35:14+07:00",
+      "committer_date": "2026-10-18T14:35:14+07:00",
+      "author": "iris",
+      "subject": "Initial commit",
+      "paths": [
+        "README.md"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "c461320c59602a787d4f2a9c6d82187fba953a69",
+      "parents": [
+        "9d7837327c50f189126994e11ca921956cf127d9"
+      ],
+      "author_date": "2026-10-19T14:15:40+07:00",
+      "committer_date": "2026-10-19T14:15:40+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add relic sim",
+      "paths": [
+        ".gitattributes",
+        ".gitignore",
+        "CMakeLists.txt",
+        "README.md",
+        "examples/synthetic_3dof.cfg",
+        "examples/synthetic_4dof.cfg",
+        "include/relic/analytical_ik.hpp",
+        "include/relic/contact_inspection.hpp",
+        "include/relic/feasibility.hpp",
+        "include/relic/motion.hpp",
+        "include/relic/simulation.hpp",
+        "src/analytical_ik.cpp",
+        "src/cartesian_demo.cpp",
+        "src/config.cpp",
+        "src/contact_inspection.cpp",
+        "src/feasibility.cpp",
+        "src/main.cpp",
+        "src/motion.cpp",
+        "src/motion_report.cpp",
+        "src/simulation.cpp",
+        "src/trace.cpp",
+        "tests/analytical_ik_tests.cpp",
+        "tests/cartesian_repro.cmake",
+        "tests/cli_repro.cmake",
+        "tests/ik_benchmark.cpp",
+        "tests/motion_benchmark.cpp",
+        "tests/motion_tests.cpp",
+        "tests/path_campaign.cpp",
+        "tests/run_path_mutations.ps1",
+        "tests/standalone/CMakeLists.txt",
+        "tests/tests.cpp"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3",
+      "parents": [
+        "c461320c59602a787d4f2a9c6d82187fba953a69"
+      ],
+      "author_date": "2026-10-21T23:11:23+07:00",
+      "committer_date": "2026-10-21T23:11:23+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add ruckig experiment",
+      "paths": [
+        ".gitignore",
+        "CMakeLists.txt",
+        "experiments/ruckig/CMakeLists.txt",
+        "experiments/ruckig/README.md",
+        "experiments/ruckig/UPSTREAM.txt",
+        "experiments/ruckig/adapter.cpp",
+        "experiments/ruckig/adapter.hpp",
+        "experiments/ruckig/adapter_tests.cpp",
+        "experiments/ruckig/benchmark.cpp",
+        "experiments/ruckig/profile.hpp",
+        "experiments/ruckig/qualification.cpp",
+        "experiments/ruckig/qualification_api.hpp",
+        "experiments/ruckig/qualification_main.cpp",
+        "experiments/ruckig/reproduce.sh",
+        "experiments/ruckig/results/comparison.csv",
+        "experiments/ruckig/results/joints.csv",
+        "experiments/ruckig/results/qualification.csv",
+        "experiments/ruckig/results/runtime.csv",
+        "experiments/ruckig/results/summary.csv",
+        "experiments/ruckig/results/tradeoff.csv",
+        "experiments/ruckig/vendor/CMakeLists.txt",
+        "experiments/ruckig/vendor/LICENSE",
+        "experiments/ruckig/vendor/README.md",
+        "experiments/ruckig/vendor/cmake/ruckig-config.cmake.in",
+        "experiments/ruckig/vendor/git-blobs.txt",
+        "experiments/ruckig/vendor/include/ruckig/block.hpp",
+        "experiments/ruckig/vendor/include/ruckig/brake.hpp",
+        "experiments/ruckig/vendor/include/ruckig/calculator.hpp",
+        "experiments/ruckig/vendor/include/ruckig/calculator_cloud.hpp",
+        "experiments/ruckig/vendor/include/ruckig/calculator_target.hpp",
+        "experiments/ruckig/vendor/include/ruckig/error.hpp",
+        "experiments/ruckig/vendor/include/ruckig/input_parameter.hpp",
+        "experiments/ruckig/vendor/include/ruckig/output_parameter.hpp",
+        "experiments/ruckig/vendor/include/ruckig/position.hpp",
+        "experiments/ruckig/vendor/include/ruckig/profile.hpp",
+        "experiments/ruckig/vendor/include/ruckig/result.hpp",
+        "experiments/ruckig/vendor/include/ruckig/roots.hpp",
+        "experiments/ruckig/vendor/include/ruckig/ruckig.hpp",
+        "experiments/ruckig/vendor/include/ruckig/trajectory.hpp",
+        "experiments/ruckig/vendor/include/ruckig/utils.hpp",
+        "experiments/ruckig/vendor/include/ruckig/velocity.hpp",
+        "experiments/ruckig/vendor/package.xml",
+        "experiments/ruckig/vendor/src/ruckig/brake.cpp",
+        "experiments/ruckig/vendor/src/ruckig/cloud_client.cpp",
+        "experiments/ruckig/vendor/src/ruckig/position_first_step1.cpp",
+        "experiments/ruckig/vendor/src/ruckig/position_first_step2.cpp",
+        "experiments/ruckig/vendor/src/ruckig/position_second_step1.cpp",
+        "experiments/ruckig/vendor/src/ruckig/position_second_step2.cpp",
+        "experiments/ruckig/vendor/src/ruckig/position_third_step1.cpp",
+        "experiments/ruckig/vendor/src/ruckig/position_third_step2.cpp",
+        "experiments/ruckig/vendor/src/ruckig/velocity_second_step1.cpp",
+        "experiments/ruckig/vendor/src/ruckig/velocity_second_step2.cpp",
+        "experiments/ruckig/vendor/src/ruckig/velocity_third_step1.cpp",
+        "experiments/ruckig/vendor/src/ruckig/velocity_third_step2.cpp",
+        "experiments/ruckig/verify_upstream.sh"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "323183dd3cd773384c4d9eb4217e659005c3b99f",
+      "parents": [
+        "c461320c59602a787d4f2a9c6d82187fba953a69"
+      ],
+      "author_date": "2026-10-22T10:21:24+07:00",
+      "committer_date": "2026-10-22T10:21:24+07:00",
+      "author": "iris",
+      "subject": "add adaptive control pipeline",
+      "paths": [
+        ".gitignore",
+        "CMakeLists.txt",
+        "README.md",
+        "adaptive/CMakeLists.txt",
+        "adaptive/audit.py",
+        "adaptive/calibrate.py",
+        "adaptive/campaign.json",
+        "adaptive/common.hpp",
+        "adaptive/demo.py",
+        "adaptive/episode.cpp",
+        "adaptive/evaluate.py",
+        "adaptive/evidence/campaign_audit.json",
+        "adaptive/evidence/demo_feedback.json",
+        "adaptive/evidence/failed_v1_evaluation.json",
+        "adaptive/evidence/final_evaluation.json",
+        "adaptive/evidence/final_executable_evaluation.json",
+        "adaptive/evidence/final_repeatability.json",
+        "adaptive/evidence/generation_report.json",
+        "adaptive/evidence/ilc_summary.json",
+        "adaptive/evidence/label_audit.json",
+        "adaptive/evidence/training_summary.json",
+        "adaptive/fixtures/bounds.txt",
+        "adaptive/fixtures/episode/metadata.json",
+        "adaptive/fixtures/episode/nominal.xml",
+        "adaptive/fixtures/episode/telemetry.csv.gz",
+        "adaptive/fixtures/episode_origin.json",
+        "adaptive/fixtures/model_provenance.json",
+        "adaptive/fixtures/shared.txt",
+        "adaptive/learning.py",
+        "adaptive/pipeline.py",
+        "adaptive/recorder.hpp",
+        "adaptive/reproduce.sh",
+        "adaptive/requirements.txt",
+        "adaptive/residual.hpp",
+        "adaptive/residual_probe.cpp",
+        "adaptive/test_learning.py",
+        "adaptive/test_pipeline.py",
+        "adaptive/tests.cpp",
+        "include/relic/simulation.hpp",
+        "src/simulation.cpp"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "b3d8162fd49dce113698fdb91e88474b2374dbdd",
+      "parents": [
+        "323183dd3cd773384c4d9eb4217e659005c3b99f"
+      ],
+      "author_date": "2026-10-22T11:11:46+07:00",
+      "committer_date": "2026-10-22T11:11:46+07:00",
+      "author": "hoaitrongueh",
+      "subject": "fix adaptive validation",
+      "paths": [
+        "README.md",
+        "adaptive/CMakeLists.txt",
+        "adaptive/episode.cpp",
+        "adaptive/learning.py",
+        "adaptive/pipeline.py",
+        "adaptive/residual.hpp",
+        "adaptive/revise.sh",
+        "adaptive/revision.py",
+        "adaptive/revision/PROTOCOL.md",
+        "adaptive/revision/bounds.txt",
+        "adaptive/revision/check_history.py",
+        "adaptive/revision/convergence_replication.py",
+        "adaptive/revision/environment.json",
+        "adaptive/revision/historical_hashes.json",
+        "adaptive/revision/historical_probe.py",
+        "adaptive/revision/start.json",
+        "adaptive/revision/training_probe.py",
+        "adaptive/revision_demo.py",
+        "adaptive/revision_geometry.py",
+        "adaptive/revision_learning.py",
+        "adaptive/revision_plot.py",
+        "adaptive/test_learning.py",
+        "adaptive/test_revision.py",
+        "adaptive/tests.cpp"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "beba39a378a9306c2f7cecc7117267b4679dc363",
+      "parents": [
+        "b3d8162fd49dce113698fdb91e88474b2374dbdd"
+      ],
+      "author_date": "2026-10-22T11:18:46+07:00",
+      "committer_date": "2026-10-22T11:18:46+07:00",
+      "author": "hoaitrongueh",
+      "subject": "scale validated data preparation",
+      "paths": [
+        "adaptive/learning.py",
+        "adaptive/revise.sh",
+        "adaptive/revision/PROTOCOL.md",
+        "adaptive/revision/convergence_report.py",
+        "adaptive/revision_learning.py",
+        "adaptive/revision_plot.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "660a18579d0f4b7bcff2c060010a39886bf137f4",
+      "parents": [
+        "beba39a378a9306c2f7cecc7117267b4679dc363"
+      ],
+      "author_date": "2026-10-22T12:03:30+07:00",
+      "committer_date": "2026-10-22T12:03:30+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add reproducible control comparisons",
+      "paths": [
+        "README.md",
+        "adaptive/revise.sh",
+        "adaptive/revision/PROTOCOL.md",
+        "adaptive/revision/analytical.json",
+        "adaptive/revision/analytical_robustness.py",
+        "adaptive/revision/matched_exposure.json",
+        "adaptive/revision/models/curve_16.txt",
+        "adaptive/revision/models/curve_32.txt",
+        "adaptive/revision/models/curve_8.txt",
+        "adaptive/revision/models/per_3_full.txt",
+        "adaptive/revision/models/per_3_matched.txt",
+        "adaptive/revision/models/per_4_full.txt",
+        "adaptive/revision/models/per_4_matched.txt",
+        "adaptive/revision/models/shared_full.txt",
+        "adaptive/revision/models/shared_matched.txt",
+        "adaptive/revision/training_results.json",
+        "adaptive/revision_demo.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+      "parents": [
+        "660a18579d0f4b7bcff2c060010a39886bf137f4"
+      ],
+      "author_date": "2026-10-22T12:18:36+07:00",
+      "committer_date": "2026-10-22T12:18:36+07:00",
+      "author": "hoaitrongueh",
+      "subject": "record adaptive validation results",
+      "paths": [
+        "README.md",
+        "adaptive/revise.sh",
+        "adaptive/revision.py",
+        "adaptive/revision/.gitignore",
+        "adaptive/revision/COMMANDS.md",
+        "adaptive/revision/PROTOCOL.md",
+        "adaptive/revision/RESULTS.md",
+        "adaptive/revision/analytical_full_range.json",
+        "adaptive/revision/analytical_robustness.json",
+        "adaptive/revision/analytical_robustness_protocol.json",
+        "adaptive/revision/analytical_robustness_tuning.json",
+        "adaptive/revision/comparison.json",
+        "adaptive/revision/comparison.png",
+        "adaptive/revision/convergence_comparison.json",
+        "adaptive/revision/convergence_replication_protocol.json",
+        "adaptive/revision/demo_feedback.json",
+        "adaptive/revision/evaluation_timing.json",
+        "adaptive/revision/export_results.py",
+        "adaptive/revision/geometry_audit.json",
+        "adaptive/revision/historical_replay.json",
+        "adaptive/revision/model_bank_comparison.json",
+        "adaptive/revision/preparation_timing.json",
+        "adaptive/revision/preservation.json",
+        "adaptive/revision/qualification.json",
+        "adaptive/revision/repeatability.json",
+        "adaptive/revision/repeatability.py",
+        "adaptive/revision/run_inventory.json",
+        "adaptive/revision/split_protocol.json",
+        "adaptive/revision/teacher_summary.json",
+        "adaptive/revision/test_results.json",
+        "adaptive/revision_demo.py",
+        "adaptive/revision_learning.py",
+        "adaptive/revision_plot.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "c0e46f12e0a3ee6374374e4982e15642460687fc",
+      "parents": [
+        "cf0e905fd41c3b32860cd19471cf95d32e376a8d"
+      ],
+      "author_date": "2026-10-22T13:04:24+07:00",
+      "committer_date": "2026-10-22T13:04:24+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add menagerie arm viewer",
+      "paths": [
+        "interactive/.gitignore",
+        "interactive/__init__.py",
+        "interactive/arm.py",
+        "interactive/requirements.txt",
+        "interactive/vendor/low_cost_robot_arm/CHANGELOG.md",
+        "interactive/vendor/low_cost_robot_arm/LICENSE",
+        "interactive/vendor/low_cost_robot_arm/README.md",
+        "interactive/vendor/low_cost_robot_arm/assets/base_link.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/base_link_collision.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/base_link_motor.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/elbow_to_wrist.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/elbow_to_wrist_collision.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/elbow_to_wrist_extension.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/elbow_to_wrist_extension_collision.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/elbow_to_wrist_extension_motor.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/elbow_to_wrist_motor.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/gripper_moving_finger.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/gripper_moving_finger_collision_1.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/gripper_moving_finger_collision_2.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/gripper_static_finger.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/gripper_static_finger_collision_1.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/gripper_static_finger_collision_2.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/gripper_static_finger_motor.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/shoulder_rotation.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/shoulder_rotation_collision.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/shoulder_rotation_motor.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/shoulder_to_elbow.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/shoulder_to_elbow_collision.stl",
+        "interactive/vendor/low_cost_robot_arm/assets/shoulder_to_elbow_motor.stl",
+        "interactive/vendor/low_cost_robot_arm/low_cost_robot_arm.png",
+        "interactive/vendor/low_cost_robot_arm/low_cost_robot_arm.xml",
+        "interactive/vendor/low_cost_robot_arm/scene.xml",
+        "interactive/vendor/manifest.json"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "423bd040570a66f59168aa652d76877789db9aab",
+      "parents": [
+        "c0e46f12e0a3ee6374374e4982e15642460687fc"
+      ],
+      "author_date": "2026-10-22T13:04:24+07:00",
+      "committer_date": "2026-10-22T13:04:24+07:00",
+      "author": "hoaitrongueh",
+      "subject": "connect validated task execution",
+      "paths": [
+        "README.md",
+        "interactive/CMakeLists.txt",
+        "interactive/actions.py",
+        "interactive/app.py",
+        "interactive/bridge.cpp",
+        "interactive/capture.py",
+        "interactive/demo.py",
+        "interactive/engine.py",
+        "interactive/index.html",
+        "interactive/qualify.py",
+        "interactive/run.sh",
+        "interactive/setup.sh",
+        "interactive/tests.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "94899ed2cf1a3ff75fc09ec70455551d961377d0",
+      "parents": [
+        "423bd040570a66f59168aa652d76877789db9aab"
+      ],
+      "author_date": "2026-10-22T13:04:24+07:00",
+      "committer_date": "2026-10-22T13:04:24+07:00",
+      "author": "hoaitrongueh",
+      "subject": "record interactive validation",
+      "paths": [
+        "interactive/README.md",
+        "interactive/results/app.png",
+        "interactive/results/arm.png",
+        "interactive/results/arm_qualification.json",
+        "interactive/results/commands.json",
+        "interactive/results/environment.json",
+        "interactive/results/interactive_comparison.json",
+        "interactive/results/logs/arm_qualification.txt",
+        "interactive/results/logs/ctest.txt",
+        "interactive/results/logs/integration.txt",
+        "interactive/results/logs/sanitizers.txt",
+        "interactive/results/logs/synthetic_qualification.txt",
+        "interactive/results/preservation.json",
+        "interactive/results/synthetic_qualification.json",
+        "interactive/results/validation.json"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "029dd20a0eb66e0215a1ef93551dff2893eb4d37",
+      "parents": [
+        "c461320c59602a787d4f2a9c6d82187fba953a69"
+      ],
+      "author_date": "2026-10-22T13:24:35+07:00",
+      "committer_date": "2026-10-22T13:24:35+07:00",
+      "author": "hoaitrongueh",
+      "subject": "save double-s audit",
+      "paths": [
+        ".gitignore",
+        "CMakeLists.txt",
+        "experiments/double_s/CMakeLists.txt",
+        "experiments/double_s/STATUS.txt",
+        "experiments/double_s/audit.cpp",
+        "experiments/double_s/results.csv",
+        "experiments/double_s/upstream/LICENSE",
+        "experiments/double_s/upstream/SHA256SUMS",
+        "experiments/double_s/upstream/cpp/cmake/version.hpp.in",
+        "experiments/double_s/upstream/cpp/include/interpolatecpp/config.hpp",
+        "experiments/double_s/upstream/cpp/include/interpolatecpp/motion/double_s_trajectory.hpp",
+        "experiments/double_s/upstream/cpp/include/interpolatecpp/motion/motion_types.hpp",
+        "experiments/double_s/upstream/cpp/src/double_s_trajectory.cpp"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "408456a58384abd53eb2a4435b425e85f26bc14e",
+      "parents": [
+        "94899ed2cf1a3ff75fc09ec70455551d961377d0",
+        "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3"
+      ],
+      "author_date": "2026-10-22T13:26:37+07:00",
+      "committer_date": "2026-10-22T13:26:37+07:00",
+      "author": "hoaitrongueh",
+      "subject": "merge relic",
+      "paths": [],
+      "recorded_period": "during_or_after_event",
+      "merge": true
+    },
+    {
+      "commit": "1b29cdbd5cbb4355223fc62233e83842ae04c3aa",
+      "parents": [
+        "408456a58384abd53eb2a4435b425e85f26bc14e",
+        "6a6887afc0b7b6869dbff66cfede4d42d2473089"
+      ],
+      "author_date": "2026-10-22T13:26:37+07:00",
+      "committer_date": "2026-10-22T13:26:37+07:00",
+      "author": "hoaitrongueh",
+      "subject": "merge diagnostics",
+      "paths": [],
+      "recorded_period": "during_or_after_event",
+      "merge": true
+    },
+    {
+      "commit": "6a6887afc0b7b6869dbff66cfede4d42d2473089",
+      "parents": [
+        "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3"
+      ],
+      "author_date": "2026-10-22T13:26:37+07:00",
+      "committer_date": "2026-10-22T13:26:37+07:00",
+      "author": "hoaitrongueh",
+      "subject": "save ruckig diagnostics",
+      "paths": [
+        ".gitignore",
+        "experiments/ruckig/CMakeLists.txt",
+        "experiments/ruckig/DIAGNOSTICS.txt",
+        "experiments/ruckig/adapter.cpp",
+        "experiments/ruckig/adapter.hpp",
+        "experiments/ruckig/analyze_diagnostics.py",
+        "experiments/ruckig/diagnostics.cpp",
+        "experiments/ruckig/reproduce.sh",
+        "experiments/ruckig/results/diagnostics/checks.csv",
+        "experiments/ruckig/results/diagnostics/comparison.csv",
+        "experiments/ruckig/results/diagnostics/peaks.csv",
+        "experiments/ruckig/results/diagnostics/qualification.csv",
+        "experiments/ruckig/results/diagnostics/runs.csv",
+        "experiments/ruckig/results/diagnostics/sha256.csv",
+        "experiments/ruckig/results/diagnostics/validation.txt"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "28d88c845e2494173cc4067b1b7fb18bda76ee11",
+      "parents": [
+        "1b29cdbd5cbb4355223fc62233e83842ae04c3aa",
+        "029dd20a0eb66e0215a1ef93551dff2893eb4d37"
+      ],
+      "author_date": "2026-10-22T13:26:52+07:00",
+      "committer_date": "2026-10-22T13:26:52+07:00",
+      "author": "hoaitrongueh",
+      "subject": "merge double-s audit",
+      "paths": [],
+      "recorded_period": "during_or_after_event",
+      "merge": true
+    },
+    {
+      "commit": "a5fc4c9d0399985ed714f62b8cc9987de500f0ba",
+      "parents": [
+        "28d88c845e2494173cc4067b1b7fb18bda76ee11"
+      ],
+      "author_date": "2026-10-22T13:35:46+07:00",
+      "committer_date": "2026-10-22T13:35:46+07:00",
+      "author": "hoaitrongueh",
+      "subject": "fix integration",
+      "paths": [
+        ".gitignore",
+        "CMakeLists.txt",
+        "interactive/CMakeLists.txt",
+        "interactive/engine.py",
+        "interactive/run.sh",
+        "interactive/setup.sh"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "aa216ab1ef4dd6897f15c5cd5c301d51c209eb01",
+      "parents": [
+        "a5fc4c9d0399985ed714f62b8cc9987de500f0ba"
+      ],
+      "author_date": "2026-10-22T13:43:46+07:00",
+      "committer_date": "2026-10-22T13:43:46+07:00",
+      "author": "hoaitrongueh",
+      "subject": "record validation",
+      "paths": [
+        "DEVELOP.txt",
+        "integration/audit.py",
+        "integration/evidence/after_ctest.txt",
+        "integration/evidence/before_ctest.txt",
+        "integration/evidence/behavior_preservation.json",
+        "integration/evidence/branch_inventory.json",
+        "integration/evidence/changed_files.json",
+        "integration/evidence/commands.json",
+        "integration/evidence/double_s_ctest.txt",
+        "integration/evidence/experiment_regression.json",
+        "integration/evidence/layout_audit.json",
+        "integration/evidence/ruckig_ctest.txt",
+        "integration/evidence/sanitizer_ctest.txt",
+        "integration/evidence/ui_api.json",
+        "integration/evidence/validation.json",
+        "integration/evidence/video.json"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "0a637e466c90d10c4c195b9daa5d1ab77cfa8129",
+      "parents": [
+        "aa216ab1ef4dd6897f15c5cd5c301d51c209eb01"
+      ],
+      "author_date": "2026-10-22T16:57:28+07:00",
+      "committer_date": "2026-10-22T16:57:28+07:00",
+      "author": "hoaitrongueh",
+      "subject": "verify integration",
+      "paths": [
+        "integration/evidence/publication.json",
+        "integration/evidence/validation.json"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "6f65095056c0fcab1e1b091e9b7f2e25200674c7",
+      "parents": [
+        "0a637e466c90d10c4c195b9daa5d1ab77cfa8129"
+      ],
+      "author_date": "2026-10-23T17:00:31+07:00",
+      "committer_date": "2026-10-23T17:00:31+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add isaac embodiment gate",
+      "paths": [
+        ".gitignore",
+        "CMakeLists.txt",
+        "embodiment/__init__.py",
+        "embodiment/assets.py",
+        "embodiment/assets/LICENSE",
+        "embodiment/assets/manifest.json",
+        "embodiment/assets/open_manipulator_x.urdf",
+        "embodiment/benchmark.py",
+        "embodiment/expert.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/openmanipulator.py",
+        "embodiment/preflight.py",
+        "embodiment/qualify.py",
+        "embodiment/qualify.sh",
+        "embodiment/recording.py",
+        "embodiment/runtime_constraints.txt",
+        "embodiment/setup_runtime.sh",
+        "embodiment/tests/test_offline.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "828194b18bcd193316ae6308348c5f239c635c60",
+      "parents": [
+        "6f65095056c0fcab1e1b091e9b7f2e25200674c7"
+      ],
+      "author_date": "2026-10-23T17:03:56+07:00",
+      "committer_date": "2026-10-23T17:03:56+07:00",
+      "author": "hoaitrongueh",
+      "subject": "fix grasp clearance and recording metadata",
+      "paths": [
+        "embodiment/benchmark.py",
+        "embodiment/expert.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/preflight.py",
+        "embodiment/qualify.py",
+        "embodiment/recording.py",
+        "embodiment/setup_runtime.sh",
+        "embodiment/tests/test_offline.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "c4383974b77f6acd37a5273258bc771138bc1644",
+      "parents": [
+        "828194b18bcd193316ae6308348c5f239c635c60"
+      ],
+      "author_date": "2026-10-23T17:31:22+07:00",
+      "committer_date": "2026-10-23T17:31:22+07:00",
+      "author": "hoaitrongueh",
+      "subject": "require physical grasp evidence",
+      "paths": [
+        "embodiment/benchmark.py",
+        "embodiment/evaluation.py",
+        "embodiment/expert.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/qualify.py",
+        "embodiment/tests/test_qualification.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "2a601fecd3200c2b0e801b77503e08c24dbcc0fa",
+      "parents": [
+        "c4383974b77f6acd37a5273258bc771138bc1644"
+      ],
+      "author_date": "2026-10-23T17:34:30+07:00",
+      "committer_date": "2026-10-23T17:34:30+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add panda qualification adapter",
+      "paths": [
+        "embodiment/expert.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/panda.py",
+        "embodiment/qualify.py",
+        "embodiment/setup_runtime.sh",
+        "embodiment/tests/test_panda.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "df7e7c4ba03976dc4de075ffab8ecacd373b03fc",
+      "parents": [
+        "2a601fecd3200c2b0e801b77503e08c24dbcc0fa"
+      ],
+      "author_date": "2026-10-23T17:36:33+07:00",
+      "committer_date": "2026-10-23T17:36:33+07:00",
+      "author": "hoaitrongueh",
+      "subject": "guard simulation commands",
+      "paths": [
+        "embodiment/isaac_backend.py",
+        "embodiment/qualify.py",
+        "embodiment/safety.py",
+        "embodiment/tests/test_safety.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "040f03df47f661deb4d20d13826536bcbf0f1648",
+      "parents": [
+        "df7e7c4ba03976dc4de075ffab8ecacd373b03fc"
+      ],
+      "author_date": "2026-10-23T17:45:20+07:00",
+      "committer_date": "2026-10-23T17:45:20+07:00",
+      "author": "hoaitrongueh",
+      "subject": "fix isaac numpy constraint",
+      "paths": [
+        "embodiment/runtime_constraints.txt"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "184fdd1e9340dba9f1c3b59402f9f7f1277539ec",
+      "parents": [
+        "040f03df47f661deb4d20d13826536bcbf0f1648"
+      ],
+      "author_date": "2026-10-23T17:46:57+07:00",
+      "committer_date": "2026-10-23T17:46:57+07:00",
+      "author": "hoaitrongueh",
+      "subject": "validate demonstration datasets",
+      "paths": [
+        "embodiment/dataset.py",
+        "embodiment/groot_modalities.py",
+        "embodiment/qualify.py",
+        "embodiment/scenarios.py",
+        "embodiment/tests/test_dataset.py",
+        "embodiment/tests/test_scenarios.py",
+        "embodiment/upstream_validation.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "abbb4afac4b0f18ebeb185df0301137a28dc2d59",
+      "parents": [
+        "184fdd1e9340dba9f1c3b59402f9f7f1277539ec"
+      ],
+      "author_date": "2026-10-23T17:52:38+07:00",
+      "committer_date": "2026-10-23T17:52:38+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add gr00t inference boundary",
+      "paths": [
+        "embodiment/policy.py",
+        "embodiment/tests/test_policy.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "4e168edb8e5ca143701735e2d7aa7d8284075d3d",
+      "parents": [
+        "abbb4afac4b0f18ebeb185df0301137a28dc2d59"
+      ],
+      "author_date": "2026-10-23T17:55:31+07:00",
+      "committer_date": "2026-10-23T17:55:31+07:00",
+      "author": "hoaitrongueh",
+      "subject": "pin compatible isaac runtime",
+      "paths": [
+        "embodiment/preflight.py",
+        "embodiment/runtime_constraints.txt",
+        "embodiment/setup_runtime.sh"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "e0fec1b134bca6e074cd14f69c87b5a8c763c7bd",
+      "parents": [
+        "4e168edb8e5ca143701735e2d7aa7d8284075d3d"
+      ],
+      "author_date": "2026-10-23T17:58:29+07:00",
+      "committer_date": "2026-10-23T17:58:29+07:00",
+      "author": "hoaitrongueh",
+      "subject": "verify physical dataset telemetry",
+      "paths": [
+        "embodiment/dataset.py",
+        "embodiment/qualify.py",
+        "embodiment/recording.py",
+        "embodiment/runtime_constraints.txt",
+        "embodiment/tests/test_dataset.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "1edeefa59725af9b6760cfda4a4eebb5118b4a92",
+      "parents": [
+        "e0fec1b134bca6e074cd14f69c87b5a8c763c7bd"
+      ],
+      "author_date": "2026-10-23T18:22:36+07:00",
+      "committer_date": "2026-10-23T18:22:36+07:00",
+      "author": "hoaitrongueh",
+      "subject": "fix articulation import physics",
+      "paths": [
+        "embodiment/assets.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/openmanipulator.py",
+        "embodiment/qualify.py",
+        "embodiment/safety.py",
+        "embodiment/tests/test_qualification.py",
+        "embodiment/tests/test_safety.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "e5f2a3a3beea61c530a0789b3d1828c75cf4c009",
+      "parents": [
+        "1edeefa59725af9b6760cfda4a4eebb5118b4a92"
+      ],
+      "author_date": "2026-10-23T18:38:27+07:00",
+      "committer_date": "2026-10-23T18:38:27+07:00",
+      "author": "hoaitrongueh",
+      "subject": "enable bounded gpu physics",
+      "paths": [
+        "embodiment/contact_probe.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/qualify.py",
+        "embodiment/runtime_config.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "a412169411164fb6d8d4cfaeeb99524e92d83bc8",
+      "parents": [
+        "e5f2a3a3beea61c530a0789b3d1828c75cf4c009"
+      ],
+      "author_date": "2026-10-23T18:43:44+07:00",
+      "committer_date": "2026-10-23T18:43:44+07:00",
+      "author": "hoaitrongueh",
+      "subject": "prepare matched transfer runs",
+      "paths": [
+        "embodiment/tests/test_training.py",
+        "embodiment/training.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "26fab1ec233418208d67a23c229dfa04b491e006",
+      "parents": [
+        "a412169411164fb6d8d4cfaeeb99524e92d83bc8"
+      ],
+      "author_date": "2026-10-23T19:01:49+07:00",
+      "committer_date": "2026-10-23T19:01:49+07:00",
+      "author": "hoaitrongueh",
+      "subject": "fix grasp and bin clearance",
+      "paths": [
+        "embodiment/benchmark.py",
+        "embodiment/dataset.py",
+        "embodiment/expert.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/policy.py",
+        "embodiment/qualify.py",
+        "embodiment/recording.py",
+        "embodiment/safety.py",
+        "embodiment/scenarios.py",
+        "embodiment/tests/test_dataset.py",
+        "embodiment/tests/test_policy.py",
+        "embodiment/tests/test_qualification.py",
+        "embodiment/tests/test_safety.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "0091cfe16aa29a0f54eee2bf13b962f612c67144",
+      "parents": [
+        "26fab1ec233418208d67a23c229dfa04b491e006"
+      ],
+      "author_date": "2026-10-23T19:01:49+07:00",
+      "committer_date": "2026-10-23T19:01:49+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add nemotron cube planner",
+      "paths": [
+        "embodiment/planner.py",
+        "embodiment/tests/test_planner.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "99b56063c4fee44b64c96ba4509c6122615a77fb",
+      "parents": [
+        "0091cfe16aa29a0f54eee2bf13b962f612c67144"
+      ],
+      "author_date": "2026-10-23T19:07:07+07:00",
+      "committer_date": "2026-10-23T19:07:07+07:00",
+      "author": "hoaitrongueh",
+      "subject": "validate held out benchmark results",
+      "paths": [
+        "embodiment/benchmark_report.py",
+        "embodiment/tests/test_benchmark_report.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "a4f2145505f295cdd93f13c0168aef60d8058aa1",
+      "parents": [
+        "99b56063c4fee44b64c96ba4509c6122615a77fb"
+      ],
+      "author_date": "2026-10-23T19:10:03+07:00",
+      "committer_date": "2026-10-23T19:10:03+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add bounded policy execution",
+      "paths": [
+        "embodiment/execution.py",
+        "embodiment/tests/test_execution.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "bee998699d9eecab5f85b8c2c212d5c417848a39",
+      "parents": [
+        "a4f2145505f295cdd93f13c0168aef60d8058aa1"
+      ],
+      "author_date": "2026-10-23T19:30:06+07:00",
+      "committer_date": "2026-10-23T19:30:06+07:00",
+      "author": "hoaitrongueh",
+      "subject": "record verified omx qualification",
+      "paths": [
+        "embodiment/qualification/openmanipulator_x.json",
+        "embodiment/qualification_evidence.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "c4b7da5d5d4b7964d0e8c1678e654324c7ed8bb7",
+      "parents": [
+        "bee998699d9eecab5f85b8c2c212d5c417848a39"
+      ],
+      "author_date": "2026-10-23T19:37:34+07:00",
+      "committer_date": "2026-10-23T19:37:34+07:00",
+      "author": "hoaitrongueh",
+      "subject": "compensate panda gravity",
+      "paths": [
+        "embodiment/isaac_backend.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "5ba4b258223c1b6388c80228bd7f0c271aba103f",
+      "parents": [
+        "c4b7da5d5d4b7964d0e8c1678e654324c7ed8bb7"
+      ],
+      "author_date": "2026-10-23T19:51:14+07:00",
+      "committer_date": "2026-10-23T19:51:14+07:00",
+      "author": "hoaitrongueh",
+      "subject": "record verified panda qualification",
+      "paths": [
+        "embodiment/qualification/franka_panda.json"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "43c01fe126f160e93aaa70d47cfbd39fee8f6638",
+      "parents": [
+        "5ba4b258223c1b6388c80228bd7f0c271aba103f"
+      ],
+      "author_date": "2026-10-23T19:55:49+07:00",
+      "committer_date": "2026-10-23T19:55:49+07:00",
+      "author": "hoaitrongueh",
+      "subject": "verify unsafe policy stop",
+      "paths": [
+        "embodiment/tests/test_execution.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "789992734d955b2745fb642ee1fefa437de575fb",
+      "parents": [
+        "43c01fe126f160e93aaa70d47cfbd39fee8f6638"
+      ],
+      "author_date": "2026-10-23T19:57:00+07:00",
+      "committer_date": "2026-10-23T19:57:00+07:00",
+      "author": "hoaitrongueh",
+      "subject": "label prerecorded evaluation footage",
+      "paths": [
+        "embodiment/demo.py",
+        "embodiment/tests/test_demo.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "b56a948ed9794c97e572df48b683c504f6b960cc",
+      "parents": [
+        "789992734d955b2745fb642ee1fefa437de575fb"
+      ],
+      "author_date": "2026-10-23T19:57:25+07:00",
+      "committer_date": "2026-10-23T19:57:25+07:00",
+      "author": "hoaitrongueh",
+      "subject": "verify demo video roundtrip",
+      "paths": [
+        "embodiment/tests/test_demo.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "ea8ed218275f0119f2439eafd86364bf604326cf",
+      "parents": [
+        "b56a948ed9794c97e572df48b683c504f6b960cc"
+      ],
+      "author_date": "2026-10-23T22:28:10+07:00",
+      "committer_date": "2026-10-23T22:28:10+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add resumable physical dataset collection",
+      "paths": [
+        "embodiment/collection.py",
+        "embodiment/dataset.py",
+        "embodiment/qualify.py",
+        "embodiment/recording.py",
+        "embodiment/scenarios.py",
+        "embodiment/tests/test_collection.py",
+        "embodiment/tests/test_dataset.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "b32dda4cb7534d2d1797fa1029d5528e24eb85a5",
+      "parents": [
+        "ea8ed218275f0119f2439eafd86364bf604326cf"
+      ],
+      "author_date": "2026-10-23T22:32:28+07:00",
+      "committer_date": "2026-10-23T22:32:28+07:00",
+      "author": "hoaitrongueh",
+      "subject": "verify training smoke and collection provenance",
+      "paths": [
+        "embodiment/collection.py",
+        "embodiment/dataset.py",
+        "embodiment/policy.py",
+        "embodiment/qualify.py",
+        "embodiment/tests/test_collection.py",
+        "embodiment/tests/test_dataset.py",
+        "embodiment/tests/test_training_smoke.py",
+        "embodiment/training.py",
+        "embodiment/training_smoke.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "54a6b05726cf97996415d861bff8163b8b011572",
+      "parents": [
+        "b32dda4cb7534d2d1797fa1029d5528e24eb85a5"
+      ],
+      "author_date": "2026-10-23T22:38:28+07:00",
+      "committer_date": "2026-10-23T22:38:28+07:00",
+      "author": "hoaitrongueh",
+      "subject": "connect isolated policy evaluation and recording",
+      "paths": [
+        "embodiment/collection.py",
+        "embodiment/dataset.py",
+        "embodiment/demo.py",
+        "embodiment/evaluate.py",
+        "embodiment/policy_service.py",
+        "embodiment/qualify.py",
+        "embodiment/tests/test_demo.py",
+        "embodiment/tests/test_evaluate.py",
+        "embodiment/tests/test_policy_service.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "5e19c56d72341041bc96e7b27b8662402f10b3be",
+      "parents": [
+        "54a6b05726cf97996415d861bff8163b8b011572"
+      ],
+      "author_date": "2026-10-23T22:49:05+07:00",
+      "committer_date": "2026-10-23T22:49:05+07:00",
+      "author": "hoaitrongueh",
+      "subject": "bound simulator shutdown and verify unseen trials",
+      "paths": [
+        "embodiment/collection.py",
+        "embodiment/evaluate.py",
+        "embodiment/policy.py",
+        "embodiment/policy_service.py",
+        "embodiment/qualify.py",
+        "embodiment/tests/test_collection.py",
+        "embodiment/tests/test_scenarios.py",
+        "embodiment/tests/test_training_smoke.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "00e53afdd911bdf2f2ff5e09b89e636daa565835",
+      "parents": [
+        "5e19c56d72341041bc96e7b27b8662402f10b3be"
+      ],
+      "author_date": "2026-10-24T03:05:20+07:00",
+      "committer_date": "2026-10-24T03:05:20+07:00",
+      "author": "hoaitrongueh",
+      "subject": "validate collection receipts and dataset splits",
+      "paths": [
+        "embodiment/collection.py",
+        "embodiment/dataset.py",
+        "embodiment/scenarios.py",
+        "embodiment/tests/test_collection.py",
+        "embodiment/tests/test_dataset.py",
+        "embodiment/tests/test_scenarios.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "1222bcad131cc448756b6e4551276f142e6b7a33",
+      "parents": [
+        "00e53afdd911bdf2f2ff5e09b89e636daa565835"
+      ],
+      "author_date": "2026-10-24T03:13:20+07:00",
+      "committer_date": "2026-10-24T03:13:20+07:00",
+      "author": "hoaitrongueh",
+      "subject": "verify upstream chunks and training handoff",
+      "paths": [
+        "embodiment/benchmark_report.py",
+        "embodiment/demo.py",
+        "embodiment/execution.py",
+        "embodiment/policy.py",
+        "embodiment/tests/test_demo.py",
+        "embodiment/tests/test_execution.py",
+        "embodiment/tests/test_training_smoke.py",
+        "embodiment/tests/test_upstream.py",
+        "embodiment/training.py",
+        "embodiment/training_smoke.py",
+        "embodiment/upstream_validation.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "88fd273b1dc9c79da86e6cf6bd1f3884a49e82c9",
+      "parents": [
+        "1222bcad131cc448756b6e4551276f142e6b7a33"
+      ],
+      "author_date": "2026-10-24T03:13:36+07:00",
+      "committer_date": "2026-10-24T03:13:36+07:00",
+      "author": "hoaitrongueh",
+      "subject": "introduce relic with a simulation preview",
+      "paths": [
+        "README.md",
+        "assets/simulation.gif"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "978004279abafaaa36c8753561e17bddb3a018cb",
+      "parents": [
+        "88fd273b1dc9c79da86e6cf6bd1f3884a49e82c9"
+      ],
+      "author_date": "2026-10-24T03:18:52+07:00",
+      "committer_date": "2026-10-24T03:18:52+07:00",
+      "author": "hoaitrongueh",
+      "subject": "balance demonstrations and preserve dataset inventory",
+      "paths": [
+        "embodiment/benchmark_report.py",
+        "embodiment/collection.py",
+        "embodiment/inventory.py",
+        "embodiment/tests/test_benchmark_report.py",
+        "embodiment/tests/test_collection.py",
+        "embodiment/tests/test_inventory.py",
+        "embodiment/tests/test_training_smoke.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "623562bd73a46724aaa33d539fa7458a10938a21",
+      "parents": [
+        "978004279abafaaa36c8753561e17bddb3a018cb"
+      ],
+      "author_date": "2026-10-24T03:54:51+07:00",
+      "committer_date": "2026-10-24T03:54:51+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add dual robot research viewer and experiments",
+      "paths": [
+        "embodiment/assets/panda_replay_manifest.json",
+        "embodiment/checkpoint_compatibility.py",
+        "embodiment/dual_media.py",
+        "embodiment/experiment.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/perturbations.py",
+        "embodiment/policy.py",
+        "embodiment/replay.py",
+        "embodiment/replay_render.py",
+        "embodiment/tests/test_checkpoint_compatibility.py",
+        "embodiment/tests/test_dual_media.py",
+        "embodiment/tests/test_experiment.py",
+        "embodiment/tests/test_processor_upstream.py",
+        "embodiment/tests/test_replay.py",
+        "embodiment/tests/test_research_viewer.py",
+        "interactive/app.py",
+        "interactive/http.py",
+        "interactive/research.html",
+        "interactive/research.py",
+        "interactive/research_requirements.txt",
+        "interactive/run.sh",
+        "interactive/setup_research.sh"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "1e4206776ddfd7776ce110901f288cc2f61484db",
+      "parents": [
+        "623562bd73a46724aaa33d539fa7458a10938a21"
+      ],
+      "author_date": "2026-10-24T04:00:51+07:00",
+      "committer_date": "2026-10-24T04:00:51+07:00",
+      "author": "hoaitrongueh",
+      "subject": "show verified dual robot simulation",
+      "paths": [
+        "README.md",
+        "assets/simulation.gif",
+        "interactive/research.html"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "9b73f678c58d0d60a7fd6f635f4a3a87b8112fc6",
+      "parents": [
+        "1e4206776ddfd7776ce110901f288cc2f61484db"
+      ],
+      "author_date": "2026-10-24T04:03:12+07:00",
+      "committer_date": "2026-10-24T04:03:12+07:00",
+      "author": "hoaitrongueh",
+      "subject": "reject altered experiment summaries",
+      "paths": [
+        "embodiment/tests/test_experiment.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "f06810704d1849acdde4f7053b37fcadffe40397",
+      "parents": [
+        "9b73f678c58d0d60a7fd6f635f4a3a87b8112fc6"
+      ],
+      "author_date": "2026-10-24T04:04:04+07:00",
+      "committer_date": "2026-10-24T04:04:04+07:00",
+      "author": "hoaitrongueh",
+      "subject": "resolve replay timeline endpoint rounding",
+      "paths": [
+        "interactive/research.html"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "bdc861d181b3848387a41f0c7d6cdd22d7f43a1c",
+      "parents": [
+        "f06810704d1849acdde4f7053b37fcadffe40397"
+      ],
+      "author_date": "2026-10-24T04:09:55+07:00",
+      "committer_date": "2026-10-24T04:09:55+07:00",
+      "author": "hoaitrongueh",
+      "subject": "record guarded trials as physical failures",
+      "paths": [
+        "embodiment/collection.py",
+        "embodiment/experiment.py",
+        "embodiment/replay.py",
+        "embodiment/tests/test_collection.py",
+        "embodiment/tests/test_experiment.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "f68fe9c081560a008343a8cca8142a88a3e2d8b3",
+      "parents": [
+        "bdc861d181b3848387a41f0c7d6cdd22d7f43a1c"
+      ],
+      "author_date": "2026-10-24T04:19:03+07:00",
+      "committer_date": "2026-10-24T04:19:03+07:00",
+      "author": "hoaitrongueh",
+      "subject": "make viewer launcher executable",
+      "paths": [
+        "interactive/run.sh"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "4141b1ef8173aa3fc6d74c05df1ed0a0acfc2f47",
+      "parents": [
+        "f68fe9c081560a008343a8cca8142a88a3e2d8b3"
+      ],
+      "author_date": "2026-10-24T14:22:28+07:00",
+      "committer_date": "2026-10-24T14:22:28+07:00",
+      "author": "hoaitrongueh",
+      "subject": "freeze shared robot policy contract",
+      "paths": [
+        "embodiment/checkpoint_compatibility.py",
+        "embodiment/contract.py",
+        "embodiment/groot_modalities.py",
+        "embodiment/policy.py",
+        "embodiment/tests/test_contract.py",
+        "embodiment/tests/test_contract_upstream.py",
+        "embodiment/upstream_validation.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "f0eed61f69317f0f60ffb509e9484628c13f15a1",
+      "parents": [
+        "4141b1ef8173aa3fc6d74c05df1ed0a0acfc2f47"
+      ],
+      "author_date": "2026-10-24T14:22:33+07:00",
+      "committer_date": "2026-10-24T14:22:33+07:00",
+      "author": "hoaitrongueh",
+      "subject": "prepare matched checkpoint transfer and gpu smoke",
+      "paths": [
+        "embodiment/cloud.py",
+        "embodiment/cross_smoke.py",
+        "embodiment/tests/test_cross_smoke.py",
+        "embodiment/tests/test_training.py",
+        "embodiment/tests/test_training_smoke.py",
+        "embodiment/tests/test_training_worker.py",
+        "embodiment/tests/test_transfer.py",
+        "embodiment/training.py",
+        "embodiment/training_smoke.py",
+        "embodiment/training_worker.py",
+        "embodiment/transfer.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "f6a5b49b7e4d5f45d0efadb32acca0323dacba39",
+      "parents": [
+        "f0eed61f69317f0f60ffb509e9484628c13f15a1"
+      ],
+      "author_date": "2026-10-24T14:22:37+07:00",
+      "committer_date": "2026-10-24T14:22:37+07:00",
+      "author": "hoaitrongueh",
+      "subject": "validate paired outcomes and record policy actions",
+      "paths": [
+        "embodiment/benchmark_report.py",
+        "embodiment/evaluate.py",
+        "embodiment/execution.py",
+        "embodiment/paired.py",
+        "embodiment/tests/test_paired.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "59704dcbaee3922c36887ae416a8dcf2c0c15ec6",
+      "parents": [
+        "f6a5b49b7e4d5f45d0efadb32acca0323dacba39"
+      ],
+      "author_date": "2026-10-24T14:22:42+07:00",
+      "committer_date": "2026-10-24T14:22:42+07:00",
+      "author": "hoaitrongueh",
+      "subject": "freeze paired pilot and common revision qualification",
+      "paths": [
+        "embodiment/pilot.py",
+        "embodiment/provenance.py",
+        "embodiment/qualification_pair.py",
+        "embodiment/tests/test_research_workflows.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "8fb989961560074d7fecc1bf5838d430a5acd55b",
+      "parents": [
+        "59704dcbaee3922c36887ae416a8dcf2c0c15ec6"
+      ],
+      "author_date": "2026-10-24T14:22:46+07:00",
+      "committer_date": "2026-10-24T14:22:46+07:00",
+      "author": "hoaitrongueh",
+      "subject": "update viper demo with physical replay evidence",
+      "paths": [
+        "CMakeLists.txt",
+        "README.md",
+        "embodiment/dual_media.py",
+        "embodiment/replay.py",
+        "embodiment/tests/test_replay.py",
+        "interactive/app.py",
+        "interactive/index.html",
+        "interactive/research.html",
+        "interactive/research.py",
+        "interactive/run.sh",
+        "src/cartesian_demo.cpp",
+        "src/main.cpp"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "eb7e8f96e189f3ccb24288cc028af4c254a1cd2a",
+      "parents": [
+        "8fb989961560074d7fecc1bf5838d430a5acd55b"
+      ],
+      "author_date": "2026-10-24T15:28:21+07:00",
+      "committer_date": "2026-10-24T15:28:21+07:00",
+      "author": "hoaitrongueh",
+      "subject": "qualify embodiment contracts and manipulation data",
+      "paths": [
+        "embodiment/completion.py",
+        "embodiment/dataset.py",
+        "embodiment/experiment.py",
+        "embodiment/host.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/kinematics.py",
+        "embodiment/manipulation.py",
+        "embodiment/paired.py",
+        "embodiment/qualify.py",
+        "embodiment/recording.py",
+        "embodiment/reference_comparison.py",
+        "embodiment/replay.py",
+        "embodiment/replay_render.py",
+        "embodiment/tests/test_completion.py",
+        "embodiment/tests/test_kinematics.py",
+        "embodiment/tests/test_manipulation.py",
+        "embodiment/tests/test_reference_comparison.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "3cbdfdf1d01c5715cce092877bb9c4bf9c7e6a63",
+      "parents": [
+        "eb7e8f96e189f3ccb24288cc028af4c254a1cd2a"
+      ],
+      "author_date": "2026-10-24T17:00:15+07:00",
+      "committer_date": "2026-10-24T17:00:15+07:00",
+      "author": "hoaitrongueh",
+      "subject": "apply official collision filters and retain failure evidence",
+      "paths": [
+        "embodiment/assets.py",
+        "embodiment/assets/manifest.json",
+        "embodiment/assets/open_manipulator_x.srdf",
+        "embodiment/collision.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/kinematics.py",
+        "embodiment/manipulation.py",
+        "embodiment/replay_render.py",
+        "embodiment/tests/test_collision.py",
+        "embodiment/tests/test_kinematics.py",
+        "embodiment/tests/test_manipulation.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "808e729fe94498844492ec81a7e76c518ca177f9",
+      "parents": [
+        "3cbdfdf1d01c5715cce092877bb9c4bf9c7e6a63"
+      ],
+      "author_date": "2026-10-24T17:01:50+07:00",
+      "committer_date": "2026-10-24T17:01:50+07:00",
+      "author": "hoaitrongueh",
+      "subject": "prepare cached cloud execution and checkpoint recovery",
+      "paths": [
+        ".dockerignore",
+        "embodiment/artifacts.py",
+        "embodiment/asset_cache.py",
+        "embodiment/assets/groot_model_config.json",
+        "embodiment/bootstrap.py",
+        "embodiment/campaign_report.py",
+        "embodiment/cloud.Dockerfile",
+        "embodiment/cloud.py",
+        "embodiment/cloud_run.py",
+        "embodiment/cloud_workflow.py",
+        "embodiment/codec_runtime.py",
+        "embodiment/collection.py",
+        "embodiment/cross_smoke.py",
+        "embodiment/host.py",
+        "embodiment/isaac_interfaces.py",
+        "embodiment/model_sources.json",
+        "embodiment/models.py",
+        "embodiment/pilot.py",
+        "embodiment/runtime_probe.py",
+        "embodiment/tests/test_artifacts.py",
+        "embodiment/tests/test_asset_cache.py",
+        "embodiment/tests/test_bootstrap.py",
+        "embodiment/tests/test_cloud_workflow.py",
+        "embodiment/tests/test_codec_runtime.py",
+        "embodiment/tests/test_contract_upstream.py",
+        "embodiment/tests/test_host.py",
+        "embodiment/tests/test_models.py",
+        "embodiment/tests/test_pilot_execution.py",
+        "embodiment/tests/test_processor_upstream.py",
+        "embodiment/tests/test_trainer_upstream.py",
+        "embodiment/tests/test_training_campaign.py",
+        "embodiment/tests/test_training_smoke.py",
+        "embodiment/tests/test_transfer.py",
+        "embodiment/tests/test_weights.py",
+        "embodiment/training.py",
+        "embodiment/training_campaign.py",
+        "embodiment/training_smoke.py",
+        "embodiment/transfer.py",
+        "embodiment/weights.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "9c3e2dd72e0ca58e5d71e03c34d40df83ac476ae",
+      "parents": [
+        "808e729fe94498844492ec81a7e76c518ca177f9"
+      ],
+      "author_date": "2026-10-24T17:04:55+07:00",
+      "committer_date": "2026-10-24T17:04:55+07:00",
+      "author": "hoaitrongueh",
+      "subject": "persist compiler and model caches across cloud stages",
+      "paths": [
+        "embodiment/cloud.Dockerfile"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "b5d605c83d97ee97678a77e3edd436155689ca18",
+      "parents": [
+        "9c3e2dd72e0ca58e5d71e03c34d40df83ac476ae"
+      ],
+      "author_date": "2026-10-24T17:15:39+07:00",
+      "committer_date": "2026-10-24T17:15:39+07:00",
+      "author": "hoaitrongueh",
+      "subject": "benchmark physical variants and matched policy disturbances",
+      "paths": [
+        "embodiment/campaign_report.py",
+        "embodiment/cloud_workflow.py",
+        "embodiment/evaluate.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/manipulation.py",
+        "embodiment/paired.py",
+        "embodiment/perception.py",
+        "embodiment/reference_comparison.py",
+        "embodiment/scene.py",
+        "embodiment/tests/test_perception.py",
+        "embodiment/tests/test_scene.py",
+        "embodiment/training_campaign.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "a2f2be4d4049f6d072f89a954c7fe6c89471070e",
+      "parents": [
+        "b5d605c83d97ee97678a77e3edd436155689ca18"
+      ],
+      "author_date": "2026-10-24T17:23:15+07:00",
+      "committer_date": "2026-10-24T17:23:15+07:00",
+      "author": "hoaitrongueh",
+      "subject": "preserve driver libraries in codec subprocesses",
+      "paths": [
+        "embodiment/bootstrap.py",
+        "embodiment/cloud_workflow.py",
+        "embodiment/pilot.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "a7abb8f13e262423fc59d3a8747ac3eb6102b16d",
+      "parents": [
+        "a2f2be4d4049f6d072f89a954c7fe6c89471070e"
+      ],
+      "author_date": "2026-10-24T17:25:16+07:00",
+      "committer_date": "2026-10-24T17:25:16+07:00",
+      "author": "hoaitrongueh",
+      "subject": "check flash attention and emit clean preflight json",
+      "paths": [
+        "embodiment/runtime_probe.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "7c531efcbc0a6d33575cb1c984d8635735db3aa1",
+      "parents": [
+        "94899ed2cf1a3ff75fc09ec70455551d961377d0"
+      ],
+      "author_date": "2026-10-25T13:00:05+07:00",
+      "committer_date": "2026-10-25T13:00:05+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add isolated double-s numerical audit",
+      "paths": [
+        ".gitignore",
+        "CMakeLists.txt",
+        "experiments/double_s/CMakeLists.txt",
+        "experiments/double_s/audit.cpp",
+        "experiments/double_s/results.csv",
+        "experiments/double_s/upstream/LICENSE",
+        "experiments/double_s/upstream/SHA256SUMS",
+        "experiments/double_s/upstream/cpp/cmake/version.hpp.in",
+        "experiments/double_s/upstream/cpp/include/interpolatecpp/config.hpp",
+        "experiments/double_s/upstream/cpp/include/interpolatecpp/motion/double_s_trajectory.hpp",
+        "experiments/double_s/upstream/cpp/include/interpolatecpp/motion/motion_types.hpp",
+        "experiments/double_s/upstream/cpp/src/double_s_trajectory.cpp"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "56fd304667502f00003fd8c203a78de2d2ff9fc7",
+      "parents": [
+        "b5d605c83d97ee97678a77e3edd436155689ca18"
+      ],
+      "author_date": "2026-11-03T15:22:44+07:00",
+      "committer_date": "2026-11-03T15:22:44+07:00",
+      "author": "hoaitrongueh",
+      "subject": "integrate fail-closed groot and isaac execution gates",
+      "paths": [
+        "embodiment/bootstrap.py",
+        "embodiment/closed_loop_smoke.py",
+        "embodiment/cloud_workflow.py",
+        "embodiment/codec_runtime.py",
+        "embodiment/cross_smoke.py",
+        "embodiment/dataset.py",
+        "embodiment/evaluate.py",
+        "embodiment/execution.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/native/CMakeLists.txt",
+        "embodiment/native/action_contract.cpp",
+        "embodiment/native/action_contract.h",
+        "embodiment/native/action_contract_test.cpp",
+        "embodiment/native_contract.py",
+        "embodiment/pilot.py",
+        "embodiment/policy.py",
+        "embodiment/policy_service.py",
+        "embodiment/qualify.py",
+        "embodiment/runtime_probe.py",
+        "embodiment/tests/test_closed_loop_smoke.py",
+        "embodiment/tests/test_codec_runtime.py",
+        "embodiment/tests/test_evaluate.py",
+        "embodiment/tests/test_execution.py",
+        "embodiment/tests/test_native_contract.py",
+        "embodiment/tests/test_policy_service.py",
+        "embodiment/training_campaign.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "34a34843e936388028dbe2213f64207a79467536",
+      "parents": [
+        "56fd304667502f00003fd8c203a78de2d2ff9fc7"
+      ],
+      "author_date": "2026-11-03T15:23:56+07:00",
+      "committer_date": "2026-11-03T15:23:56+07:00",
+      "author": "hoaitrongueh",
+      "subject": "preserve failed physical gate attempts on retry",
+      "paths": [
+        "embodiment/cross_smoke.py",
+        "embodiment/tests/test_cross_smoke.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "ebc0f868d995aef8a782ad99e4813db0edb0dd10",
+      "parents": [
+        "34a34843e936388028dbe2213f64207a79467536"
+      ],
+      "author_date": "2026-11-03T15:26:07+07:00",
+      "committer_date": "2026-11-03T15:26:07+07:00",
+      "author": "hoaitrongueh",
+      "subject": "record offline verification and explicit training blockers",
+      "paths": [
+        "embodiment/evidence/groot_readiness/audit.json",
+        "embodiment/evidence/groot_readiness/offline.log",
+        "embodiment/evidence/groot_readiness/preflight.json",
+        "embodiment/evidence/groot_readiness/runtime_imports.json",
+        "embodiment/evidence/groot_readiness/upstream.log",
+        "embodiment/evidence/groot_readiness/verification.json"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "ccc27fc76bba56ac2911d2215b41b8c91e6fa949",
+      "parents": [
+        "ebc0f868d995aef8a782ad99e4813db0edb0dd10"
+      ],
+      "author_date": "2026-11-03T15:28:59+07:00",
+      "committer_date": "2026-11-03T15:28:59+07:00",
+      "author": "hoaitrongueh",
+      "subject": "bind g3 execution to the validated optimizer checkpoint",
+      "paths": [
+        "embodiment/tests/test_trainer_upstream.py",
+        "embodiment/tests/test_training_smoke.py",
+        "embodiment/training_smoke.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "2abd5e58ca7f5e5fb5a90d12a11df11b0f4f4a2a",
+      "parents": [
+        "ccc27fc76bba56ac2911d2215b41b8c91e6fa949"
+      ],
+      "author_date": "2026-11-03T15:29:35+07:00",
+      "committer_date": "2026-11-03T15:29:35+07:00",
+      "author": "hoaitrongueh",
+      "subject": "exercise successful smoke orchestration without gpu execution",
+      "paths": [
+        "embodiment/tests/test_closed_loop_smoke.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "4dbab82c11978a26f87f25dffaed1abe4ffdb1b9",
+      "parents": [
+        "2abd5e58ca7f5e5fb5a90d12a11df11b0f4f4a2a"
+      ],
+      "author_date": "2026-11-03T15:30:51+07:00",
+      "committer_date": "2026-11-03T15:30:51+07:00",
+      "author": "hoaitrongueh",
+      "subject": "refresh checkpoint handoff evidence and mission coverage audit",
+      "paths": [
+        "embodiment/evidence/groot_readiness/audit.json",
+        "embodiment/evidence/groot_readiness/offline.log",
+        "embodiment/evidence/groot_readiness/preflight.json",
+        "embodiment/evidence/groot_readiness/upstream.log",
+        "embodiment/evidence/groot_readiness/verification.json"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "66c909fb898c0bfc0de31ec1bae4a278c6535b75",
+      "parents": [
+        "4dbab82c11978a26f87f25dffaed1abe4ffdb1b9"
+      ],
+      "author_date": "2026-11-03T16:03:40+07:00",
+      "committer_date": "2026-11-03T16:03:40+07:00",
+      "author": "hoaitrongueh",
+      "subject": "prepare bounded dual-arm qualification and physical sensor evidence",
+      "paths": [
+        "embodiment/benchmark.py",
+        "embodiment/collection.py",
+        "embodiment/dataset.py",
+        "embodiment/isaac_backend.py",
+        "embodiment/pilot.py",
+        "embodiment/qualification_pair.py",
+        "embodiment/qualify.py",
+        "embodiment/recording.py",
+        "embodiment/scene.py",
+        "embodiment/tests/test_collection.py",
+        "embodiment/tests/test_pilot_execution.py",
+        "embodiment/tests/test_qualification_session.py",
+        "embodiment/tests/test_sensor_alignment.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "7a69b23232eaffe3318cd8b3deca6dcea2f41021",
+      "parents": [
+        "66c909fb898c0bfc0de31ec1bae4a278c6535b75"
+      ],
+      "author_date": "2026-11-03T16:03:40+07:00",
+      "committer_date": "2026-11-03T16:03:40+07:00",
+      "author": "hoaitrongueh",
+      "subject": "add a restartable first-session workflow and cpu reader runtime",
+      "paths": [
+        "embodiment/bootstrap.py",
+        "embodiment/first_session.py",
+        "embodiment/host.py",
+        "embodiment/isaac_interfaces.py",
+        "embodiment/reader_requirements.txt",
+        "embodiment/tests/test_bootstrap.py",
+        "embodiment/tests/test_first_session.py",
+        "embodiment/tests/test_host.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "5661c9eabdb6714cf5fbba3f4e20734d619f863c",
+      "parents": [
+        "7a69b23232eaffe3318cd8b3deca6dcea2f41021"
+      ],
+      "author_date": "2026-11-03T16:08:41+07:00",
+      "committer_date": "2026-11-03T16:08:41+07:00",
+      "author": "hoaitrongueh",
+      "subject": "record first-session readiness checks and hardware validation gates",
+      "paths": [
+        "embodiment/evidence/isaac_session/blockers.json",
+        "embodiment/evidence/isaac_session/endpoint_ik.json",
+        "embodiment/evidence/isaac_session/offline.log",
+        "embodiment/evidence/isaac_session/preflight.json",
+        "embodiment/evidence/isaac_session/reader_install_plan.json",
+        "embodiment/evidence/isaac_session/readiness.json",
+        "embodiment/evidence/isaac_session/upstream.log"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "f143a466b0d216b51ffafcd143015a0c758ee833",
+      "parents": [
+        "5661c9eabdb6714cf5fbba3f4e20734d619f863c"
+      ],
+      "author_date": "2026-11-03T17:57:49+07:00",
+      "committer_date": "2026-11-03T17:57:49+07:00",
+      "author": "hoaitrongueh",
+      "subject": "complete consent-gated rental execution and learned-policy gates",
+      "paths": [
+        "embodiment/bootstrap.py",
+        "embodiment/cloud.Dockerfile",
+        "embodiment/completion.py",
+        "embodiment/dataset.py",
+        "embodiment/deployment.py",
+        "embodiment/evaluate.py",
+        "embodiment/first_session.py",
+        "embodiment/m0.py",
+        "embodiment/native/CMakeLists.txt",
+        "embodiment/qualification_evidence.py",
+        "embodiment/qualify.py",
+        "embodiment/rental.py",
+        "embodiment/replay.py",
+        "embodiment/simulation_smoke.py",
+        "embodiment/tests/test_closed_loop_smoke.py",
+        "embodiment/tests/test_deployment.py",
+        "embodiment/tests/test_first_session.py",
+        "embodiment/tests/test_m0.py",
+        "embodiment/tests/test_rental.py",
+        "embodiment/tests/test_simulation_smoke.py",
+        "embodiment/training_campaign.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "098dc528617097a059fcc370d37efa9c68466523",
+      "parents": [
+        "f143a466b0d216b51ffafcd143015a0c758ee833"
+      ],
+      "author_date": "2026-11-03T17:58:57+07:00",
+      "committer_date": "2026-11-03T17:58:57+07:00",
+      "author": "hoaitrongueh",
+      "subject": "keep container builds independent of gpu runtime setup",
+      "paths": [
+        "embodiment/cloud.Dockerfile",
+        "embodiment/tests/test_deployment.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "0bcddaeacc00e21b36d250f562b66ee0032eef00",
+      "parents": [
+        "098dc528617097a059fcc370d37efa9c68466523"
+      ],
+      "author_date": "2026-11-03T18:03:18+07:00",
+      "committer_date": "2026-11-03T18:03:18+07:00",
+      "author": "hoaitrongueh",
+      "subject": "preserve shutdown receipts and reap detached workflow workers",
+      "paths": [
+        "embodiment/collection.py",
+        "embodiment/rental.py",
+        "embodiment/tests/test_rental.py"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "b6ee0132ab3940ebf4de2d7c100cff5ea17238d1",
+      "parents": [
+        "0bcddaeacc00e21b36d250f562b66ee0032eef00"
+      ],
+      "author_date": "2026-11-03T18:05:05+07:00",
+      "committer_date": "2026-11-03T18:05:05+07:00",
+      "author": "hoaitrongueh",
+      "subject": "record pre-rental acceptance evidence and remaining gpu gates",
+      "paths": [
+        "embodiment/evidence/pre_rental/clean_host_diagnostics.json",
+        "embodiment/evidence/pre_rental/cpp_adaptive_tests.log",
+        "embodiment/evidence/pre_rental/cpu_dynamics_tests.log",
+        "embodiment/evidence/pre_rental/install_plan.json",
+        "embodiment/evidence/pre_rental/interactive_tests.log",
+        "embodiment/evidence/pre_rental/native_tests.log",
+        "embodiment/evidence/pre_rental/preflight.json",
+        "embodiment/evidence/pre_rental/readiness.json",
+        "embodiment/evidence/pre_rental/sanitizer_tests.log",
+        "embodiment/evidence/pre_rental/shutdown_tests.log",
+        "embodiment/evidence/pre_rental/upstream_tests.log"
+      ],
+      "recorded_period": "during_or_after_event",
+      "merge": false
+    },
+    {
+      "commit": "100a2b01887867b5ef4fdfda4d125fcf84d0a7e9",
+      "parents": [
+        "b6ee0132ab3940ebf4de2d7c100cff5ea17238d1",
+        "a7abb8f13e262423fc59d3a8747ac3eb6102b16d"
+      ],
+      "author_date": "2026-11-03T18:13:41+07:00",
+      "committer_date": "2026-11-03T18:13:41+07:00",
+      "author": "hoaitrongueh",
+      "subject": "merge pretraining qualification history",
+      "paths": [],
+      "recorded_period": "during_or_after_event",
+      "merge": true
+    },
+    {
+      "commit": "5c66c95ec48c101a2d4af55df8d917ff5a72bcac",
+      "parents": [
+        "100a2b01887867b5ef4fdfda4d125fcf84d0a7e9",
+        "7c531efcbc0a6d33575cb1c984d8635735db3aa1"
+      ],
+      "author_date": "2026-11-03T18:14:04+07:00",
+      "committer_date": "2026-11-03T18:14:04+07:00",
+      "author": "hoaitrongueh",
+      "subject": "merge isolated double-s audit history",
+      "paths": [],
+      "recorded_period": "during_or_after_event",
+      "merge": true
+    }
+  ],
+  "refs": [
+    "refs/backup/20261022-132036/experiment/double-s-benchmark c461320c59602a787d4f2a9c6d82187fba953a69",
+    "refs/backup/20261022-132036/experiment/ruckig-benchmark f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3",
+    "refs/backup/20261022-132036/feature/adaptive-v0 323183dd3cd773384c4d9eb4217e659005c3b99f",
+    "refs/backup/20261022-132036/feature/adaptive-v0-validation cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "refs/backup/20261022-132036/feature/interactive-physical-ai 94899ed2cf1a3ff75fc09ec70455551d961377d0",
+    "refs/backup/20261022-132036/main f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3",
+    "refs/codex/turn-diffs/checkpoints/5f627987e31cb295bafa503fcf18d15f/2ab0ecdac901c533ece28a9cc191d0f3/1793703954305/e419bc6e-83e2-46d2-a0aa-62e287dcb5a7 cc82ecfc34d067818bd7b8d981d69be2e5878b5e",
+    "refs/codex/turn-diffs/checkpoints/ff82dde91709f9f21513027bb3d5ce86/44400133db6ca320bf563e8f5851fc6f/1793705135282/70073c6e-0368-4485-a578-2711022d8202 90d36f5810fa4be97a8fadd877e96add585ef654",
+    "refs/heads/codex/pre-rental-verification 5c66c95ec48c101a2d4af55df8d917ff5a72bcac",
+    "refs/heads/main 5c66c95ec48c101a2d4af55df8d917ff5a72bcac",
+    "refs/remotes/origin/HEAD 5c66c95ec48c101a2d4af55df8d917ff5a72bcac",
+    "refs/remotes/origin/main 5c66c95ec48c101a2d4af55df8d917ff5a72bcac"
+  ],
+  "eligibility_verified": false,
+  "limitations": [
+    "Git dates alone do not prove when code was originally written.",
+    "Merges retain parent ancestry; imported and cherry-picked features need origin attribution.",
+    "This audit does not confirm event registration, ownership or licensing."
+  ]
+}

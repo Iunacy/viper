@@ -1,0 +1,34 @@
+..E...F...E..
+======================================================================
+ERROR: test_execute_command_preserves_qualification_only_endpoint (embodiment.tests.test_first_session.FirstSession.test_execute_command_preserves_qualification_only_endpoint)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_first_session.py", line 63, in test_execute_command_preserves_qualification_only_endpoint
+    self.assertEqual(command[command.index('--stop-after')+1], 'qualification')
+                             ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+ValueError: list.index(x): x not in list
+
+======================================================================
+ERROR: test_invocation_deadline_caps_worker_and_keeps_resume_configuration_fixed (embodiment.tests.test_simulation_smoke.StartupSmoke.test_invocation_deadline_caps_worker_and_keeps_resume_configuration_fixed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_simulation_smoke.py", line 55, in test_invocation_deadline_caps_worker_and_keeps_resume_configuration_fixed
+    result = run(root, '/sim/python', True, deadline=100.)
+TypeError: run() got an unexpected keyword argument 'deadline'
+
+======================================================================
+FAIL: test_short_session_smoke_configuration_survives_preflight_timing_changes (embodiment.tests.test_first_session.FirstSession.test_short_session_smoke_configuration_survives_preflight_timing_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_first_session.py", line 86, in test_short_session_smoke_configuration_survives_preflight_timing_changes
+    self.assertEqual(result['status'], 'QUALIFIED', result['blockers'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'BLOCKED' != 'QUALIFIED'
+- BLOCKED
++ QUALIFIED
+ : [{'stage': 'session', 'reasons': ['ValueError: smoke configuration changed']}]
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.488s
+
+FAILED (failures=1, errors=2)

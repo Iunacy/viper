@@ -1,0 +1,12 @@
+test_both_official_assets_against_actual_mujoco (embodiment.tests.test_kinematics.UrdfKinematics.test_both_official_assets_against_actual_mujoco) ... ok
+test_manufacturer_matrix_repairs_omx_self_contacts_without_removing_floor_probe (embodiment.tests.test_kinematics.UrdfKinematics.test_manufacturer_matrix_repairs_omx_self_contacts_without_removing_floor_probe) ... ok
+test_omx_chain_matches_existing_analytic_kinematics (embodiment.tests.test_kinematics.UrdfKinematics.test_omx_chain_matches_existing_analytic_kinematics) ... ok
+test_configured_missing_native_library_never_falls_back (embodiment.tests.test_native_contract.NativeActionContract.test_configured_missing_native_library_never_falls_back) ... ok
+test_entire_chunk_and_scalar_boundary_match_python (embodiment.tests.test_native_contract.NativeActionContract.test_entire_chunk_and_scalar_boundary_match_python) ... ok
+test_real_assets_preserve_recorded_kinematics_and_grippers (embodiment.tests.test_dual_media.RecordedPhysicalMedia.test_real_assets_preserve_recorded_kinematics_and_grippers) ... ok
+test_real_replay_media_encodes_decodes_and_preserves_source_indices (embodiment.tests.test_dual_media.RecordedPhysicalMedia.test_real_replay_media_encodes_decodes_and_preserves_source_indices) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 8.686s
+
+OK

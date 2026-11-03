@@ -1,0 +1,104 @@
+test_known_outcomes_and_reordering (embodiment.tests.test_paired.Paired.test_known_outcomes_and_reordering) ... ok
+test_missing_duplicates_and_interventions (embodiment.tests.test_paired.Paired.test_missing_duplicates_and_interventions) ... ok
+test_null_and_discordance (embodiment.tests.test_paired.Paired.test_null_and_discordance) ... ok
+test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) ... 
+  test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) (key='embodiment') ... FAIL
+  test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) (key='runtime_pin') ... FAIL
+  test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) (key='scene_revision') ... FAIL
+  test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) (key='scenario_id') ... FAIL
+  test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) (key='policy_service') ... FAIL
+test_report_without_raw_trial_hashes_cannot_be_published (embodiment.tests.test_paired.PhysicalEvidenceGate.test_report_without_raw_trial_hashes_cannot_be_published) ... ok
+test_counts_and_intervals (embodiment.tests.test_benchmark_report.BenchmarkReport.test_counts_and_intervals) ... ok
+test_fallback_cannot_count_as_vla_only (embodiment.tests.test_benchmark_report.BenchmarkReport.test_fallback_cannot_count_as_vla_only) ... ok
+test_policy_condition_trial_and_training_embodiments_must_agree (embodiment.tests.test_benchmark_report.BenchmarkReport.test_policy_condition_trial_and_training_embodiments_must_agree) ... 
+  test_policy_condition_trial_and_training_embodiments_must_agree (embodiment.tests.test_benchmark_report.BenchmarkReport.test_policy_condition_trial_and_training_embodiments_must_agree) (defect='condition') ... FAIL
+  test_policy_condition_trial_and_training_embodiments_must_agree (embodiment.tests.test_benchmark_report.BenchmarkReport.test_policy_condition_trial_and_training_embodiments_must_agree) (defect='trial') ... FAIL
+  test_policy_condition_trial_and_training_embodiments_must_agree (embodiment.tests.test_benchmark_report.BenchmarkReport.test_policy_condition_trial_and_training_embodiments_must_agree) (defect='training_condition') ... FAIL
+  test_policy_condition_trial_and_training_embodiments_must_agree (embodiment.tests.test_benchmark_report.BenchmarkReport.test_policy_condition_trial_and_training_embodiments_must_agree) (defect='training_embodiment') ... FAIL
+test_rejects_incomplete_duplicate_unsafe_and_false_success (embodiment.tests.test_benchmark_report.BenchmarkReport.test_rejects_incomplete_duplicate_unsafe_and_false_success) ... ok
+
+======================================================================
+FAIL: test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) (key='embodiment')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_paired.py", line 68, in test_raw_episode_identity_must_match_report
+    with self.assertRaises(ValueError): verify_evidence('/synthetic', run)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) (key='runtime_pin')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_paired.py", line 68, in test_raw_episode_identity_must_match_report
+    with self.assertRaises(ValueError): verify_evidence('/synthetic', run)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) (key='scene_revision')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_paired.py", line 68, in test_raw_episode_identity_must_match_report
+    with self.assertRaises(ValueError): verify_evidence('/synthetic', run)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) (key='scenario_id')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_paired.py", line 68, in test_raw_episode_identity_must_match_report
+    with self.assertRaises(ValueError): verify_evidence('/synthetic', run)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_raw_episode_identity_must_match_report (embodiment.tests.test_paired.PhysicalEvidenceGate.test_raw_episode_identity_must_match_report) (key='policy_service')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_paired.py", line 68, in test_raw_episode_identity_must_match_report
+    with self.assertRaises(ValueError): verify_evidence('/synthetic', run)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_policy_condition_trial_and_training_embodiments_must_agree (embodiment.tests.test_benchmark_report.BenchmarkReport.test_policy_condition_trial_and_training_embodiments_must_agree) (defect='condition')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_benchmark_report.py", line 33, in test_policy_condition_trial_and_training_embodiments_must_agree
+    with self.subTest(defect=defect), self.assertRaises(ValueError): validate_run(run)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_policy_condition_trial_and_training_embodiments_must_agree (embodiment.tests.test_benchmark_report.BenchmarkReport.test_policy_condition_trial_and_training_embodiments_must_agree) (defect='trial')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_benchmark_report.py", line 33, in test_policy_condition_trial_and_training_embodiments_must_agree
+    with self.subTest(defect=defect), self.assertRaises(ValueError): validate_run(run)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_policy_condition_trial_and_training_embodiments_must_agree (embodiment.tests.test_benchmark_report.BenchmarkReport.test_policy_condition_trial_and_training_embodiments_must_agree) (defect='training_condition')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_benchmark_report.py", line 33, in test_policy_condition_trial_and_training_embodiments_must_agree
+    with self.subTest(defect=defect), self.assertRaises(ValueError): validate_run(run)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_policy_condition_trial_and_training_embodiments_must_agree (embodiment.tests.test_benchmark_report.BenchmarkReport.test_policy_condition_trial_and_training_embodiments_must_agree) (defect='training_embodiment')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_benchmark_report.py", line 33, in test_policy_condition_trial_and_training_embodiments_must_agree
+    with self.subTest(defect=defect), self.assertRaises(ValueError): validate_run(run)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 9 tests in 1.087s
+
+FAILED (failures=9)

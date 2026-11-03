@@ -1,0 +1,26 @@
+usage: python -m embodiment.collection [-h] --root ROOT
+                                       --robot {openmanipulator_x,franka_panda}
+                                       --split {train,validation,evaluation}
+                                       [--target TARGET]
+                                       [--batch-size BATCH_SIZE]
+                                       [--max-jobs MAX_JOBS]
+                                       [--attempt-limit ATTEMPT_LIMIT]
+                                       [--timeout TIMEOUT] [--python PYTHON]
+                                       [--device DEVICE]
+                                       [--reserve-gib RESERVE_GIB]
+                                       [--export EXPORT]
+
+options:
+  -h, --help            show this help message and exit
+  --root ROOT
+  --robot {openmanipulator_x,franka_panda}
+  --split {train,validation,evaluation}
+  --target TARGET
+  --batch-size BATCH_SIZE
+  --max-jobs MAX_JOBS
+  --attempt-limit ATTEMPT_LIMIT
+  --timeout TIMEOUT
+  --python PYTHON
+  --device DEVICE
+  --reserve-gib RESERVE_GIB
+  --export EXPORT

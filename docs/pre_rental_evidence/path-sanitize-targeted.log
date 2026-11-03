@@ -1,0 +1,6 @@
+mixed_input=0 observed_status=WrongJointCount
+mixed_input=1 observed_status=JointLimitViolation
+mixed_input=2 observed_status=ExcessiveJointStep
+mixed_input=3 observed_status=JointLimitViolation
+targeted_cases=106 mixed_inputs=4 overflow_flag_observed=1
+PASS targeted checks=618 validator_calls=510

@@ -1,0 +1,63 @@
+[1/63] Building CXX object CMakeFiles/relic_sim.dir/src/contact_inspection.cpp.o
+[2/63] Building CXX object CMakeFiles/relic_sim.dir/src/trace.cpp.o
+[3/63] Building CXX object CMakeFiles/relic_sim.dir/src/feasibility.cpp.o
+[4/63] Building CXX object CMakeFiles/relic_sim.dir/src/config.cpp.o
+[5/63] Building CXX object CMakeFiles/relic_sim.dir/src/analytical_ik.cpp.o
+[6/63] Building CXX object CMakeFiles/relic_sim.dir/src/simulation.cpp.o
+[7/63] Building CXX object CMakeFiles/relic_sim.dir/src/motion_report.cpp.o
+[8/63] Building CXX object experiments/ruckig/vendor/CMakeFiles/ruckig.dir/src/ruckig/brake.cpp.o
+[9/63] Building CXX object experiments/ruckig/vendor/CMakeFiles/ruckig.dir/src/ruckig/position_first_step2.cpp.o
+[10/63] Building CXX object experiments/ruckig/vendor/CMakeFiles/ruckig.dir/src/ruckig/position_first_step1.cpp.o
+[11/63] Building CXX object experiments/ruckig/vendor/CMakeFiles/ruckig.dir/src/ruckig/position_second_step2.cpp.o
+[12/63] Building CXX object experiments/ruckig/vendor/CMakeFiles/ruckig.dir/src/ruckig/position_second_step1.cpp.o
+[13/63] Building CXX object experiments/ruckig/vendor/CMakeFiles/ruckig.dir/src/ruckig/velocity_second_step2.cpp.o
+[14/63] Building CXX object experiments/ruckig/vendor/CMakeFiles/ruckig.dir/src/ruckig/velocity_second_step1.cpp.o
+[15/63] Building CXX object experiments/ruckig/vendor/CMakeFiles/ruckig.dir/src/ruckig/velocity_third_step2.cpp.o
+[16/63] Building CXX object experiments/ruckig/vendor/CMakeFiles/ruckig.dir/src/ruckig/velocity_third_step1.cpp.o
+[17/63] Building CXX object experiments/ruckig/vendor/CMakeFiles/ruckig.dir/src/ruckig/position_third_step1.cpp.o
+[18/63] Building CXX object CMakeFiles/relic_sim.dir/src/motion.cpp.o
+[19/63] Linking CXX static library librelic_sim.a
+[20/63] Building CXX object experiments/double_s/CMakeFiles/relic_experiment_interpolatecpp.dir/upstream/cpp/src/double_s_trajectory.cpp.o
+[21/63] Building CXX object CMakeFiles/relic_cli.dir/src/main.cpp.o
+[22/63] Building CXX object CMakeFiles/viper_cli.dir/src/main.cpp.o
+[23/63] Building CXX object CMakeFiles/relic_cartesian_demo.dir/src/cartesian_demo.cpp.o
+[24/63] Building CXX object experiments/ruckig/vendor/CMakeFiles/ruckig.dir/src/ruckig/position_third_step2.cpp.o
+[25/63] Linking CXX static library experiments/ruckig/vendor/libruckig.a
+[26/63] Building CXX object CMakeFiles/relic_motion_benchmark.dir/tests/motion_benchmark.cpp.o
+[27/63] Building CXX object experiments/ruckig/CMakeFiles/relic_ruckig_qualification_core.dir/qualification.cpp.o
+[28/63] Building CXX object CMakeFiles/relic_motion_tests.dir/tests/motion_tests.cpp.o
+[29/63] Linking CXX static library experiments/ruckig/librelic_ruckig_qualification_core.a
+[30/63] Building CXX object experiments/ruckig/CMakeFiles/relic_ruckig_adapter.dir/adapter.cpp.o
+[31/63] Linking CXX static library experiments/ruckig/librelic_ruckig_adapter.a
+[32/63] Building CXX object CMakeFiles/relic_ik_benchmark.dir/tests/ik_benchmark.cpp.o
+[33/63] Building CXX object experiments/ruckig/CMakeFiles/relic_ruckig_qualification.dir/qualification_main.cpp.o
+[34/63] Building CXX object CMakeFiles/relic_ik_tests.dir/tests/analytical_ik_tests.cpp.o
+[35/63] Linking CXX static library experiments/double_s/librelic_experiment_interpolatecpp.a
+[36/63] Building CXX object experiments/ruckig/CMakeFiles/relic_ruckig_adapter_tests.dir/adapter_tests.cpp.o
+[37/63] Building CXX object experiments/ruckig/CMakeFiles/relic_ruckig_diagnostics.dir/diagnostics.cpp.o
+[38/63] Building CXX object CMakeFiles/relic_tests.dir/tests/tests.cpp.o
+[39/63] Building CXX object experiments/double_s/CMakeFiles/relic_double_s_audit.dir/audit.cpp.o
+[40/63] Building CXX object CMakeFiles/relic_path_campaign.dir/tests/path_campaign.cpp.o
+[41/63] Linking CXX executable relic_cli
+[42/63] Linking CXX executable viper_cli
+[43/63] Linking CXX executable relic_cartesian_demo
+[44/63] Linking CXX executable relic_motion_tests
+[45/63] Linking CXX executable relic_motion_benchmark
+[46/63] Linking CXX executable relic_ik_tests
+[47/63] Linking CXX executable relic_ik_benchmark
+[48/63] Linking CXX executable relic_path_campaign
+[49/63] Building CXX object experiments/ruckig/CMakeFiles/relic_ruckig_benchmark.dir/benchmark.cpp.o
+[50/63] Linking CXX executable relic_tests
+[51/63] Linking CXX executable experiments/ruckig/relic_ruckig_qualification
+[52/63] Linking CXX executable experiments/ruckig/relic_ruckig_benchmark
+[53/63] Linking CXX executable experiments/ruckig/relic_ruckig_adapter_tests
+[54/63] Linking CXX executable experiments/ruckig/relic_ruckig_diagnostics
+[55/63] Linking CXX executable experiments/double_s/relic_double_s_audit
+[56/63] Building CXX object adaptive/CMakeFiles/relic_residual_probe.dir/residual_probe.cpp.o
+[57/63] Linking CXX executable adaptive/relic_residual_probe
+[58/63] Building CXX object adaptive/CMakeFiles/relic_adaptive_tests.dir/tests.cpp.o
+[59/63] Linking CXX executable adaptive/relic_adaptive_tests
+[60/63] Building CXX object interactive/CMakeFiles/relic_interactive.dir/bridge.cpp.o
+[61/63] Linking CXX executable relic_interactive
+[62/63] Building CXX object adaptive/CMakeFiles/relic_episode.dir/episode.cpp.o
+[63/63] Linking CXX executable adaptive/relic_episode

@@ -1,0 +1,40 @@
+{
+  "schema": "viper.common_qualification_result.v2",
+  "status": "NOT_EXECUTED",
+  "common_revision": "5c66c95ec48c101a2d4af55df8d917ff5a72bcac",
+  "simulation_executed": false,
+  "robots": {},
+  "errors": [],
+  "commands": {
+    "openmanipulator_x": [
+      "/usr/bin/python",
+      "-m",
+      "embodiment.qualify",
+      "--mode",
+      "qualification",
+      "--robot",
+      "openmanipulator_x",
+      "--output",
+      "/tmp/viper-final-audit-qualification/openmanipulator_x/attempt-0000/run",
+      "--headless",
+      "--enable_cameras",
+      "--device",
+      "cuda:0"
+    ],
+    "franka_panda": [
+      "/usr/bin/python",
+      "-m",
+      "embodiment.qualify",
+      "--mode",
+      "qualification",
+      "--robot",
+      "franka_panda",
+      "--output",
+      "/tmp/viper-final-audit-qualification/franka_panda/attempt-0000/run",
+      "--headless",
+      "--enable_cameras",
+      "--device",
+      "cuda:0"
+    ]
+  }
+}

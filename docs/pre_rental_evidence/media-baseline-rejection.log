@@ -1,0 +1,30 @@
+test_real_replay_media_encodes_decodes_and_preserves_source_indices (embodiment.tests.test_dual_media.RecordedPhysicalMedia.test_real_replay_media_encodes_decodes_and_preserves_source_indices) ... ffmpeg: symbol lookup error: /usr/lib/libavdevice.so.63: undefined symbol: drmModeFreeFB2
+ERROR
+
+======================================================================
+ERROR: test_real_replay_media_encodes_decodes_and_preserves_source_indices (embodiment.tests.test_dual_media.RecordedPhysicalMedia.test_real_replay_media_encodes_decodes_and_preserves_source_indices)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_dual_media.py", line 52, in test_real_replay_media_encodes_decodes_and_preserves_source_indices
+    result = produce(load_qualified_pair(0), Path(temporary)/'media', fps=1, speed=8., gif=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iris/VIPER-pre-rental/embodiment/dual_media.py", line 102, in produce
+    if gif:
+        ^^^
+  File "/home/iris/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/unittest/mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iris/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/unittest/mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iris/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/unittest/mock.py", line 1216, in _execute_mock_call
+    return self._mock_wraps(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iris/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['ffmpeg', '-nostdin', '-v', 'error', '-i', '/tmp/tmpwq0q07wv/media/comparison.mp4', '-vf', 'fps=10,scale=960:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer:bayer_scale=3', '-loop', '0', '/tmp/tmpwq0q07wv/media/simulation.gif']' returned non-zero exit status 127.
+
+----------------------------------------------------------------------
+Ran 1 test in 2.812s
+
+FAILED (errors=1)

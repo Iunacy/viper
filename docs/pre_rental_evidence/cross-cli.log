@@ -1,0 +1,25 @@
+usage: python -m embodiment.cross_smoke [-h] --source SOURCE
+                                        --dataset-a DATASET_A
+                                        --dataset-b DATASET_B
+                                        --pretrained PRETRAINED
+                                        --output OUTPUT [--execute]
+                                        [--timeout TIMEOUT]
+                                        [--simulation-python SIMULATION_PYTHON]
+                                        [--native-library NATIVE_LIBRARY]
+
+Opt-in A-to-B G3 workflow. Dry-run never launches training or a simulator.
+
+options:
+  -h, --help            show this help message and exit
+  --source SOURCE
+  --dataset-a DATASET_A
+  --dataset-b DATASET_B
+  --pretrained PRETRAINED
+  --output OUTPUT
+  --execute             opt in on an already approved GPU host; never
+                        provisions hardware
+  --timeout TIMEOUT
+  --simulation-python SIMULATION_PYTHON
+                        opt in to the final G3 physical gate with --execute
+  --native-library NATIVE_LIBRARY
+                        compiled embodiment/native C++ action boundary

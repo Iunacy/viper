@@ -1,0 +1,32 @@
+usage: training_campaign.py [-h] --source SOURCE --dataset-a DATASET_A
+                            --dataset-b DATASET_B --pretrained PRETRAINED
+                            --root ROOT --smoke-root SMOKE_ROOT
+                            --simulation-python SIMULATION_PYTHON
+                            [--stage {train_a,train_b_only,train_a_to_b,evaluate_a,evaluate_b_only,evaluate_a_to_b}]
+                            [--execute] [--m0] [--steps STEPS]
+                            [--save-steps SAVE_STEPS]
+                            [--batch-size BATCH_SIZE]
+                            [--gradient-accumulation GRADIENT_ACCUMULATION]
+                            [--timeout TIMEOUT]
+                            [--observation-disturbance {baseline,observation_bias,observation_noise}]
+
+Resumable matched training and evaluation; explicit execution only after G3.
+
+options:
+  -h, --help            show this help message and exit
+  --source SOURCE
+  --dataset-a DATASET_A
+  --dataset-b DATASET_B
+  --pretrained PRETRAINED
+  --root ROOT
+  --smoke-root SMOKE_ROOT
+  --simulation-python SIMULATION_PYTHON
+  --stage {train_a,train_b_only,train_a_to_b,evaluate_a,evaluate_b_only,evaluate_a_to_b}
+  --execute
+  --m0
+  --steps STEPS
+  --save-steps SAVE_STEPS
+  --batch-size BATCH_SIZE
+  --gradient-accumulation GRADIENT_ACCUMULATION
+  --timeout TIMEOUT
+  --observation-disturbance {baseline,observation_bias,observation_noise}

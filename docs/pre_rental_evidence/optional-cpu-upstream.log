@@ -1,0 +1,59 @@
+test_both_official_assets_against_actual_mujoco (embodiment.tests.test_kinematics.UrdfKinematics.test_both_official_assets_against_actual_mujoco) ... ERROR
+test_manufacturer_matrix_repairs_omx_self_contacts_without_removing_floor_probe (embodiment.tests.test_kinematics.UrdfKinematics.test_manufacturer_matrix_repairs_omx_self_contacts_without_removing_floor_probe) ... ERROR
+test_omx_chain_matches_existing_analytic_kinematics (embodiment.tests.test_kinematics.UrdfKinematics.test_omx_chain_matches_existing_analytic_kinematics) ... ok
+test_configured_missing_native_library_never_falls_back (embodiment.tests.test_native_contract.NativeActionContract.test_configured_missing_native_library_never_falls_back) ... ok
+test_entire_chunk_and_scalar_boundary_match_python (embodiment.tests.test_native_contract.NativeActionContract.test_entire_chunk_and_scalar_boundary_match_python) ... ok
+test_real_assets_preserve_recorded_kinematics_and_grippers (embodiment.tests.test_dual_media.RecordedPhysicalMedia.test_real_assets_preserve_recorded_kinematics_and_grippers) ... ERROR
+test_real_replay_media_encodes_decodes_and_preserves_source_indices (embodiment.tests.test_dual_media.RecordedPhysicalMedia.test_real_replay_media_encodes_decodes_and_preserves_source_indices) ... ERROR
+
+======================================================================
+ERROR: test_both_official_assets_against_actual_mujoco (embodiment.tests.test_kinematics.UrdfKinematics.test_both_official_assets_against_actual_mujoco)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_kinematics.py", line 34, in test_both_official_assets_against_actual_mujoco
+    result = audit(robot)
+             ^^^^^^^^^^^^
+  File "/home/iris/VIPER-pre-rental/embodiment/kinematics.py", line 167, in audit
+    import mujoco
+ModuleNotFoundError: No module named 'mujoco'
+
+======================================================================
+ERROR: test_manufacturer_matrix_repairs_omx_self_contacts_without_removing_floor_probe (embodiment.tests.test_kinematics.UrdfKinematics.test_manufacturer_matrix_repairs_omx_self_contacts_without_removing_floor_probe)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_kinematics.py", line 14, in test_manufacturer_matrix_repairs_omx_self_contacts_without_removing_floor_probe
+    raw = audit_dynamics('openmanipulator_x', manufacturer_filters=False)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iris/VIPER-pre-rental/embodiment/kinematics.py", line 209, in audit_dynamics
+    import mujoco
+ModuleNotFoundError: No module named 'mujoco'
+
+======================================================================
+ERROR: test_real_assets_preserve_recorded_kinematics_and_grippers (embodiment.tests.test_dual_media.RecordedPhysicalMedia.test_real_assets_preserve_recorded_kinematics_and_grippers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_dual_media.py", line 18, in test_real_assets_preserve_recorded_kinematics_and_grippers
+    renderer = Renderer(robot)
+               ^^^^^^^^^^^^^^^
+  File "/home/iris/VIPER-pre-rental/embodiment/replay_render.py", line 76, in __init__
+    import mujoco
+ModuleNotFoundError: No module named 'mujoco'
+
+======================================================================
+ERROR: test_real_replay_media_encodes_decodes_and_preserves_source_indices (embodiment.tests.test_dual_media.RecordedPhysicalMedia.test_real_replay_media_encodes_decodes_and_preserves_source_indices)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/iris/VIPER-pre-rental/embodiment/tests/test_dual_media.py", line 48, in test_real_replay_media_encodes_decodes_and_preserves_source_indices
+    result = produce(load_qualified_pair(0), Path(temporary)/'media', fps=1, speed=8., gif=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iris/VIPER-pre-rental/embodiment/dual_media.py", line 65, in produce
+    renderers[robot] = renderer_factory(robot)
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/iris/VIPER-pre-rental/embodiment/replay_render.py", line 76, in __init__
+    import mujoco
+ModuleNotFoundError: No module named 'mujoco'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.485s
+
+FAILED (errors=4)

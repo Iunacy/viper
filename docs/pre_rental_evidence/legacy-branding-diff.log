@@ -1,0 +1,33 @@
+diff --git a/src/cartesian_demo.cpp b/src/cartesian_demo.cpp
+index de18e54..b6ffdb5 100644
+--- a/src/cartesian_demo.cpp
++++ b/src/cartesian_demo.cpp
+@@ -88,5 +88,5 @@ int main(int argc, char** argv) {
+     if (args.contains("--result")) { relic::write_execution_report(result_file,result); result_file.close(); if (!result_file) throw std::runtime_error("result flush failed"); }
+     output.close(); if (!output) throw std::runtime_error("trace flush failed");
+     return result.status == relic::MotionStatus::Success ? 0 : 2;
+-  } catch (const std::exception& e) { std::cerr << "RELIC Cartesian error: " << e.what() << '\n'; return 1; }
++  } catch (const std::exception& e) { std::cerr << "VIPER Cartesian error: " << e.what() << '\n'; return 1; }
+ }
+diff --git a/src/main.cpp b/src/main.cpp
+index c4cc072..501ab60 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
+     for (int i = 1; i < argc; ++i) {
+       const std::string_view arg(argv[i]);
+       if (arg == "--help") {
+-        std::cout << "relic_cli --config FILE --csv FILE [--steps 1..1000000] [--mjcf FILE]\n"
++        std::cout << "viper_cli --config FILE --csv FILE [--steps 1..1000000] [--mjcf FILE]\n"
+                   << "SYNTHETIC simulation only. Times: seconds from reset; angles: radians; world: metres.\n";
+         return 0;
+       }
+@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
+               << "\nNo path-feasibility, collision-safety or harvesting-success claim.\n";
+     return 0;
+   } catch (const std::exception& error) {
+-    std::cerr << "RELIC error: " << error.what() << '\n';
++    std::cerr << "VIPER error: " << error.what() << '\n';
+     return 1;
+   }
+ }

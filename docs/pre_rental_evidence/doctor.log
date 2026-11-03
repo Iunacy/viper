@@ -1,0 +1,497 @@
+{
+  "schema": "viper.rental.v1",
+  "status": "BLOCKED",
+  "stage": "doctor",
+  "commands": {
+    "qualify": [
+      "/workspace/viper/reader/bin/python",
+      "-m",
+      "embodiment.first_session",
+      "--root",
+      "/workspace/runs/viper/session",
+      "--simulation-python",
+      "/workspace/viper/simulation/bin/python",
+      "--reader-python",
+      "/workspace/viper/reader/bin/python",
+      "--isaac-source",
+      "/workspace/viper/sources/IsaacLab",
+      "--groot-source",
+      "/workspace/viper/sources/GR00T",
+      "--robot-cache",
+      "/workspace/viper/robot_cache",
+      "--panda-assets",
+      "/workspace/viper/assets",
+      "--reader-library-path",
+      "/workspace/viper/reader_codec",
+      "--episodes",
+      "12",
+      "--timeout",
+      "2400",
+      "--max-attempts",
+      "2",
+      "--total-timeout",
+      "28800",
+      "--execute",
+      "--stop-after",
+      "qualification"
+    ],
+    "collect": [
+      "/workspace/viper/reader/bin/python",
+      "-m",
+      "embodiment.first_session",
+      "--root",
+      "/workspace/runs/viper/session",
+      "--simulation-python",
+      "/workspace/viper/simulation/bin/python",
+      "--reader-python",
+      "/workspace/viper/reader/bin/python",
+      "--isaac-source",
+      "/workspace/viper/sources/IsaacLab",
+      "--groot-source",
+      "/workspace/viper/sources/GR00T",
+      "--robot-cache",
+      "/workspace/viper/robot_cache",
+      "--panda-assets",
+      "/workspace/viper/assets",
+      "--reader-library-path",
+      "/workspace/viper/reader_codec",
+      "--episodes",
+      "12",
+      "--timeout",
+      "2400",
+      "--max-attempts",
+      "2",
+      "--total-timeout",
+      "28800",
+      "--execute"
+    ],
+    "g3_preflight": [
+      "/workspace/viper/sources/GR00T/.venv/bin/python",
+      "-m",
+      "embodiment.cloud",
+      "--source",
+      "/workspace/viper/sources/GR00T",
+      "--pretrained",
+      "/workspace/viper/models/groot",
+      "--volume",
+      "/workspace/runs/viper"
+    ],
+    "g3": [
+      "/workspace/viper/sources/GR00T/.venv/bin/python",
+      "-m",
+      "embodiment.cross_smoke",
+      "--source",
+      "/workspace/viper/sources/GR00T",
+      "--dataset-a",
+      "/workspace/runs/viper/session/pilot/exports/openmanipulator_x/train",
+      "--dataset-b",
+      "/workspace/runs/viper/session/pilot/exports/franka_panda/train",
+      "--pretrained",
+      "/workspace/viper/models/groot",
+      "--simulation-python",
+      "/workspace/viper/simulation/bin/python",
+      "--output",
+      "/workspace/runs/viper/g3",
+      "--native-library",
+      "/workspace/viper/native/libviper_action_contract.so",
+      "--timeout",
+      "3600",
+      "--execute"
+    ],
+    "m0_train": [
+      "/workspace/viper/sources/GR00T/.venv/bin/python",
+      "-m",
+      "embodiment.training_campaign",
+      "--source",
+      "/workspace/viper/sources/GR00T",
+      "--dataset-a",
+      "/workspace/runs/viper/session/pilot/exports/openmanipulator_x/train",
+      "--dataset-b",
+      "/workspace/runs/viper/session/pilot/exports/franka_panda/train",
+      "--pretrained",
+      "/workspace/viper/models/groot",
+      "--simulation-python",
+      "/workspace/viper/simulation/bin/python",
+      "--root",
+      "/workspace/runs/viper/campaign",
+      "--smoke-root",
+      "/workspace/runs/viper/g3",
+      "--execute",
+      "--steps",
+      "2000",
+      "--save-steps",
+      "500",
+      "--timeout",
+      "28800",
+      "--stage",
+      "train_a"
+    ],
+    "m0": [
+      "/workspace/viper/sources/GR00T/.venv/bin/python",
+      "-m",
+      "embodiment.training_campaign",
+      "--source",
+      "/workspace/viper/sources/GR00T",
+      "--dataset-a",
+      "/workspace/runs/viper/session/pilot/exports/openmanipulator_x/train",
+      "--dataset-b",
+      "/workspace/runs/viper/session/pilot/exports/franka_panda/train",
+      "--pretrained",
+      "/workspace/viper/models/groot",
+      "--simulation-python",
+      "/workspace/viper/simulation/bin/python",
+      "--root",
+      "/workspace/runs/viper/campaign",
+      "--smoke-root",
+      "/workspace/runs/viper/g3",
+      "--execute",
+      "--steps",
+      "2000",
+      "--save-steps",
+      "500",
+      "--timeout",
+      "28800",
+      "--stage",
+      "evaluate_a",
+      "--m0"
+    ]
+  },
+  "provisions_hardware": false,
+  "stages": {},
+  "physical_qualification_passed": false,
+  "g3_passed": false,
+  "m0_passed": false,
+  "doctor": {
+    "ready": false,
+    "blockers": [
+      "supported deployment requires Ubuntu 22.04 x86_64",
+      "insufficient GPU memory for requested deployment role",
+      "persistent runtime parent is not writable: /",
+      "insufficient available RAM; require 32 GiB before setup"
+    ],
+    "os": {
+      "NAME": "\"Arch Linux\"",
+      "PRETTY_NAME": "\"Arch Linux\"",
+      "ID": "arch",
+      "BUILD_ID": "rolling",
+      "ANSI_COLOR": "\"38;2;23;147;209\"",
+      "HOME_URL": "\"https://archlinux.org/\"",
+      "DOCUMENTATION_URL": "\"https://wiki.archlinux.org/\"",
+      "SUPPORT_URL": "\"https://bbs.archlinux.org/\"",
+      "BUG_REPORT_URL": "\"https://gitlab.archlinux.org/groups/archlinux/-/issues\"",
+      "PRIVACY_POLICY_URL": "\"https://terms.archlinux.org/docs/privacy-policy/\"",
+      "LOGO": "archlinux-logo"
+    },
+    "available_cpu_cores": 12,
+    "storage_free_bytes": 238747979776,
+    "memory_bytes": {
+      "MemTotal": 16364085248,
+      "MemAvailable": 4623859712
+    },
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+      "driver": "615.78.08",
+      "total_mib": 4096,
+      "free_mib": 1914
+    },
+    "compute_started": false,
+    "operations": {
+      "schema": "viper.deployment.v1",
+      "supported_os": "Ubuntu 22.04 x86_64",
+      "system_operations": [
+        [
+          "sudo",
+          "-n",
+          "apt-get",
+          "update"
+        ],
+        [
+          "sudo",
+          "-n",
+          "apt-get",
+          "install",
+          "-y",
+          "--no-install-recommends",
+          "ca-certificates",
+          "git",
+          "build-essential",
+          "cmake",
+          "python3",
+          "python3-venv",
+          "ffmpeg",
+          "libgl1",
+          "libegl1",
+          "libglib2.0-0",
+          "libgomp1",
+          "libx11-6",
+          "libxext6",
+          "libxrender1",
+          "libxi6",
+          "libxrandr2",
+          "libvulkan1",
+          "libsm6",
+          "libxt6",
+          "libxkbcommon0",
+          "libnss3"
+        ]
+      ],
+      "bootstrap_operations": [
+        [
+          "/usr/bin/python",
+          "-m",
+          "venv",
+          "/workspace/viper/bootstrap"
+        ],
+        [
+          "/workspace/viper/bootstrap/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "uv==0.13.4"
+        ]
+      ],
+      "runtimes": {
+        "simulation": {
+          "schema": "viper.bootstrap.v1",
+          "role": "simulation",
+          "prefix": "/workspace/viper",
+          "source": "/workspace/viper/sources/IsaacLab",
+          "url": "https://github.com/isaac-sim/IsaacLab.git",
+          "commit": "3c6e67bb5c7ada942a6d1884ab69338f57596f77",
+          "uv_version": "0.13.4",
+          "python": "/workspace/viper/simulation/bin/python",
+          "commands": [
+            [
+              "uv",
+              "venv",
+              "--python",
+              "3.11.17",
+              "--seed",
+              "/workspace/viper/simulation"
+            ],
+            [
+              "/workspace/viper/simulation/bin/python",
+              "-m",
+              "pip",
+              "install",
+              "pip==25.3",
+              "setuptools==80.9.0",
+              "wheel==0.45.1"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/workspace/viper/simulation/bin/python",
+              "torch==2.7.0",
+              "torchvision==0.22.0",
+              "--index-url",
+              "https://download.pytorch.org/whl/cu128"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/workspace/viper/simulation/bin/python",
+              "isaacsim[all,extscache]==5.1.0",
+              "--extra-index-url",
+              "https://pypi.nvidia.com",
+              "-c",
+              "/home/iris/VIPER-pre-rental/embodiment/runtime_constraints.txt"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/workspace/viper/simulation/bin/python",
+              "--no-build-isolation",
+              "flatdict==4.0.1"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/workspace/viper/simulation/bin/python",
+              "-e",
+              "/workspace/viper/sources/IsaacLab/source/isaaclab",
+              "-e",
+              "/workspace/viper/sources/IsaacLab/source/isaaclab_assets",
+              "-c",
+              "/home/iris/VIPER-pre-rental/embodiment/runtime_constraints.txt"
+            ],
+            [
+              "/workspace/viper/simulation/bin/python",
+              "-m",
+              "pip",
+              "check"
+            ],
+            [
+              "/workspace/viper/simulation/bin/python",
+              "-m",
+              "embodiment.assets"
+            ],
+            [
+              "/workspace/viper/simulation/bin/python",
+              "-c",
+              "from embodiment.replay_render import panda_asset; print(panda_asset())"
+            ],
+            [
+              "uv",
+              "venv",
+              "--python",
+              "3.12.15",
+              "/workspace/viper/asset_tools"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/workspace/viper/asset_tools/bin/python",
+              "usd-core==25.11"
+            ],
+            [
+              "/workspace/viper/asset_tools/bin/python",
+              "-m",
+              "embodiment.asset_cache",
+              "--root",
+              "/workspace/viper/assets"
+            ]
+          ],
+          "minimum_free_disk_gib": 65,
+          "inputs_sha256": {
+            "embodiment/reader_requirements.txt": "20990ac6da6bb8a947da00f3622c7b4a62af3f727ee4fdaa2f156f5c7bad73f6",
+            "embodiment/runtime_constraints.txt": "55d96faf7fe9713c7ceac71482c0ed305564a2fece6dbdd671dfbacb84782199"
+          },
+          "cache": "/workspace/viper/cache/uv",
+          "downloads_models": false,
+          "provisions_hardware": false
+        },
+        "reader": {
+          "schema": "viper.bootstrap.v1",
+          "role": "reader",
+          "prefix": "/workspace/viper",
+          "source": "/workspace/viper/sources/GR00T",
+          "url": "https://github.com/NVIDIA/Isaac-GR00T.git",
+          "commit": "944fe70c4fd54e3fcb80a7d7258a328f9c061176",
+          "uv_version": "0.13.4",
+          "python": "/workspace/viper/reader/bin/python",
+          "commands": [
+            [
+              "uv",
+              "venv",
+              "--python",
+              "3.12.15",
+              "/workspace/viper/reader"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/workspace/viper/reader/bin/python",
+              "torch==2.9.0",
+              "torchvision==0.24.0",
+              "--index-url",
+              "https://download.pytorch.org/whl/cpu"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/workspace/viper/reader/bin/python",
+              "-r",
+              "/home/iris/VIPER-pre-rental/embodiment/reader_requirements.txt"
+            ],
+            [
+              "/workspace/viper/reader/bin/python",
+              "-m",
+              "embodiment.codec_runtime",
+              "--root",
+              "/workspace/viper/reader_codec"
+            ],
+            [
+              "uv",
+              "pip",
+              "check",
+              "--python",
+              "/workspace/viper/reader/bin/python"
+            ],
+            [
+              "/workspace/viper/reader/bin/python",
+              "-m",
+              "embodiment.first_session",
+              "--reader-probe",
+              "/workspace/viper/sources/GR00T",
+              "--root",
+              "/workspace/viper"
+            ]
+          ],
+          "minimum_free_disk_gib": 12,
+          "inputs_sha256": {
+            "embodiment/reader_requirements.txt": "20990ac6da6bb8a947da00f3622c7b4a62af3f727ee4fdaa2f156f5c7bad73f6",
+            "embodiment/runtime_constraints.txt": "55d96faf7fe9713c7ceac71482c0ed305564a2fece6dbdd671dfbacb84782199"
+          },
+          "cache": "/workspace/viper/cache/uv",
+          "downloads_models": false,
+          "provisions_hardware": false
+        }
+      },
+      "native_operations": [
+        [
+          "cmake",
+          "-S",
+          "/home/iris/VIPER-pre-rental/embodiment/native",
+          "-B",
+          "/workspace/viper/native",
+          "-DCMAKE_BUILD_TYPE=Release"
+        ],
+        [
+          "cmake",
+          "--build",
+          "/workspace/viper/native",
+          "--parallel",
+          "2"
+        ],
+        [
+          "ctest",
+          "--test-dir",
+          "/workspace/viper/native",
+          "--output-on-failure"
+        ]
+      ],
+      "downloads_models": false,
+      "provisions_hardware": false,
+      "licenses": {
+        "isaac": "https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/install_python.html",
+        "models": "separate model acquisition consent and gated Hugging Face license acceptance"
+      },
+      "persistent_paths": [
+        "/workspace/viper/sources",
+        "/workspace/viper/cache",
+        "/workspace/viper/robot_cache",
+        "/workspace/viper/assets",
+        "/workspace/viper/models"
+      ]
+    }
+  },
+  "runtime_probes": {
+    "simulation": {
+      "ready": false,
+      "blockers": [
+        "runtime missing; run setup: /workspace/viper/simulation/bin/python"
+      ]
+    },
+    "reader": {
+      "ready": false,
+      "blockers": [
+        "runtime missing; run setup: /workspace/viper/reader/bin/python"
+      ]
+    }
+  }
+}
