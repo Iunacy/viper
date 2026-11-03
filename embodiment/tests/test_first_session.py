@@ -18,6 +18,7 @@ class FirstSession(unittest.TestCase):
     def mocks(self):
         stack = ExitStack()
         stack.enter_context(patch('embodiment.first_session.source_provenance', return_value=self.provenance))
+        stack.enter_context(patch('embodiment.simulation_smoke.run', return_value={'status': 'PASS', 'simulation_executed': True}))
         stack.enter_context(patch('embodiment.first_session.assets', return_value={'files': {'fixture': 'synthetic'}}))
         stack.enter_context(patch('embodiment.isaac_interfaces.verify', return_value={'source_interfaces_present': True}))
         stack.enter_context(patch('embodiment.upstream_validation.verify_source'))

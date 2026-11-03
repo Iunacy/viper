@@ -4,6 +4,7 @@ from dataclasses import asdict
 import json
 import os
 import shutil
+import socket
 from pathlib import Path
 import subprocess
 import sys
@@ -40,7 +41,9 @@ def restore_final_snapshot(checkpoint, destination):
 
 def run(source, dataset_a, dataset_b, pretrained, root, simulation_python, smoke_root,
         stage=None, execute_stage=False, budget=Budget(batch_size=1, gradient_accumulation=12), timeout=14400,
-        observation_disturbance='baseline'):
+        observation_disturbance='baseline', m0=False):
+    if m0 and (stage != 'evaluate_a' or observation_disturbance != 'baseline'):
+        raise ValueError('M0 requires undisturbed source evaluation')
     from .perception import condition as perception_condition
     perception = perception_condition(observation_disturbance)
     source, dataset_a, dataset_b, pretrained, root, smoke_root = map(lambda p: Path(p).resolve(),
@@ -69,7 +72,8 @@ def run(source, dataset_a, dataset_b, pretrained, root, simulation_python, smoke
             if path.is_file() and not path.is_symlink():
                 stat = path.stat()
                 stored[(stat.st_dev, stat.st_ino)] = stat.st_size
-        remaining = max(12*1024**3, result['storage_estimate']['conservative_campaign_reserve_bytes']-sum(stored.values())) if stage.startswith('train_') else 12*1024**3
+        reserve = (18*weight_bytes+12*1024**3 if stage == 'train_a' else result['storage_estimate']['conservative_campaign_reserve_bytes'])
+        remaining = max(12*1024**3, reserve-sum(stored.values())) if stage.startswith('train_') else 12*1024**3
         result['storage_estimate']['remaining_reserve_bytes'] = remaining
         if shutil.disk_usage(root).free < remaining:
             raise RuntimeError('insufficient storage reserve for matched training campaign')
@@ -109,7 +113,7 @@ def run(source, dataset_a, dataset_b, pretrained, root, simulation_python, smoke
         condition = stage.split('_', 1)[1]
         selected = next(item for item in training['runs'] if item['condition'] == condition)
         model = Path(selected['checkpoint'])
-        job = root/(stage+('_'+observation_disturbance if observation_disturbance != 'baseline' else ''))
+        job = root/('m0_evaluate_a' if m0 else stage+('_'+observation_disturbance if observation_disturbance != 'baseline' else ''))
         job.mkdir(exist_ok=True)
         job_config = job/'configuration.json'
         if job_config.exists() and read_json(job_config) != perception: raise ValueError('evaluation disturbance changed')
@@ -121,7 +125,32 @@ def run(source, dataset_a, dataset_b, pretrained, root, simulation_python, smoke
             if saved.get('report_sha256'):
                 from .dataset import file_digest
                 if file_digest(Path(saved['report'])) != saved['report_sha256']: raise ValueError('evaluation report changed')
+            if saved.get('evaluation_files'):
+                from .collection import hashes
+                if hashes(Path(saved['report']).parent) != saved['evaluation_files']: raise ValueError('evaluation artifacts changed')
+                if m0:
+                    from .m0 import verify as verify_m0
+                    verify_m0(Path(saved['report']).parent)
             return saved
+        if stage.startswith('evaluate_') and list(job.glob('attempt-*')):
+            # Reconstruct a completed evaluation after a controller crash. An
+            # incomplete held-out run requires explicit investigation, not reruns.
+            from .paired import verify_evidence
+            from .collection import hashes
+            prior = sorted(job.glob('attempt-*'))[-1]/'evaluation/report.json'
+            if not prior.exists() or read_json(prior).get('status') != 'COMPLETE':
+                raise ValueError('prior held-out evaluation is incomplete; preserve it and investigate before a new predeclared run')
+            measured = read_json(prior)
+            verify_evidence(prior.parent, measured)
+            if measured['policy_service']['checkpoint_sha256'] != checkpoint_digest(model):
+                raise ValueError('prior evaluation checkpoint differs')
+            recovered = {**result, 'status': 'COMPLETE', 'checkpoint': str(model), 'checkpoint_sha256': checkpoint_digest(model),
+                'evaluation_executed': True, 'report': str(prior), 'report_sha256': file_digest(prior), 'evaluation_files': hashes(prior.parent), 'recovered': True}
+            if m0:
+                from .m0 import verify as verify_m0
+                recovered['m0'] = verify_m0(prior.parent)
+            atomic_json(completed, recovered)
+            return recovered
         attempt = job/f'attempt-{len(list(job.glob("attempt-*"))):04d}'
         attempt.mkdir()
         environment = {**os.environ, 'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1', 'WANDB_MODE': 'disabled'}
@@ -149,7 +178,7 @@ def run(source, dataset_a, dataset_b, pretrained, root, simulation_python, smoke
                 command = [sys.executable, '-m', 'embodiment.training_worker', '--source', str(source),
                            '--metrics', str(attempt/'resources.json'), *arguments]
                 if not already_complete:
-                    result['process'] = execute(command, attempt, timeout, environment)
+                    result['process'] = execute(command, attempt, timeout, environment, resource_monitor=True)
                     if result['process']['returncode']: raise RuntimeError('training failed; rerun this stage to resume')
                 else:
                     restore_final_snapshot(checkpoints[-1], model)
@@ -160,26 +189,38 @@ def run(source, dataset_a, dataset_b, pretrained, root, simulation_python, smoke
                 result['training_executed_this_attempt'] = not already_complete
             else:
                 validate_checkpoint(model)
+                from .closed_loop_smoke import stop_process
+                with socket.socket() as sock:
+                    sock.bind(('127.0.0.1', 0))
+                    port = sock.getsockname()[1]
+                service_log = (attempt/'service.log').open('xb')
                 service = subprocess.Popen([sys.executable, '-m', 'embodiment.policy_service', '--source', str(source),
-                    '--checkpoint', str(model), '--port', '8766'], stdout=(attempt/'service.log').open('wb'),
-                    stderr=subprocess.STDOUT, env=environment)
+                    '--checkpoint', str(model), '--port', str(port)], stdout=service_log,
+                    stderr=subprocess.STDOUT, env=environment, start_new_session=True)
                 try:
                     deadline = time.monotonic()+180
                     while True:
                         if service.poll() is not None: raise RuntimeError('policy service failed; inspect service.log')
                         try:
-                            with urllib.request.urlopen('http://127.0.0.1:8766/metadata', timeout=2) as response:
+                            with urllib.request.urlopen(f'http://127.0.0.1:{port}/metadata', timeout=2) as response:
                                 metadata = json.load(response)
-                            if metadata['checkpoint_sha256'] != checkpoint_digest(model): raise ValueError('port serves a different policy')
+                            if (metadata['checkpoint_sha256'] != checkpoint_digest(model) or
+                                    metadata.get('source_sha256') != configuration['source']['source_sha256']):
+                                raise ValueError('port serves a different policy or source')
+                            if m0:
+                                library = Path(environment['VIPER_ACTION_CONTRACT_LIBRARY'])
+                                if metadata.get('native_contract_sha256') != file_digest(library):
+                                    raise ValueError('policy lacks the selected native action boundary')
                             break
                         except OSError:
                             if time.monotonic() >= deadline: raise RuntimeError('policy service startup timed out')
                             time.sleep(1)
                     command = [str(simulation_python), '-m', 'embodiment.evaluate', '--output', str(attempt/'evaluation'),
                         '--robot', selected['embodiment'], '--condition', condition, '--training-plan', str(root/'plan.json'),
-                        '--observation-disturbance', observation_disturbance,
+                        '--observation-disturbance', observation_disturbance, '--policy-port', str(port),
                         '--headless', '--device', 'cuda:0', '--enable_cameras']
-                    result['process'] = execute(command, attempt, timeout, environment)
+                    if m0: command += ['--no-fallback', '--counterfactual']
+                    result['process'] = execute(command, attempt, timeout, environment, resource_monitor=True)
                     if result['process']['returncode']: raise RuntimeError('policy evaluation failed')
                     report = attempt/'evaluation/report.json'
                     from .paired import verify_evidence
@@ -187,13 +228,14 @@ def run(source, dataset_a, dataset_b, pretrained, root, simulation_python, smoke
                     verify_evidence(report.parent, measured)
                     if measured['status'] != 'COMPLETE': raise ValueError('incomplete physical policy evaluation')
                     from .dataset import file_digest
-                    result.update(evaluation_executed=True, report=str(report), report_sha256=file_digest(report))
+                    from .collection import hashes
+                    result.update(evaluation_executed=True, report=str(report), report_sha256=file_digest(report), evaluation_files=hashes(report.parent))
+                    if m0:
+                        from .m0 import verify as verify_m0
+                        result['m0'] = verify_m0(report.parent)
                 finally:
-                    service.terminate()
-                    try: service.wait(timeout=15)
-                    except subprocess.TimeoutExpired:
-                        service.kill()
-                        service.wait(timeout=10)
+                    try: stop_process(service)
+                    finally: service_log.close()
             if source_provenance() != configuration['source']: raise ValueError('source changed during campaign')
             result.update(status='COMPLETE', checkpoint=str(model), checkpoint_sha256=checkpoint_digest(model))
             atomic_json(completed, result)
@@ -210,6 +252,7 @@ if __name__ == '__main__':
     parser.add_argument('--simulation-python', required=True)
     parser.add_argument('--stage', choices=STAGES)
     parser.add_argument('--execute', action='store_true')
+    parser.add_argument('--m0', action='store_true')
     parser.add_argument('--steps', type=int, default=2000)
     parser.add_argument('--save-steps', type=int, default=500)
     parser.add_argument('--batch-size', type=int, default=1)
@@ -221,6 +264,6 @@ if __name__ == '__main__':
     measured = run(args.source, args.dataset_a, args.dataset_b, args.pretrained, args.root,
         args.simulation_python, args.smoke_root, args.stage, args.execute,
         Budget(args.steps, args.batch_size, gradient_accumulation=args.gradient_accumulation, save_steps=args.save_steps), args.timeout,
-        args.observation_disturbance)
+        args.observation_disturbance, args.m0)
     print(json.dumps(measured, indent=2))
     raise SystemExit(2 if measured['status'] == 'BLOCKED' else 0)

@@ -204,7 +204,7 @@ def source_provenance():
     return {'relic_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root.parent,text=True).strip(),
             'relic_worktree_dirty':bool(subprocess.check_output(['git','status','--porcelain'],cwd=root.parent,text=True).strip()),
             'source_sha256':{str(path.relative_to(root)):hashlib.sha256(path.read_bytes()).hexdigest()
-                             for path in sorted([*root.glob('*.py'), *root.glob('native/*.cpp'), *root.glob('native/*.h'), *root.glob('native/CMakeLists.txt'), *root.glob('*requirements.txt'), *root.glob('runtime_constraints.txt'), *root.glob('assets/*.json'), *root.glob('assets/*.urdf')])}}
+                             for path in sorted([*root.glob('*.py'), *root.glob('native/*.cpp'), *root.glob('native/*.h'), *root.glob('native/CMakeLists.txt'), *root.glob('*requirements.txt'), *root.glob('runtime_constraints.txt'), *root.glob('assets/*.json'), *root.glob('assets/*.urdf'), *root.glob('*.json'), *root.glob('cloud.Dockerfile')])}}
 
 
 def _save(output,report,provenance=None):

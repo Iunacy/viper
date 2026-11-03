@@ -7,7 +7,7 @@ CONTRACT = 'viper.physical_episode.v2'
 
 def validate_completion(metadata, outcome, rows, telemetry):
     if metadata.get('episode_contract') != CONTRACT: return {'version': 'legacy', 'terminal_dwell_verified': False}
-    if len(rows) != len(telemetry) or len(rows) < 2: raise ValueError('new physical episode lacks aligned observations')
+    if len(rows) != len(telemetry) or not rows or (len(rows) < 2 and outcome['success']): raise ValueError('new physical episode lacks aligned observations')
     robot, target = metadata['embodiment'], metadata['target']
     from .contract import manifest
     import json
@@ -29,3 +29,13 @@ def validate_completion(metadata, outcome, rows, telemetry):
             raise ValueError('placement is not stably released for one second')
     if rows[-1]['ee_position'][2] < .08: raise ValueError('terminal tool did not retreat')
     return {'version': CONTRACT, 'terminal_dwell_verified': True}
+
+
+def initial_policy_stop(metadata, outcome, rows):
+    """A first-tick policy rejection is a failure, never a demonstration or success."""
+    return (len(rows) == 1 and outcome.get('success') is False and rows[0]['success'] is False
+            and rows[0]['timestamp'] == 0 and outcome.get('duration') == 0
+            and metadata.get('controller') in ('vla_only', 'fallback_assisted')
+            and outcome.get('controller') == metadata['controller']
+            and bool(outcome.get('rejected_policy_actions') or outcome.get('policy_errors') or outcome.get('safety_events'))
+            and isinstance(outcome.get('failure_reason'), str) and bool(outcome['failure_reason']))

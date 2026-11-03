@@ -37,8 +37,12 @@ class RecordedBackend:
 
     def step(self, action):
         phase = 'fallback' if self.loop.expert is not None else 'policy'
-        self.recorder.append(self.current, action, phase, False, self.image)
-        return self.backend.step(action)
+        response = self.backend.step(action)
+        # A backend can reject before advancing physics. Do not fabricate a
+        # commanded tick or duplicate the terminal observation timestamp.
+        if response.time > self.current.time:
+            self.recorder.append(self.current, action, phase, False, self.image)
+        return response
 
 
 def run_trial(backend, policy, case, output, provenance, config, running, disturbance=None):
@@ -54,6 +58,10 @@ def run_trial(backend, policy, case, output, provenance, config, running, distur
                 'runtime_pin': {'isaacsim': SIM, 'isaaclab_commit': LAB_COMMIT,
                                 'robot_commit': MANIFEST['commit']},
                 'policy_service': policy.metadata, 'observation_condition': perception}
+    if physical:
+        from .contract import manifest
+        metadata.update(episode_contract='viper.physical_episode.v2', sensor_contract='viper.physical_sensors.v1',
+                        robot_contract=manifest(backend.embodiment))
     recorder = execution_stream = perception_stream = None
     try:
         observation = backend.reset(case.seed)
@@ -110,6 +118,7 @@ def main():
     parser.add_argument('--training-plan', type=Path, required=True)
     parser.add_argument('--policy-port', type=int, default=8766)
     parser.add_argument('--no-fallback', action='store_true')
+    parser.add_argument('--counterfactual', action='store_true', help='separate frozen M0 instruction-flip diagnostics after fifty trials')
     parser.add_argument('--observation-disturbance', choices=OBSERVATION_KINDS, default='baseline')
     parser.add_argument('--disturbance-magnitude', type=float)
     known, _ = parser.parse_known_args()
@@ -135,6 +144,9 @@ def main():
         checkpoint = Path(run['checkpoint'])
         if not checkpoint.is_dir() or checkpoint_digest(checkpoint) != policy.metadata['checkpoint_sha256']:
             raise ValueError('served checkpoint differs from the planned experiment checkpoint')
+        if known.counterfactual:
+            from .m0 import counterfactual_cases
+            atomic_json(known.output/'counterfactual_plan.json', [asdict(case) for case in counterfactual_cases()])
         report['training_run'] = run
         report['policy_service'] = policy.metadata
         if sys.version_info[:2] != (3, 11):
@@ -174,6 +186,20 @@ def main():
             _save(args.output, report, provenance)
             if report['source_changed_during_run']:
                 raise RuntimeError('evaluation source changed')
+        if args.counterfactual:
+            if args.robot != 'openmanipulator_x' or args.condition != 'a' or not args.no_fallback or len(cases) != 50:
+                raise ValueError('M0 requires fifty source scenes with fallback disabled')
+            from .m0 import counterfactual_cases
+            diagnostic = args.output/'counterfactual'
+            diagnostic.mkdir()
+            flips = {'cases': [asdict(case) for case in counterfactual_cases()], 'trials': [], 'completed': False}
+            for case in counterfactual_cases():
+                folder = diagnostic/str(case.seed)
+                folder.mkdir(exist_ok=True)
+                flips['trials'].append(run_trial(backend, policy, case, folder/case.target, provenance, config, app.is_running))
+                atomic_json(diagnostic/'report.json', flips)
+            flips['completed'] = True
+            atomic_json(diagnostic/'report.json', flips)
         report['completed'] = True
         report['statistics'] = validate_run(report)
         report['status'] = 'COMPLETE'

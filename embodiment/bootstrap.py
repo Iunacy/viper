@@ -1,12 +1,13 @@
 """Idempotent isolated setup on an existing host; dry-run by default, never model downloads."""
 import argparse
 import json
+import hashlib
 import os
 from pathlib import Path
 import shutil
 import subprocess
 import time
-from .collection import atomic_json, locked
+from .collection import atomic_json, locked, execute as run_process
 from .dataset import GROOT_COMMIT, read_json
 from .preflight import LAB_COMMIT
 
@@ -55,10 +56,26 @@ def plan(prefix, role, repository=None):
     return {'schema': 'viper.bootstrap.v1', 'role': role, 'prefix': str(prefix), 'source': str(source),
             'url': url, 'commit': commit, 'uv_version': UV_VERSION, 'python': str(python), 'commands': commands,
             'minimum_free_disk_gib': {'simulation': 65, 'training': 40, 'reader': 12}[role],
+            'inputs_sha256': {str(p.relative_to(repo)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted((repo/'embodiment').glob('*requirements.txt'))+[(repo/'embodiment/runtime_constraints.txt')]},
             'cache': str(prefix/'cache/uv'), 'downloads_models': False, 'provisions_hardware': False}
 
 
-def setup(prefix, role, execute=False, offline=False, reader_library_path=None):
+def runtime_fingerprint(configuration):
+    """Installed distribution inventory and environment entry files, without GPU imports."""
+    python = configuration['python']
+    script = ('import importlib.metadata as m,json,sys; '
+              'print(json.dumps({"python":sys.version,"prefix":sys.prefix,"packages":'
+              'sorted((d.metadata["Name"],d.version) for d in m.distributions())},sort_keys=True))')
+    inventory = json.loads(subprocess.check_output([python, '-c', script], text=True, timeout=60))
+    root = Path(inventory['prefix'])
+    inventory['entry_files'] = {str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in (root/'pyvenv.cfg', root/'bin/python') if path.is_file()}
+    return inventory
+
+
+def setup(prefix, role, execute=False, offline=False, reader_library_path=None, timeout=14400):
+    if not 1 <= timeout <= 86400: raise ValueError('setup timeout must be in 1..86400 seconds')
+    deadline = time.monotonic()+timeout
     configuration = plan(prefix, role)
     if reader_library_path is not None:
         configuration['reader_library_path'] = str(Path(reader_library_path).resolve())
@@ -68,23 +85,38 @@ def setup(prefix, role, execute=False, offline=False, reader_library_path=None):
         if not execute: return {**configuration, 'status': 'NOT_EXECUTED'}
         executable = shutil.which('uv')
         if executable is None: raise RuntimeError('install uv=='+UV_VERSION+' from PyPI in a bootstrap virtual environment')
-        version = subprocess.check_output([executable, '--version'], text=True)
+        version = subprocess.check_output([executable, '--version'], text=True, timeout=15)
         if not version.startswith('uv '+UV_VERSION+' '): raise ValueError('setup requires uv=='+UV_VERSION)
         if shutil.disk_usage(prefix).free < configuration['minimum_free_disk_gib']*1024**3:
             raise RuntimeError('insufficient setup storage reserve')
+        from .rental import no_live_workers
+        no_live_workers(prefix/'setup')
         source = Path(configuration['source'])
         source.parent.mkdir(parents=True, exist_ok=True)
         if not source.exists():
             if offline: raise RuntimeError('offline setup requires the pinned source checkout')
+            # Only publish a complete pinned checkout. An interrupted clone is
+            # isolated from consumers and can be retried without accepting HEAD.
+            staging = source.with_name(source.name+'.installing')
             git_environment = {**os.environ, 'GIT_LFS_SKIP_SMUDGE': '1'}
-            subprocess.run(['git', 'clone', '--no-checkout', '--filter=blob:none', configuration['url'], str(source)], check=True, env=git_environment)
-            subprocess.run(['git', '-C', str(source), 'checkout', '--detach', configuration['commit']], check=True, env=git_environment)
-        actual = subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], text=True).strip()
-        changes = subprocess.check_output(['git', '-C', str(source), 'status', '--porcelain', '--untracked-files=no'], text=True)
+            if staging.exists():
+                shutil.rmtree(staging)
+            git_root = prefix/'setup'/('source-'+role)
+            git_root.mkdir(exist_ok=True)
+            for name, command in (('clone', ['git', 'clone', '--no-checkout', '--filter=blob:none', configuration['url'], str(staging)]),
+                    ('checkout', ['git', '-C', str(staging), 'checkout', '--detach', configuration['commit']])):
+                job = git_root/f'{name}-{len(list(git_root.glob(name+"-*"))):04d}'
+                job.mkdir()
+                measured = run_process(command, job, max(.1, min(900, deadline-time.monotonic())), git_environment)
+                if measured['returncode']: raise RuntimeError('source installation failed; inspect '+str(job/'process.log'))
+            staging.rename(source)
+        actual = subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], text=True, timeout=15).strip()
+        changes = subprocess.check_output(['git', '-C', str(source), 'status', '--porcelain', '--untracked-files=no'], text=True, timeout=15)
         if actual != configuration['commit'] or changes: raise ValueError('setup checkout differs from clean pinned revision')
         environment = {**os.environ, 'UV_CACHE_DIR': configuration['cache'], 'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1',
                        'UV_PYTHON_INSTALL_DIR': str(prefix/'cache/python'),
                        'VIPER_ASSET_CACHE': str(prefix/'robot_cache'),
+                       'HF_HOME': str(prefix/'cache/huggingface'), 'HF_HUB_CACHE': str(prefix/'cache/huggingface/hub'), 'XDG_CACHE_HOME': str(prefix/'cache/xdg'),
                        'WANDB_MODE': 'disabled', 'PIP_DISABLE_PIP_VERSION_CHECK': '1', 'MAX_JOBS': '2',
                        'NO_ALBUMENTATIONS_UPDATE': '1', 'DS_BUILD_OPS': '0',
                        'OPENBLAS_NUM_THREADS': '1', 'OMP_NUM_THREADS': '1', 'UV_CONCURRENT_DOWNLOADS': '2'}
@@ -92,25 +124,44 @@ def setup(prefix, role, execute=False, offline=False, reader_library_path=None):
         receipt = prefix/'setup'/(role+'.receipt.json')
         if receipt.exists() and read_json(receipt).get('configuration') != configuration: raise ValueError('setup configuration changed')
         started = time.monotonic()
-        processes = []
+        previous = read_json(receipt) if receipt.exists() else {}
+        if previous.get('status') == 'INSTALLED':
+            if runtime_fingerprint(configuration) != previous.get('runtime_fingerprint'):
+                raise ValueError('verified runtime changed; repair explicitly using a new prefix')
+            return {**previous, 'reused': True}
+        processes = previous.get('processes', [])
+        completed = previous.get('completed_commands', [])
         for index, command in enumerate(configuration['commands']):
-            if command[:2] == ['uv', 'venv'] and (Path(command[-1])/'bin/python').is_file(): continue
-            log = prefix/'setup'/f'{role}-{index}.log'
+            if index in completed: continue
+            if command[:2] == ['uv', 'venv'] and (Path(command[-1])/'bin/python').is_file():
+                completed.append(index)
+                continue
+            directory = prefix/'setup'/f'{role}-{index}'
+            directory.mkdir(exist_ok=True)
+            job = directory/f'attempt-{len(list(directory.glob("attempt-*"))):04d}'
+            job.mkdir()
+            log = job/'process.log'
             command_environment = dict(environment)
             if 'embodiment.runtime_probe' in command or '--reader-probe' in command:
                 codec_path = str(Path(reader_library_path).resolve()) if reader_library_path else str(prefix/('reader_codec' if role == 'reader' else 'codec'))
                 command_environment['LD_LIBRARY_PATH'] = os.pathsep.join(filter(None, (codec_path, environment.get('LD_LIBRARY_PATH'))))
                 command_environment['CUDA_VISIBLE_DEVICES'] = ''
-            with log.open('ab') as stream:
-                process = subprocess.run(command, stdin=subprocess.DEVNULL, stdout=stream, stderr=subprocess.STDOUT,
-                                         cwd=Path(__file__).resolve().parents[1], env=command_environment)
-            processes.append({'command': command, 'returncode': process.returncode, 'log': str(log)})
-            if process.returncode:
-                result = {'configuration': configuration, 'status': 'BLOCKED', 'processes': processes, 'wall_seconds': time.monotonic()-started}
-                atomic_json(receipt, result)
+            # Write the in-flight receipt before starting a command. Successful
+            # earlier steps survive interruption, while this step is retried.
+            atomic_json(receipt, {'configuration': configuration, 'status': 'INSTALLING',
+                'processes': processes, 'completed_commands': completed})
+            measured = run_process(command, job, max(.1, deadline-time.monotonic()), command_environment)
+            processes.append({'command': command, 'returncode': measured['returncode'], 'log': str(log), 'process': measured})
+            if measured['returncode']:
+                atomic_json(receipt, {'configuration': configuration, 'status': 'BLOCKED',
+                    'processes': processes, 'completed_commands': completed, 'wall_seconds': time.monotonic()-started})
                 raise RuntimeError('setup failed; inspect '+str(log)+'; rerun the same command to resume from cache')
+            completed.append(index)
+            atomic_json(receipt, {'configuration': configuration, 'status': 'INSTALLING',
+                'processes': processes, 'completed_commands': completed})
         result = {'configuration': configuration, 'status': 'INSTALLED', 'processes': processes, 'wall_seconds': time.monotonic()-started,
-                  'simulation_executed': False, 'training_executed': False}
+                  'simulation_executed': False, 'training_executed': False, 'completed_commands': completed,
+                  'runtime_fingerprint': runtime_fingerprint(configuration)}
         atomic_json(receipt, result)
         return result
 

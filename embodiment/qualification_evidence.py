@@ -1,6 +1,7 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 from .benchmark import COLORS, TIMEOUT, inside_bin
 from .qualify import aggregate
@@ -52,6 +53,8 @@ def verify_campaign(root):
         if abs(rows[-1]['timestamp']-trial['duration']) > 1e-6 or trial['duration'] > TIMEOUT+1/30:
             raise ValueError('trial duration differs from telemetry')
         if trial['success']:
+            if not any(math.dist(rows[0]['ee_position'], row['ee_position']) > .001 for row in rows):
+                raise ValueError('successful qualification lacks measured end-effector motion')
             if not lifted or wrong_color or any(row['unsafe'] or row['safety_events'] for row in telemetry):
                 raise ValueError('success lacks safe physical grasp evidence')
             if trial.get('pick_result') is not True or trial.get('placement_result') is not True or trial.get('safety_events') != []:

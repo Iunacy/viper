@@ -143,7 +143,9 @@ def verify_pilot(root, provenance):
 
 
 def run(root, simulation_python, reader_python, isaac_source, groot_source, robot_cache, panda_assets,
-        reader_library_path=None, episodes=12, execute_stage=False, preflight=False, timeout=2400, max_attempts=2, total_timeout=14400):
+        reader_library_path=None, episodes=12, execute_stage=False, preflight=False, timeout=2400, max_attempts=2, total_timeout=14400, stop_after='pilot'):
+    if stop_after not in ('qualification', 'pilot'):
+        raise ValueError('unknown session endpoint')
     if type(episodes) is not int or not 10 <= episodes <= 20:
         raise ValueError('pilot requires 10 to 20 successful train episodes per robot')
     if type(timeout) is not int or not 1 <= timeout <= 7200 or type(max_attempts) is not int or not 1 <= max_attempts <= 3:
@@ -243,7 +245,18 @@ def run(root, simulation_python, reader_python, isaac_source, groot_source, robo
             result['status'] = 'PREFLIGHT_READY'
             if not execute_stage:
                 return result
+            from .simulation_smoke import run as startup_smoke
+            remaining = deadline-time.monotonic()
+            if remaining < 2:
+                raise TimeoutError('total session invocation deadline exceeded')
+            smoke = startup_smoke(root/'smoke', sim, True, min(timeout, 600, int(remaining/2)), max_attempts)
+            result['stages']['smoke'] = smoke
+            if smoke['status'] != 'PASS':
+                raise RuntimeError('simulation startup smoke failed: '+str(smoke.get('error')))
             for stage, verifier in (('qualification', verify_qualification), ('pilot', verify_pilot)):
+                if stage == 'pilot' and stop_after == 'qualification':
+                    result.update(status='QUALIFIED')
+                    return result
                 receipt_path = root/(stage+'.verified.json')
                 artifact_root = root/stage
                 if receipt_path.exists():
@@ -299,6 +312,7 @@ def main():
     parser.add_argument('--max-attempts', type=int, default=2)
     parser.add_argument('--total-timeout', type=int, default=14400, help='maximum seconds per invocation, including simulation stages; default four hours')
     parser.add_argument('--execute', action='store_true')
+    parser.add_argument('--stop-after', choices=['qualification', 'pilot'], default='pilot')
     parser.add_argument('--preflight', action='store_true')
     args = parser.parse_args()
     if args.reader_probe:
@@ -313,7 +327,7 @@ def main():
                 parser.error('--'+name.replace('_', '-')+' required')
         report = run(args.root, args.simulation_python, args.reader_python, args.isaac_source, args.groot_source,
             args.robot_cache, args.panda_assets, args.reader_library_path, args.episodes, args.execute, args.preflight,
-            args.timeout, args.max_attempts, args.total_timeout)
+            args.timeout, args.max_attempts, args.total_timeout, args.stop_after)
     print(json.dumps(report, indent=2, allow_nan=False))
     return 2 if report.get('status') == 'BLOCKED' or report.get('ready') is False else 0
 

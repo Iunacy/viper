@@ -99,7 +99,8 @@ def load_episode(path, expected_hashes=None, runtime_pin=None, source_sha256=Non
         raise ValueError('invalid recorded task provenance')
     rows = [json.loads(line) for line in (path/'samples.jsonl').read_text().splitlines()]
     telemetry = [json.loads(line) for line in (path/'telemetry.jsonl').read_text().splitlines()]
-    if not rows or len(rows) != len(telemetry) or (len(rows) == 1 and (outcome['success'] or not telemetry[0]['unsafe'] or outcome.get('failure_reason') != 'unsafe_movement')):
+    from .completion import initial_policy_stop
+    if not rows or len(rows) != len(telemetry) or (len(rows) == 1 and not initial_policy_stop(metadata, outcome, rows) and (outcome['success'] or not telemetry[0]['unsafe'] or outcome.get('failure_reason') != 'unsafe_movement')):
         raise ValueError('missing aligned replay telemetry')
     previous, lifted, wrong = -1., False, False
     for index, (row, physical) in enumerate(zip(rows, telemetry, strict=True)):

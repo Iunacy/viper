@@ -134,10 +134,10 @@ class SmokeOrchestration(unittest.TestCase):
             arm_names, finger_names = ARM, FINGERS
             safety_config = SafetyConfig(((-3., 3.),)*4+((-.011, .02),)*2, 4)
             def reset(self, seed):
-                self.obs = Observation(0., (.17, 0., .085), (0.,)*6, (0.,)*6,
+                self.obs = Observation(0., (.17, 0., .085), (0.,)*4+(.004, .004), (0.,)*6,
                     {c: (*p, 1., 0., 0., 0.) for c, p in layout(seed).items()},
                     {c: 0. for c in COLORS}, contacts={c: False for c in COLORS},
-                    contact_forces={c: (0., 0.) for c in COLORS}, gripper_open=1.)
+                    contact_forces={c: (0., 0.) for c in COLORS}, gripper_open=1., ee_quaternion=(1., 0., 0., 0.))
                 return self.obs
             def step(self, action):
                 self.obs = replace(self.obs, time=self.obs.time+CONTROL_DT,

@@ -85,10 +85,16 @@ def load_episode(path: Path, require_physics: bool = True, expert_only: bool = T
     if not math.isclose(metadata.get('control_dt', 0), CONTROL_DT, abs_tol=1e-9):
         raise ValueError('control frequency mismatch')
     rows, shape, previous = [], None, -1.
-    for line in (path/'samples.jsonl').read_text().splitlines():
+    sample_lines = (path/'samples.jsonl').read_text().splitlines()
+    partial_terminal = False
+    for index, line in enumerate(sample_lines):
         row = json.loads(line)
         timestamp = validate_sample(row, previous)
-        if not math.isclose(timestamp, len(rows)*CONTROL_DT, abs_tol=1e-5):
+        partial_terminal = (index == len(sample_lines)-1 and index > 0 and outcome.get('success') is False
+            and outcome.get('failure_reason') == 'unsafe_movement' and outcome.get('safety_events')
+            and metadata.get('controller') in ('vla_only', 'fallback_assisted')
+            and (index-1)*CONTROL_DT < timestamp < index*CONTROL_DT)
+        if not math.isclose(timestamp, len(rows)*CONTROL_DT, abs_tol=1e-5) and not partial_terminal:
             raise ValueError('nonuniform or misaligned timestamps')
         previous = timestamp
         if len(row['joint_position']) != joint_count:
@@ -111,13 +117,16 @@ def load_episode(path: Path, require_physics: bool = True, expert_only: bool = T
             raise ValueError('camera shape changed within episode')
         shape = current
         rows.append(row)
-    if len(rows) < 2 or any(row['success'] for row in rows[:-1]) or rows[-1]['success'] != outcome['success']:
+    from .completion import initial_policy_stop
+    if (len(rows) < 2 and not initial_policy_stop(metadata, outcome, rows)) or any(row['success'] for row in rows[:-1]) or rows[-1]['success'] != outcome['success']:
         raise ValueError('invalid episode boundary or outcome alignment')
     if require_physics:
         from .benchmark import inside_bin
         telemetry = [json.loads(line) for line in (path/'telemetry.jsonl').read_text().splitlines()]
         if len(telemetry) != len(rows) or any(abs(a['timestamp']-b['timestamp']) > 1e-8 for a,b in zip(rows,telemetry,strict=True)):
             raise ValueError('physical telemetry is not aligned with demonstrations')
+        if partial_terminal and telemetry[-1].get('unsafe') is not True:
+            raise ValueError('partial physics tick lacks a measured terminal safety stop')
         for row, item in zip(rows, telemetry, strict=True):
             validate_telemetry(item)
             if metadata.get('sensor_contract') == 'viper.physical_sensors.v1':

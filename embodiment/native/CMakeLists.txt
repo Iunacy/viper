@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.22)
 project(viper_action_contract LANGUAGES CXX)
 add_library(viper_action_contract SHARED action_contract.cpp)
 target_compile_features(viper_action_contract PRIVATE cxx_std_20)
