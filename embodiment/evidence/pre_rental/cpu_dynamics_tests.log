@@ -1,0 +1,8 @@
+test_both_official_assets_against_actual_mujoco (embodiment.tests.test_kinematics.UrdfKinematics.test_both_official_assets_against_actual_mujoco) ... ok
+test_manufacturer_matrix_repairs_omx_self_contacts_without_removing_floor_probe (embodiment.tests.test_kinematics.UrdfKinematics.test_manufacturer_matrix_repairs_omx_self_contacts_without_removing_floor_probe) ... ok
+test_omx_chain_matches_existing_analytic_kinematics (embodiment.tests.test_kinematics.UrdfKinematics.test_omx_chain_matches_existing_analytic_kinematics) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.876s
+
+OK

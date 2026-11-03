@@ -1,0 +1,380 @@
+{
+  "schema": "viper.deployment.v1",
+  "supported_os": "Ubuntu 22.04 x86_64",
+  "system_operations": [
+    [
+      "sudo",
+      "-n",
+      "apt-get",
+      "update"
+    ],
+    [
+      "sudo",
+      "-n",
+      "apt-get",
+      "install",
+      "-y",
+      "--no-install-recommends",
+      "ca-certificates",
+      "git",
+      "build-essential",
+      "cmake",
+      "python3",
+      "python3-venv",
+      "ffmpeg",
+      "libgl1",
+      "libegl1",
+      "libglib2.0-0",
+      "libgomp1",
+      "libx11-6",
+      "libxext6",
+      "libxrender1",
+      "libxi6",
+      "libxrandr2",
+      "libvulkan1",
+      "libsm6",
+      "libxt6",
+      "libxkbcommon0",
+      "libnss3"
+    ],
+    [
+      "download-sha256",
+      "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb",
+      "d93190d50b98ad4699ff40f4f7af50f16a76dac3bb8da1eaaf366d47898ff8df",
+      "/workspace/viper/setup/cuda-keyring.deb"
+    ],
+    [
+      "sudo",
+      "-n",
+      "dpkg",
+      "-i",
+      "/workspace/viper/setup/cuda-keyring.deb"
+    ],
+    [
+      "sudo",
+      "-n",
+      "apt-get",
+      "update"
+    ],
+    [
+      "sudo",
+      "-n",
+      "apt-get",
+      "install",
+      "-y",
+      "cuda-toolkit-12-8=12.8.1-1"
+    ]
+  ],
+  "bootstrap_operations": [
+    [
+      "/usr/bin/python3",
+      "-m",
+      "venv",
+      "/workspace/viper/bootstrap"
+    ],
+    [
+      "/workspace/viper/bootstrap/bin/python",
+      "-m",
+      "pip",
+      "install",
+      "uv==0.13.4"
+    ]
+  ],
+  "runtimes": {
+    "simulation": {
+      "schema": "viper.bootstrap.v1",
+      "role": "simulation",
+      "prefix": "/workspace/viper",
+      "source": "/workspace/viper/sources/IsaacLab",
+      "url": "https://github.com/isaac-sim/IsaacLab.git",
+      "commit": "3c6e67bb5c7ada942a6d1884ab69338f57596f77",
+      "uv_version": "0.13.4",
+      "python": "/workspace/viper/simulation/bin/python",
+      "commands": [
+        [
+          "uv",
+          "venv",
+          "--python",
+          "3.11.17",
+          "--seed",
+          "/workspace/viper/simulation"
+        ],
+        [
+          "/workspace/viper/simulation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "pip==25.3",
+          "setuptools==80.9.0",
+          "wheel==0.45.1"
+        ],
+        [
+          "uv",
+          "pip",
+          "install",
+          "--python",
+          "/workspace/viper/simulation/bin/python",
+          "torch==2.7.0",
+          "torchvision==0.22.0",
+          "--index-url",
+          "https://download.pytorch.org/whl/cu128"
+        ],
+        [
+          "uv",
+          "pip",
+          "install",
+          "--python",
+          "/workspace/viper/simulation/bin/python",
+          "isaacsim[all,extscache]==5.1.0",
+          "--extra-index-url",
+          "https://pypi.nvidia.com",
+          "-c",
+          "/home/iris/.codex/worktrees/pre-rental-execution/RELIC/embodiment/runtime_constraints.txt"
+        ],
+        [
+          "uv",
+          "pip",
+          "install",
+          "--python",
+          "/workspace/viper/simulation/bin/python",
+          "--no-build-isolation",
+          "flatdict==4.0.1"
+        ],
+        [
+          "uv",
+          "pip",
+          "install",
+          "--python",
+          "/workspace/viper/simulation/bin/python",
+          "-e",
+          "/workspace/viper/sources/IsaacLab/source/isaaclab",
+          "-e",
+          "/workspace/viper/sources/IsaacLab/source/isaaclab_assets",
+          "-c",
+          "/home/iris/.codex/worktrees/pre-rental-execution/RELIC/embodiment/runtime_constraints.txt"
+        ],
+        [
+          "/workspace/viper/simulation/bin/python",
+          "-m",
+          "pip",
+          "check"
+        ],
+        [
+          "/workspace/viper/simulation/bin/python",
+          "-m",
+          "embodiment.assets"
+        ],
+        [
+          "/workspace/viper/simulation/bin/python",
+          "-c",
+          "from embodiment.replay_render import panda_asset; print(panda_asset())"
+        ],
+        [
+          "uv",
+          "venv",
+          "--python",
+          "3.12.15",
+          "/workspace/viper/asset_tools"
+        ],
+        [
+          "uv",
+          "pip",
+          "install",
+          "--python",
+          "/workspace/viper/asset_tools/bin/python",
+          "usd-core==25.11"
+        ],
+        [
+          "/workspace/viper/asset_tools/bin/python",
+          "-m",
+          "embodiment.asset_cache",
+          "--root",
+          "/workspace/viper/assets"
+        ]
+      ],
+      "minimum_free_disk_gib": 65,
+      "inputs_sha256": {
+        "embodiment/reader_requirements.txt": "20990ac6da6bb8a947da00f3622c7b4a62af3f727ee4fdaa2f156f5c7bad73f6",
+        "embodiment/runtime_constraints.txt": "55d96faf7fe9713c7ceac71482c0ed305564a2fece6dbdd671dfbacb84782199"
+      },
+      "cache": "/workspace/viper/cache/uv",
+      "downloads_models": false,
+      "provisions_hardware": false
+    },
+    "reader": {
+      "schema": "viper.bootstrap.v1",
+      "role": "reader",
+      "prefix": "/workspace/viper",
+      "source": "/workspace/viper/sources/GR00T",
+      "url": "https://github.com/NVIDIA/Isaac-GR00T.git",
+      "commit": "944fe70c4fd54e3fcb80a7d7258a328f9c061176",
+      "uv_version": "0.13.4",
+      "python": "/workspace/viper/reader/bin/python",
+      "commands": [
+        [
+          "uv",
+          "venv",
+          "--python",
+          "3.12.15",
+          "/workspace/viper/reader"
+        ],
+        [
+          "uv",
+          "pip",
+          "install",
+          "--python",
+          "/workspace/viper/reader/bin/python",
+          "torch==2.9.0",
+          "torchvision==0.24.0",
+          "--index-url",
+          "https://download.pytorch.org/whl/cpu"
+        ],
+        [
+          "uv",
+          "pip",
+          "install",
+          "--python",
+          "/workspace/viper/reader/bin/python",
+          "-r",
+          "/home/iris/.codex/worktrees/pre-rental-execution/RELIC/embodiment/reader_requirements.txt"
+        ],
+        [
+          "/workspace/viper/reader/bin/python",
+          "-m",
+          "embodiment.codec_runtime",
+          "--root",
+          "/workspace/viper/reader_codec"
+        ],
+        [
+          "uv",
+          "pip",
+          "check",
+          "--python",
+          "/workspace/viper/reader/bin/python"
+        ],
+        [
+          "/workspace/viper/reader/bin/python",
+          "-m",
+          "embodiment.first_session",
+          "--reader-probe",
+          "/workspace/viper/sources/GR00T",
+          "--root",
+          "/workspace/viper"
+        ]
+      ],
+      "minimum_free_disk_gib": 12,
+      "inputs_sha256": {
+        "embodiment/reader_requirements.txt": "20990ac6da6bb8a947da00f3622c7b4a62af3f727ee4fdaa2f156f5c7bad73f6",
+        "embodiment/runtime_constraints.txt": "55d96faf7fe9713c7ceac71482c0ed305564a2fece6dbdd671dfbacb84782199"
+      },
+      "cache": "/workspace/viper/cache/uv",
+      "downloads_models": false,
+      "provisions_hardware": false
+    },
+    "training": {
+      "schema": "viper.bootstrap.v1",
+      "role": "training",
+      "prefix": "/workspace/viper",
+      "source": "/workspace/viper/sources/GR00T",
+      "url": "https://github.com/NVIDIA/Isaac-GR00T.git",
+      "commit": "944fe70c4fd54e3fcb80a7d7258a328f9c061176",
+      "uv_version": "0.13.4",
+      "python": "/workspace/viper/sources/GR00T/.venv/bin/python",
+      "commands": [
+        [
+          "uv",
+          "sync",
+          "--project",
+          "/workspace/viper/sources/GR00T",
+          "--frozen",
+          "--no-dev",
+          "--python",
+          "3.12.15"
+        ],
+        [
+          "uv",
+          "pip",
+          "install",
+          "--python",
+          "/workspace/viper/sources/GR00T/.venv/bin/python",
+          "av==14.2.0"
+        ],
+        [
+          "/workspace/viper/sources/GR00T/.venv/bin/python",
+          "-m",
+          "embodiment.codec_runtime",
+          "--root",
+          "/workspace/viper/codec"
+        ],
+        [
+          "uv",
+          "pip",
+          "check",
+          "--python",
+          "/workspace/viper/sources/GR00T/.venv/bin/python"
+        ],
+        [
+          "/workspace/viper/sources/GR00T/.venv/bin/python",
+          "-m",
+          "embodiment.runtime_probe",
+          "--source",
+          "/workspace/viper/sources/GR00T"
+        ]
+      ],
+      "minimum_free_disk_gib": 40,
+      "inputs_sha256": {
+        "embodiment/reader_requirements.txt": "20990ac6da6bb8a947da00f3622c7b4a62af3f727ee4fdaa2f156f5c7bad73f6",
+        "embodiment/runtime_constraints.txt": "55d96faf7fe9713c7ceac71482c0ed305564a2fece6dbdd671dfbacb84782199"
+      },
+      "cache": "/workspace/viper/cache/uv",
+      "downloads_models": false,
+      "provisions_hardware": false
+    }
+  },
+  "native_operations": [
+    [
+      "cmake",
+      "-S",
+      "/home/iris/.codex/worktrees/pre-rental-execution/RELIC/embodiment/native",
+      "-B",
+      "/workspace/viper/native",
+      "-DCMAKE_BUILD_TYPE=Release"
+    ],
+    [
+      "cmake",
+      "--build",
+      "/workspace/viper/native",
+      "--parallel",
+      "2"
+    ],
+    [
+      "ctest",
+      "--test-dir",
+      "/workspace/viper/native",
+      "--output-on-failure"
+    ]
+  ],
+  "downloads_models": false,
+  "provisions_hardware": false,
+  "licenses": {
+    "isaac": "https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/install_python.html",
+    "models": "separate model acquisition consent and gated Hugging Face license acceptance"
+  },
+  "persistent_paths": [
+    "/workspace/viper/sources",
+    "/workspace/viper/cache",
+    "/workspace/viper/robot_cache",
+    "/workspace/viper/assets",
+    "/workspace/viper/models"
+  ],
+  "status": "NOT_EXECUTED",
+  "model_operation": [
+    "/workspace/viper/sources/GR00T/.venv/bin/python",
+    "-m",
+    "embodiment.models",
+    "--prefix",
+    "/workspace/viper",
+    "--execute",
+    "--license-accepted"
+  ]
+}

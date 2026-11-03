@@ -1,0 +1,75 @@
+Test project /tmp/viper-pre-rental-cpp
+      Start  1: batch003_cartesian_repro_3
+ 1/35 Test  #1: batch003_cartesian_repro_3 .......   Passed    0.11 sec
+      Start  2: batch003_cartesian_repro_4
+ 2/35 Test  #2: batch003_cartesian_repro_4 .......   Passed    0.78 sec
+      Start  3: batch003_motion_trajectory
+ 3/35 Test  #3: batch003_motion_trajectory .......   Passed    0.01 sec
+      Start  4: batch003_motion_adaptive
+ 4/35 Test  #4: batch003_motion_adaptive .........   Passed    0.49 sec
+      Start  5: batch003_motion_selection
+ 5/35 Test  #5: batch003_motion_selection ........   Passed    0.15 sec
+      Start  6: batch003_motion_contacts
+ 6/35 Test  #6: batch003_motion_contacts .........   Passed    2.48 sec
+      Start  7: batch003_motion_execution
+ 7/35 Test  #7: batch003_motion_execution ........   Passed    1.79 sec
+      Start  8: batch003_motion_failures
+ 8/35 Test  #8: batch003_motion_failures .........   Passed    0.79 sec
+      Start  9: batch003_motion_diagnostics
+ 9/35 Test  #9: batch003_motion_diagnostics ......   Passed    0.02 sec
+      Start 10: batch003_ik_branches
+10/35 Test #10: batch003_ik_branches .............   Passed    0.02 sec
+      Start 11: batch003_ik_boundaries
+11/35 Test #11: batch003_ik_boundaries ...........   Passed    0.03 sec
+      Start 12: batch003_ik_wrist
+12/35 Test #12: batch003_ik_wrist ................   Passed    0.02 sec
+      Start 13: batch003_ik_inputs
+13/35 Test #13: batch003_ik_inputs ...............   Passed    0.01 sec
+      Start 14: batch003_ik_geometry
+14/35 Test #14: batch003_ik_geometry .............   Passed    0.01 sec
+      Start 15: batch003_ik_isolation
+15/35 Test #15: batch003_ik_isolation ............   Passed    0.02 sec
+      Start 16: batch003_ik_generated
+16/35 Test #16: batch003_ik_generated ............   Passed    0.60 sec
+      Start 17: batch002_targeted
+17/35 Test #17: batch002_targeted ................   Passed    0.02 sec
+      Start 18: batch002_fuzz
+18/35 Test #18: batch002_fuzz ....................   Passed    0.18 sec
+      Start 19: batch002_integration
+19/35 Test #19: batch002_integration .............   Passed    0.16 sec
+      Start 20: models
+20/35 Test #20: models ...........................   Passed    0.01 sec
+      Start 21: fk
+21/35 Test #21: fk ...............................   Passed    0.02 sec
+      Start 22: validation
+22/35 Test #22: validation .......................   Passed    0.01 sec
+      Start 23: feasibility
+23/35 Test #23: feasibility ......................   Passed    0.01 sec
+      Start 24: config
+24/35 Test #24: config ...........................   Passed    0.00 sec
+      Start 25: isolation
+25/35 Test #25: isolation ........................   Passed    0.01 sec
+      Start 26: reset
+26/35 Test #26: reset ............................   Passed    0.02 sec
+      Start 27: actuators
+27/35 Test #27: actuators ........................   Passed    0.02 sec
+      Start 28: lifetime
+28/35 Test #28: lifetime .........................   Passed    0.12 sec
+      Start 29: trace
+29/35 Test #29: trace ............................   Passed    0.01 sec
+      Start 30: cli_repro_3
+30/35 Test #30: cli_repro_3 ......................   Passed    0.12 sec
+      Start 31: cli_repro_4
+31/35 Test #31: cli_repro_4 ......................   Passed    0.14 sec
+      Start 32: adaptive_native
+32/35 Test #32: adaptive_native ..................   Passed    0.02 sec
+      Start 33: adaptive_pipeline
+33/35 Test #33: adaptive_pipeline ................   Passed    4.10 sec
+      Start 34: adaptive_learning
+34/35 Test #34: adaptive_learning ................   Passed    3.42 sec
+      Start 35: adaptive_revision
+35/35 Test #35: adaptive_revision ................   Passed    4.01 sec
+
+100% tests passed out of 35
+
+Total Test time (real) =  19.74 sec

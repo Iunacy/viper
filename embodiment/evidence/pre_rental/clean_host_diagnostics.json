@@ -1,0 +1,497 @@
+{
+  "schema": "viper.rental.v1",
+  "status": "BLOCKED",
+  "stage": "doctor",
+  "commands": {
+    "qualify": [
+      "/tmp/viper-clean-runtime/reader/bin/python",
+      "-m",
+      "embodiment.first_session",
+      "--root",
+      "/tmp/viper-clean-run/session",
+      "--simulation-python",
+      "/tmp/viper-clean-runtime/simulation/bin/python",
+      "--reader-python",
+      "/tmp/viper-clean-runtime/reader/bin/python",
+      "--isaac-source",
+      "/tmp/viper-clean-runtime/sources/IsaacLab",
+      "--groot-source",
+      "/tmp/viper-clean-runtime/sources/GR00T",
+      "--robot-cache",
+      "/tmp/viper-clean-runtime/robot_cache",
+      "--panda-assets",
+      "/tmp/viper-clean-runtime/assets",
+      "--reader-library-path",
+      "/tmp/viper-clean-runtime/reader_codec",
+      "--episodes",
+      "12",
+      "--timeout",
+      "2400",
+      "--max-attempts",
+      "2",
+      "--total-timeout",
+      "28800",
+      "--execute",
+      "--stop-after",
+      "qualification"
+    ],
+    "collect": [
+      "/tmp/viper-clean-runtime/reader/bin/python",
+      "-m",
+      "embodiment.first_session",
+      "--root",
+      "/tmp/viper-clean-run/session",
+      "--simulation-python",
+      "/tmp/viper-clean-runtime/simulation/bin/python",
+      "--reader-python",
+      "/tmp/viper-clean-runtime/reader/bin/python",
+      "--isaac-source",
+      "/tmp/viper-clean-runtime/sources/IsaacLab",
+      "--groot-source",
+      "/tmp/viper-clean-runtime/sources/GR00T",
+      "--robot-cache",
+      "/tmp/viper-clean-runtime/robot_cache",
+      "--panda-assets",
+      "/tmp/viper-clean-runtime/assets",
+      "--reader-library-path",
+      "/tmp/viper-clean-runtime/reader_codec",
+      "--episodes",
+      "12",
+      "--timeout",
+      "2400",
+      "--max-attempts",
+      "2",
+      "--total-timeout",
+      "28800",
+      "--execute"
+    ],
+    "g3_preflight": [
+      "/tmp/viper-clean-runtime/sources/GR00T/.venv/bin/python",
+      "-m",
+      "embodiment.cloud",
+      "--source",
+      "/tmp/viper-clean-runtime/sources/GR00T",
+      "--pretrained",
+      "/tmp/viper-clean-runtime/models/groot",
+      "--volume",
+      "/tmp/viper-clean-run"
+    ],
+    "g3": [
+      "/tmp/viper-clean-runtime/sources/GR00T/.venv/bin/python",
+      "-m",
+      "embodiment.cross_smoke",
+      "--source",
+      "/tmp/viper-clean-runtime/sources/GR00T",
+      "--dataset-a",
+      "/tmp/viper-clean-run/session/pilot/exports/openmanipulator_x/train",
+      "--dataset-b",
+      "/tmp/viper-clean-run/session/pilot/exports/franka_panda/train",
+      "--pretrained",
+      "/tmp/viper-clean-runtime/models/groot",
+      "--simulation-python",
+      "/tmp/viper-clean-runtime/simulation/bin/python",
+      "--output",
+      "/tmp/viper-clean-run/g3",
+      "--native-library",
+      "/tmp/viper-clean-runtime/native/libviper_action_contract.so",
+      "--timeout",
+      "3600",
+      "--execute"
+    ],
+    "m0_train": [
+      "/tmp/viper-clean-runtime/sources/GR00T/.venv/bin/python",
+      "-m",
+      "embodiment.training_campaign",
+      "--source",
+      "/tmp/viper-clean-runtime/sources/GR00T",
+      "--dataset-a",
+      "/tmp/viper-clean-run/session/pilot/exports/openmanipulator_x/train",
+      "--dataset-b",
+      "/tmp/viper-clean-run/session/pilot/exports/franka_panda/train",
+      "--pretrained",
+      "/tmp/viper-clean-runtime/models/groot",
+      "--simulation-python",
+      "/tmp/viper-clean-runtime/simulation/bin/python",
+      "--root",
+      "/tmp/viper-clean-run/campaign",
+      "--smoke-root",
+      "/tmp/viper-clean-run/g3",
+      "--execute",
+      "--steps",
+      "2000",
+      "--save-steps",
+      "500",
+      "--timeout",
+      "28800",
+      "--stage",
+      "train_a"
+    ],
+    "m0": [
+      "/tmp/viper-clean-runtime/sources/GR00T/.venv/bin/python",
+      "-m",
+      "embodiment.training_campaign",
+      "--source",
+      "/tmp/viper-clean-runtime/sources/GR00T",
+      "--dataset-a",
+      "/tmp/viper-clean-run/session/pilot/exports/openmanipulator_x/train",
+      "--dataset-b",
+      "/tmp/viper-clean-run/session/pilot/exports/franka_panda/train",
+      "--pretrained",
+      "/tmp/viper-clean-runtime/models/groot",
+      "--simulation-python",
+      "/tmp/viper-clean-runtime/simulation/bin/python",
+      "--root",
+      "/tmp/viper-clean-run/campaign",
+      "--smoke-root",
+      "/tmp/viper-clean-run/g3",
+      "--execute",
+      "--steps",
+      "2000",
+      "--save-steps",
+      "500",
+      "--timeout",
+      "28800",
+      "--stage",
+      "evaluate_a",
+      "--m0"
+    ]
+  },
+  "provisions_hardware": false,
+  "stages": {},
+  "physical_qualification_passed": false,
+  "g3_passed": false,
+  "m0_passed": false,
+  "doctor": {
+    "ready": false,
+    "blockers": [
+      "supported deployment requires Ubuntu 22.04 x86_64",
+      "insufficient GPU memory for requested deployment role",
+      "persistent storage requires at least 100 GiB free before setup",
+      "insufficient available RAM; require 32 GiB before setup"
+    ],
+    "os": {
+      "NAME": "\"Arch Linux\"",
+      "PRETTY_NAME": "\"Arch Linux\"",
+      "ID": "arch",
+      "BUILD_ID": "rolling",
+      "ANSI_COLOR": "\"38;2;23;147;209\"",
+      "HOME_URL": "\"https://archlinux.org/\"",
+      "DOCUMENTATION_URL": "\"https://wiki.archlinux.org/\"",
+      "SUPPORT_URL": "\"https://bbs.archlinux.org/\"",
+      "BUG_REPORT_URL": "\"https://gitlab.archlinux.org/groups/archlinux/-/issues\"",
+      "PRIVACY_POLICY_URL": "\"https://terms.archlinux.org/docs/privacy-policy/\"",
+      "LOGO": "archlinux-logo"
+    },
+    "available_cpu_cores": 12,
+    "storage_free_bytes": 7753072640,
+    "memory_bytes": {
+      "MemTotal": 16364085248,
+      "MemAvailable": 4301258752
+    },
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+      "driver": "615.78.08",
+      "total_mib": 4096,
+      "free_mib": 1823
+    },
+    "compute_started": false,
+    "operations": {
+      "schema": "viper.deployment.v1",
+      "supported_os": "Ubuntu 22.04 x86_64",
+      "system_operations": [
+        [
+          "sudo",
+          "-n",
+          "apt-get",
+          "update"
+        ],
+        [
+          "sudo",
+          "-n",
+          "apt-get",
+          "install",
+          "-y",
+          "--no-install-recommends",
+          "ca-certificates",
+          "git",
+          "build-essential",
+          "cmake",
+          "python3",
+          "python3-venv",
+          "ffmpeg",
+          "libgl1",
+          "libegl1",
+          "libglib2.0-0",
+          "libgomp1",
+          "libx11-6",
+          "libxext6",
+          "libxrender1",
+          "libxi6",
+          "libxrandr2",
+          "libvulkan1",
+          "libsm6",
+          "libxt6",
+          "libxkbcommon0",
+          "libnss3"
+        ]
+      ],
+      "bootstrap_operations": [
+        [
+          "/usr/bin/python3",
+          "-m",
+          "venv",
+          "/tmp/viper-clean-runtime/bootstrap"
+        ],
+        [
+          "/tmp/viper-clean-runtime/bootstrap/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "uv==0.13.4"
+        ]
+      ],
+      "runtimes": {
+        "simulation": {
+          "schema": "viper.bootstrap.v1",
+          "role": "simulation",
+          "prefix": "/tmp/viper-clean-runtime",
+          "source": "/tmp/viper-clean-runtime/sources/IsaacLab",
+          "url": "https://github.com/isaac-sim/IsaacLab.git",
+          "commit": "3c6e67bb5c7ada942a6d1884ab69338f57596f77",
+          "uv_version": "0.13.4",
+          "python": "/tmp/viper-clean-runtime/simulation/bin/python",
+          "commands": [
+            [
+              "uv",
+              "venv",
+              "--python",
+              "3.11.17",
+              "--seed",
+              "/tmp/viper-clean-runtime/simulation"
+            ],
+            [
+              "/tmp/viper-clean-runtime/simulation/bin/python",
+              "-m",
+              "pip",
+              "install",
+              "pip==25.3",
+              "setuptools==80.9.0",
+              "wheel==0.45.1"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/tmp/viper-clean-runtime/simulation/bin/python",
+              "torch==2.7.0",
+              "torchvision==0.22.0",
+              "--index-url",
+              "https://download.pytorch.org/whl/cu128"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/tmp/viper-clean-runtime/simulation/bin/python",
+              "isaacsim[all,extscache]==5.1.0",
+              "--extra-index-url",
+              "https://pypi.nvidia.com",
+              "-c",
+              "/home/iris/.codex/worktrees/pre-rental-execution/RELIC/embodiment/runtime_constraints.txt"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/tmp/viper-clean-runtime/simulation/bin/python",
+              "--no-build-isolation",
+              "flatdict==4.0.1"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/tmp/viper-clean-runtime/simulation/bin/python",
+              "-e",
+              "/tmp/viper-clean-runtime/sources/IsaacLab/source/isaaclab",
+              "-e",
+              "/tmp/viper-clean-runtime/sources/IsaacLab/source/isaaclab_assets",
+              "-c",
+              "/home/iris/.codex/worktrees/pre-rental-execution/RELIC/embodiment/runtime_constraints.txt"
+            ],
+            [
+              "/tmp/viper-clean-runtime/simulation/bin/python",
+              "-m",
+              "pip",
+              "check"
+            ],
+            [
+              "/tmp/viper-clean-runtime/simulation/bin/python",
+              "-m",
+              "embodiment.assets"
+            ],
+            [
+              "/tmp/viper-clean-runtime/simulation/bin/python",
+              "-c",
+              "from embodiment.replay_render import panda_asset; print(panda_asset())"
+            ],
+            [
+              "uv",
+              "venv",
+              "--python",
+              "3.12.15",
+              "/tmp/viper-clean-runtime/asset_tools"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/tmp/viper-clean-runtime/asset_tools/bin/python",
+              "usd-core==25.11"
+            ],
+            [
+              "/tmp/viper-clean-runtime/asset_tools/bin/python",
+              "-m",
+              "embodiment.asset_cache",
+              "--root",
+              "/tmp/viper-clean-runtime/assets"
+            ]
+          ],
+          "minimum_free_disk_gib": 65,
+          "inputs_sha256": {
+            "embodiment/reader_requirements.txt": "20990ac6da6bb8a947da00f3622c7b4a62af3f727ee4fdaa2f156f5c7bad73f6",
+            "embodiment/runtime_constraints.txt": "55d96faf7fe9713c7ceac71482c0ed305564a2fece6dbdd671dfbacb84782199"
+          },
+          "cache": "/tmp/viper-clean-runtime/cache/uv",
+          "downloads_models": false,
+          "provisions_hardware": false
+        },
+        "reader": {
+          "schema": "viper.bootstrap.v1",
+          "role": "reader",
+          "prefix": "/tmp/viper-clean-runtime",
+          "source": "/tmp/viper-clean-runtime/sources/GR00T",
+          "url": "https://github.com/NVIDIA/Isaac-GR00T.git",
+          "commit": "944fe70c4fd54e3fcb80a7d7258a328f9c061176",
+          "uv_version": "0.13.4",
+          "python": "/tmp/viper-clean-runtime/reader/bin/python",
+          "commands": [
+            [
+              "uv",
+              "venv",
+              "--python",
+              "3.12.15",
+              "/tmp/viper-clean-runtime/reader"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/tmp/viper-clean-runtime/reader/bin/python",
+              "torch==2.9.0",
+              "torchvision==0.24.0",
+              "--index-url",
+              "https://download.pytorch.org/whl/cpu"
+            ],
+            [
+              "uv",
+              "pip",
+              "install",
+              "--python",
+              "/tmp/viper-clean-runtime/reader/bin/python",
+              "-r",
+              "/home/iris/.codex/worktrees/pre-rental-execution/RELIC/embodiment/reader_requirements.txt"
+            ],
+            [
+              "/tmp/viper-clean-runtime/reader/bin/python",
+              "-m",
+              "embodiment.codec_runtime",
+              "--root",
+              "/tmp/viper-clean-runtime/reader_codec"
+            ],
+            [
+              "uv",
+              "pip",
+              "check",
+              "--python",
+              "/tmp/viper-clean-runtime/reader/bin/python"
+            ],
+            [
+              "/tmp/viper-clean-runtime/reader/bin/python",
+              "-m",
+              "embodiment.first_session",
+              "--reader-probe",
+              "/tmp/viper-clean-runtime/sources/GR00T",
+              "--root",
+              "/tmp/viper-clean-runtime"
+            ]
+          ],
+          "minimum_free_disk_gib": 12,
+          "inputs_sha256": {
+            "embodiment/reader_requirements.txt": "20990ac6da6bb8a947da00f3622c7b4a62af3f727ee4fdaa2f156f5c7bad73f6",
+            "embodiment/runtime_constraints.txt": "55d96faf7fe9713c7ceac71482c0ed305564a2fece6dbdd671dfbacb84782199"
+          },
+          "cache": "/tmp/viper-clean-runtime/cache/uv",
+          "downloads_models": false,
+          "provisions_hardware": false
+        }
+      },
+      "native_operations": [
+        [
+          "cmake",
+          "-S",
+          "/home/iris/.codex/worktrees/pre-rental-execution/RELIC/embodiment/native",
+          "-B",
+          "/tmp/viper-clean-runtime/native",
+          "-DCMAKE_BUILD_TYPE=Release"
+        ],
+        [
+          "cmake",
+          "--build",
+          "/tmp/viper-clean-runtime/native",
+          "--parallel",
+          "2"
+        ],
+        [
+          "ctest",
+          "--test-dir",
+          "/tmp/viper-clean-runtime/native",
+          "--output-on-failure"
+        ]
+      ],
+      "downloads_models": false,
+      "provisions_hardware": false,
+      "licenses": {
+        "isaac": "https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/install_python.html",
+        "models": "separate model acquisition consent and gated Hugging Face license acceptance"
+      },
+      "persistent_paths": [
+        "/tmp/viper-clean-runtime/sources",
+        "/tmp/viper-clean-runtime/cache",
+        "/tmp/viper-clean-runtime/robot_cache",
+        "/tmp/viper-clean-runtime/assets",
+        "/tmp/viper-clean-runtime/models"
+      ]
+    }
+  },
+  "runtime_probes": {
+    "simulation": {
+      "ready": false,
+      "blockers": [
+        "runtime missing; run setup: /tmp/viper-clean-runtime/simulation/bin/python"
+      ]
+    },
+    "reader": {
+      "ready": false,
+      "blockers": [
+        "runtime missing; run setup: /tmp/viper-clean-runtime/reader/bin/python"
+      ]
+    }
+  }
+}
