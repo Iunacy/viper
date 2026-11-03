@@ -1,3 +1,6 @@
+# Only Double-S and its public headers: this upstream translation unit has no
+# Eigen dependency. Do not evaluate upstream's all-algorithm CMake (which can
+# fetch Eigen/Catch2 and changes BUILD_TESTING). No Python or pybind11.
 set(PROJECT_VERSION_MAJOR 3)
 set(PROJECT_VERSION_MINOR 3)
 set(PROJECT_VERSION_PATCH 2)

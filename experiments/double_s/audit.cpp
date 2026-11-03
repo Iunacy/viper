@@ -46,9 +46,14 @@ int main(int argc, char** argv) {
         for(double x:{r.position,r.velocity,r.acceleration,r.jerk}) finite &= std::isfinite(x);
         pv=std::max(pv,std::abs(r.velocity)); pa=std::max(pa,std::abs(r.acceleration)); pj=std::max(pj,std::abs(r.jerk));
       };
+      // Dense normalized samples, plus both sides of every branch boundary.
+      // In each polynomial phase acceleration is affine, velocity quadratic.
+      // Include acceleration zeros to cover interior velocity extrema.
       for(int k=0;k<=20000;++k) inspect(T*k/20000.0);
       std::vector<double> edges{0,j1,ta-j1,ta,ta+tv,ta+tv+j2,ta+tv+td-j2,T-j2,T};
       std::sort(edges.begin(),edges.end());
+      // Polynomial-phase extrema: velocity extrema occur where acceleration
+      // crosses zero; acceleration/jerk extrema occur at one-sided boundaries.
       for(std::size_t k=1;k<edges.size();++k) {
         const double l=std::max(0.0,edges[k-1]),r=std::min(T,edges[k]);
         if(r-l<1e-9) continue;
@@ -69,6 +74,7 @@ int main(int argc, char** argv) {
           ajump=std::max(ajump,std::abs(r.acceleration-l.acceleration));
         }
       }
+      // Bounded audit: never allocate/iterate billions of ticks on pathological input.
       if(T <= 40) {
         double prev=p.evaluate(0).position;
         for(std::size_t k=1;k<=static_cast<std::size_t>(std::ceil(T/0.002));++k) {
@@ -85,5 +91,6 @@ int main(int argc, char** argv) {
   if(!out) return 1;
   std::cout << "Audit completed: " << rejected << " rejected profiles; " << exceptions << " upstream exceptions.\n";
   std::cout << "Scalar admission does not establish multi-joint synchronization. No profiles sent to actuators.\n";
+  // A rejected profile is an experimental finding, never a passing benchmark.
   return rejected || exceptions ? 2 : 0;
 }
