@@ -355,7 +355,7 @@
       "kind": "button",
       "refersTo": "button-primary",
       "description": "Dominant entry into the laboratory.",
-      "html": "<a class=\"ds-primary\" href=\"#lab\">ENTER LAB <span aria-hidden=\"true\">\u2197</span></a>",
+      "html": "<a class=\"ds-primary\" href=\"#lab\">ENTER LAB <span aria-hidden=\"true\">↗</span></a>",
       "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:space-between;gap:45px;background:var(--ice, #b4ddf8);color:#101214;font:11px var(--mono, \"IBM Plex Mono\", monospace);letter-spacing:.06em;padding:17px 21px;min-height:48px;text-decoration:none;transition:background .2s,transform .3s cubic-bezier(.16,1,.3,1)}.ds-primary:hover{color:#101214;background:#d7edfc;transform:translateY(-2px)}.ds-primary:focus-visible{outline:2px solid var(--ice, #b4ddf8);outline-offset:4px;}.ds-primary span{font-size:18px}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none}}"
     },
     {
@@ -371,7 +371,7 @@
       "kind": "input",
       "refersTo": "select-control",
       "description": "Native select for robot or playback choices.",
-      "html": "<label class=\"ds-select-label\">Playback speed <select class=\"ds-select\"><option>1\u00d7</option><option>0.5\u00d7</option><option>2\u00d7</option></select></label>",
+      "html": "<label class=\"ds-select-label\">Playback speed <select class=\"ds-select\"><option>1×</option><option>0.5×</option><option>2×</option></select></label>",
       "css": ".ds-select-label{font:10px var(--mono, \"IBM Plex Mono\", monospace);color:var(--muted, #a1abb4)}.ds-select{font:12px \"Barlow\",sans-serif;color:#edf0f2;background:#191e22;border:1px solid var(--line, #30373d);border-radius:2px;padding:9px 12px;cursor:pointer;}.ds-select:hover{border-color:#778b9b;background:#252d34}.ds-select:focus-visible{outline:2px solid var(--ice, #b4ddf8);outline-offset:4px;}"
     },
     {

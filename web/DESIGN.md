@@ -155,8 +155,10 @@ Semantic exceptions remain narrow: `experimental` and its border mark experiment
 
 ## Typography
 
-**Display Font:** Barlow Condensed, sans-serif fallback.  
-**Body Font:** Barlow, sans-serif fallback.  
+**Display Font:** Barlow Condensed, sans-serif fallback.
+
+**Body Font:** Barlow, sans-serif fallback.
+
 **Label/Mono Font:** IBM Plex Mono, monospace fallback.
 
 Fonts are self-hosted. Condensed headlines give compact statements presence, while the interface and research prose remain direct and readable. Monospaced text distinguishes technical identity and measured values.
