@@ -138,3 +138,11 @@ class Deployment(unittest.TestCase):
                 self.assertTrue(source.is_dir())
                 self.assertFalse(source.with_name(source.name+'.installing').exists())
                 self.assertEqual(sum(command[:2] == ['git', 'clone'] for command in calls), 2)
+
+    def test_container_build_leaves_runtime_setup_to_explicit_host_execution(self):
+        dockerfile = (Path(__file__).resolve().parents[1]/'cloud.Dockerfile').read_text()
+        self.assertIn('sha256:6617a625f4090c76c545a0e7d63f2e441718ef9af7f4efe7dd1242a29e289fd7', dockerfile)
+        self.assertIn('embodiment.rental', dockerfile)
+        self.assertNotIn('INSTALL_RUNTIME', dockerfile)
+        self.assertNotIn('ACCEPT_ISAAC_LICENSE', dockerfile)
+        self.assertNotIn('-m embodiment.rental setup', dockerfile)

@@ -6,7 +6,4 @@ ENV PATH=/opt/bootstrap/bin:$PATH UV_CACHE_DIR=/workspace/viper/cache/uv OPENBLA
 ENV HF_HOME=/workspace/viper/cache/huggingface XDG_CACHE_HOME=/workspace/viper/cache/xdg TORCH_HOME=/workspace/viper/cache/torch TORCH_EXTENSIONS_DIR=/workspace/viper/cache/torch_extensions TRITON_CACHE_DIR=/workspace/viper/cache/triton CUDA_CACHE_PATH=/workspace/viper/cache/cuda
 WORKDIR /opt/viper
 COPY . /opt/viper
-ARG INSTALL_RUNTIME=0
-ARG ACCEPT_ISAAC_LICENSE=0
-RUN if [ "$INSTALL_RUNTIME" = "1" ]; then test "$ACCEPT_ISAAC_LICENSE" = "1" && /opt/bootstrap/bin/python -m embodiment.rental setup --prefix /opt/viper-runtime --execute --accept-isaac-license --training-runtime; fi
 ENTRYPOINT ["/opt/bootstrap/bin/python", "-m", "embodiment.rental"]
