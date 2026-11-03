@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+  <rect width="1280" height="640" fill="#101a20"/>
+  <path d="M64 75H1216M64 560H1216" stroke="#34464f"/>
+  <text x="64" y="121" font-family="sans-serif" font-size="19" letter-spacing="4" fill="#9cb3bd">EMBODIED ROBOTICS RESEARCH</text>
+  <text x="59" y="276" font-family="sans-serif" font-weight="700" font-size="142" letter-spacing="-5" fill="#f2f5ee">VIPER</text>
+  <text x="67" y="340" font-family="sans-serif" font-size="30" fill="#c7d6d7">From intent to motion.</text>
+  <text x="67" y="410" font-family="sans-serif" font-size="21" fill="#9cb3bd">Kinematics. Bounded control.</text>
+  <text x="67" y="443" font-family="sans-serif" font-size="21" fill="#9cb3bd">Manipulation across different bodies.</text>
+  <g stroke="#83d4b1" stroke-width="19" stroke-linecap="round" fill="none">
+    <path d="M790 439V331L851 261L914 304"/>
+    <path d="M1070 439V357L1007 302L1050 222L1120 264L1104 320"/>
+  </g>
+  <g fill="#101a20" stroke="#c9eddd" stroke-width="5">
+    <circle cx="790" cy="331" r="13"/><circle cx="851" cy="261" r="13"/>
+    <circle cx="1070" cy="357" r="13"/><circle cx="1007" cy="302" r="13"/><circle cx="1050" cy="222" r="13"/><circle cx="1120" cy="264" r="13"/>
+  </g>
+  <g stroke="#c9eddd" stroke-width="5" fill="none">
+    <path d="M904 299L927 310L916 332M1097 320L1114 324L1111 345"/>
+    <path d="M750 448H831M1030 448H1111"/>
+  </g>
+  <text x="751" y="495" font-family="sans-serif" font-size="16" fill="#9cb3bd">OPENMANIPULATOR-X</text>
+  <text x="1027" y="495" font-family="sans-serif" font-size="16" fill="#9cb3bd">FRANKA PANDA</text>
+  <text x="65" y="603" font-family="sans-serif" font-size="17" letter-spacing="1" fill="#83d4b1">IN DEVELOPMENT</text>
+  <text x="470" y="603" font-family="sans-serif" font-size="17" fill="#9cb3bd">Learned manipulation and transfer remain unvalidated.</text>
+</svg>

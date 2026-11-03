@@ -1,0 +1,15 @@
+VIPER
+Copyright 2026 VIPER contributors
+
+Original project code is licensed under Apache License 2.0.
+Third-party code, robot descriptions, assets, dependencies and model weights
+retain their own licenses. This license does not relicense those materials.
+
+Preserved third-party notices include:
+- interactive/vendor/low_cost_robot_arm/LICENSE — Apache-2.0, MuJoCo Menagerie
+- experiments/ruckig/vendor/LICENSE — MIT, Ruckig
+- experiments/double_s/upstream/LICENSE — MIT, InterpolateCpp subset
+- embodiment/assets/LICENSE — upstream robot description notices
+
+See each upstream license and manifest for its authorship and provenance.
+GR00T, Cosmos, Isaac Sim and externally acquired assets have separate terms.

@@ -1,0 +1,5 @@
+# CPU development and recorded-evidence viewer; no GR00T/Isaac/model weights.
+-r interactive/research_requirements.txt
+pyarrow==19.0.1
+safetensors==0.8.0
+packaging==26.3

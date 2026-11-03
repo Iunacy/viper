@@ -1,0 +1,7 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Public SHA-256 of the unchanged integration evidence file, verified against its bytes"
+regexTarget = "secret"
+regexes = ['''^06fd761905f044e320bbc51ec7d60510e5f5fd5f40edf30e6341cee25117b328$''']

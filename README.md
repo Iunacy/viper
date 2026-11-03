@@ -1,20 +1,28 @@
+![OpenMANIPULATOR-X and Franka Panda perform a recorded pick-and-place task](assets/simulation.gif)
+
 # VIPER
 
-*From intent to motion.*
+VIPER researches robotic manipulation across different bodies through kinematics, bounded control, and GR00T policy integration.
 
-![VIPER: OpenMANIPULATOR-X and Franka Panda perform the same pick-and-place task](assets/simulation.gif)
+<sub>Historical PhysX execution · MuJoCo state rendering · classical control · 4×</sub>
 
-<sub>Recorded PhysX execution · MuJoCo state rendering · classical control · 4×</sub>
+**In development.** Classical manipulation has historical physical-simulation evidence; learned manipulation and cross-embodiment transfer remain unvalidated. The initial study compares E2/E3 related-robot initialization, with [explicit qualification gates and attribution limits](docs/PRE_RENTAL_VERIFICATION.md).
 
-VIPER is a robotic manipulation research system exploring how intelligence takes shape across different bodies.
+[CPU checks](https://github.com/Iunacy/viper/actions/workflows/ci.yml) · [Changelog](CHANGELOG.md) · [Apache-2.0](LICENSE)
 
-Its current foundation combines analytical kinematics, trajectory planning, bounded control, and verified pick-and-place execution with OpenMANIPULATOR-X and Franka Panda. A shared experiment viewer exposes their motion, timing, and physical outcomes, alongside controlled robustness comparisons.
+On Linux with [uv](https://docs.astral.sh/uv/getting-started/installation/), CMake 3.24+, a C++20 compiler and FFmpeg installed, set up the CPU development environment and native tools with one command:
 
-Interfaces for language-conditioned GR00T policies and Nemotron planning are in place. Learned manipulation and cross-embodiment transfer remain unvalidated.
+```bash
+bash scripts/install.sh
+```
+
+This installs development dependencies and builds the native tools. Isaac, GR00T weights and paid compute remain separate. Run offline checks with `.venv/bin/python -m unittest discover -s embodiment/tests -v` and native checks with `ctest --test-dir build-dev --output-on-failure`.
+
+The recorded-evidence viewer runs locally with `VIPER_VIEWER_PYTHON=.venv/bin/python bash interactive/run.sh` at [localhost:8765](http://127.0.0.1:8765). Rendering requires the cached, pinned robot assets described in [the viewer documentation](interactive/README.md). A hosted demo will follow the frontend design and Vercel deployment; there is no live demo yet.
 
 VIPER was formerly named RELIC. Historical commits, run schemas, package namespaces, datasets, and `RELIC_*` settings retain that identity for attribution and compatibility. The current repository is [Iunacy/viper](https://github.com/Iunacy/viper).
 
-Run the recorded dual-robot evidence viewer with `bash interactive/run.sh`. It displays classical PhysX execution, synchronized playback, applied actions, next-tick tracking error, and intervention provenance. Learned transfer remains unavailable. The C++/Ruckig foundation is separate from Isaac control; `viper_cli` and the compatible `relic_cli` target run the same native implementation.
+The recorded dual-robot evidence viewer displays classical PhysX execution, synchronized playback, applied actions, next-tick tracking error, and intervention provenance. Learned transfer remains unavailable. The C++/Ruckig foundation is separate from Isaac control; `viper_cli` and the compatible `relic_cli` target run the same native implementation.
 
 The shared policy preserves six OpenMANIPULATOR-X and nine Panda joint channels, yielding 16- and 22-dimensional native states. Both predict world-frame Cartesian increments and an open-positive gripper command, with robot-specific admissible grasp orientation. Model-capacity padding happens only in the pinned upstream processor. No joint channel is reinterpreted as another robot's joint.
 
@@ -38,3 +46,5 @@ New training plans use 50 frozen held-out scenes. `python -m embodiment.paired -
 Offline checks: `python -m unittest discover -s embodiment/tests -v`. Set `RELIC_GROOT_SOURCE` to enable pinned upstream reader, normalization, serialization, and projector checks. TorchCodec may need an isolated FFmpeg 7 library path; keep the system encoder's library environment separate. Export dated attribution evidence with `python -m embodiment.provenance --output /tmp/viper-provenance.json`.
 
 Open gates: G0 registration, license review, dated attribution review and common-revision qualification; G1 physical pilot and upstream-reader qualification on the final revision; G2 rental quote and approved budget; G3 real A-to-B optimizer/save/reload/inference and closed-loop execution. M0 requires learned source control on held-out scenes; M1 requires matched target experiments. No paid compute or large model download is performed by these preparation commands.
+
+Original code is licensed under [Apache-2.0](LICENSE). Vendored code, robot assets, dependencies and model weights retain their separate licenses; see [NOTICE](NOTICE).
