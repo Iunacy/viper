@@ -15,6 +15,16 @@ from .transfer import prepare
 from .upstream_validation import validate_with_upstream, verify_source
 
 
+def physical_gate(request, root, timeout):
+    from .closed_loop_smoke import run as closed_loop
+    root = Path(root)
+    root.mkdir(exist_ok=True)
+    attempt = root/f'attempt-{len(list(root.glob("attempt-*"))):04d}'
+    result = closed_loop(request, attempt, True, timeout)
+    atomic_json(root/'result.json', result)
+    return result
+
+
 def workflow(source, dataset_a, dataset_b, pretrained, output, execute=False, timeout=1800, simulation_python=None, native_library=None):
     source, dataset_a, dataset_b, pretrained, output = map(lambda path: Path(path).resolve(),
                                                          (source, dataset_a, dataset_b, pretrained, output))
@@ -123,7 +133,6 @@ def workflow(source, dataset_a, dataset_b, pretrained, output, execute=False, ti
                 gc.collect()
                 torch.cuda.empty_cache()
                 from dataclasses import asdict
-                from .closed_loop_smoke import run as closed_loop
                 from .scenarios import plan
                 request = {'source': str(source), 'checkpoint': result['stages']['robot_b']['checkpoint'],
                            'dataset': str(dataset_b), 'robot': 'franka_panda',
@@ -131,7 +140,7 @@ def workflow(source, dataset_a, dataset_b, pretrained, output, execute=False, ti
                            'native_library': str(Path(native_library).resolve()), 'policy_timeout': 30,
                            'cases': [asdict(case) for case in plan('validation', 3)]}
                 # Preserve the optimizer receipt even when the physical gate fails.
-                result['stages']['closed_loop'] = closed_loop(request, output/'closed_loop', True, timeout)
+                result['stages']['closed_loop'] = physical_gate(request, output/'closed_loop', timeout)
                 result['closed_loop_executed'] = result['stages']['closed_loop']['simulation_executed']
                 if result['stages']['closed_loop']['status'] != 'PASS':
                     result['status'] = 'BLOCKED'

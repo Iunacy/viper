@@ -32,3 +32,29 @@ class CrossSmoke(unittest.TestCase):
                 changed = workflow(root, root/'a', root/'b', root/'different', root/'run')
                 self.assertEqual(changed['status'], 'BLOCKED')
                 self.assertIn('changed', changed['errors'][0])
+
+    def test_physical_retries_preserve_previous_attempts(self):
+        from embodiment.cross_smoke import physical_gate
+        from embodiment.dataset import read_json
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)/'closed_loop'
+            def fixture(request, attempt, execute, timeout):
+                attempt.mkdir()
+                (attempt/'preserved.log').write_text('synthetic fixture')
+                return {'status': 'BLOCKED', 'attempt': str(attempt)}
+            with patch('embodiment.closed_loop_smoke.run', side_effect=fixture):
+                for index in range(2):
+                    result = physical_gate({}, root, 10)
+                    self.assertEqual(result['attempt'], str(root/f'attempt-{index:04d}'))
+                    self.assertEqual(read_json(root/'result.json'), result)
+            self.assertTrue((root/'attempt-0000/preserved.log').exists())
+            self.assertTrue((root/'attempt-0001/preserved.log').exists())
+
+    def test_incomplete_physical_options_fail_before_training(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with patch('embodiment.cross_smoke.verify_source', side_effect=AssertionError('no training or upstream load')):
+                result = workflow(root, root/'a', root/'b', root/'base', root/'run',
+                                  execute=True, simulation_python='/sim/python')
+            self.assertEqual(result['status'], 'BLOCKED')
+            self.assertIn('both simulation interpreter', result['errors'][0])
