@@ -25,6 +25,13 @@ def validate_run(run):
         raise ValueError('frozen runtime and fallback protocol required')
     if run.get('condition') not in ('classical', 'a', 'b_only', 'a_to_b'):
         raise ValueError('unknown evaluation condition')
+    policy_robot = {'a': 'openmanipulator_x', 'b_only': 'franka_panda', 'a_to_b': 'franka_panda'}
+    if run['condition'] in policy_robot and run['embodiment'] != policy_robot[run['condition']]:
+        raise ValueError('evaluation condition and embodiment differ')
+    training = run.get('training_run')
+    if training is not None and (training.get('condition') != run['condition'] or
+                                 training.get('embodiment') != run['embodiment']):
+        raise ValueError('training and evaluation identities differ')
     from dataclasses import asdict
     assigned = run.get('training_run', {}).get('evaluation_scenarios')
     count = len(assigned) if isinstance(assigned, list) else 20
@@ -36,6 +43,8 @@ def validate_run(run):
         raise ValueError('all assigned independent held-out trials required')
     seen = set()
     for row in trials:
+        if 'robot' in row and row['robot'] != run['embodiment']:
+            raise ValueError('trial embodiment differs from evaluation')
         case = expected.get(row.get('scenario_id'))
         if case is None or case.scenario_id in seen or row.get('seed') != case.seed or row.get('target') != case.target:
             raise ValueError('held-out scenario mismatch or duplicate')

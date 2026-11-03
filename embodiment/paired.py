@@ -103,10 +103,20 @@ def verify_evidence(root, report):
         episode = load_episode(folder)
         if episode.outcome != {key: value for key, value in trial.items() if key != 'evidence_sha256'}:
             raise ValueError('reported outcome differs from recorded episode')
+        for key in ('embodiment', 'scene_revision', 'runtime_pin'):
+            if episode.metadata.get(key) != report[key]:
+                raise ValueError('episode differs from evaluation: '+key)
+        for key in ('scenario_id', 'seed', 'target'):
+            if episode.metadata.get(key) != trial[key]:
+                raise ValueError('episode differs from assigned trial: '+key)
+        if trial.get('robot') != report['embodiment']:
+            raise ValueError('raw trial embodiment differs from evaluation')
+        if trial.get('fallback_protocol_sha256') != report['fallback_protocol_sha256']:
+            raise ValueError('trial fallback protocol differs from evaluation')
         if episode.metadata.get('source_sha256') != report['source_sha256']:
             raise ValueError('episode source differs from evaluation')
-        if episode.metadata.get('policy_service', {}).get('checkpoint_sha256') != report.get('policy_service', {}).get('checkpoint_sha256'):
-            raise ValueError('trial checkpoint differs from served model')
+        if episode.metadata.get('policy_service') != report.get('policy_service'):
+            raise ValueError('trial policy provenance differs from served model')
         if episode.metadata.get('observation_condition') != report.get('observation_condition'):
             raise ValueError('trial observation disturbance differs from evaluation report')
         from .perception import verify_trace

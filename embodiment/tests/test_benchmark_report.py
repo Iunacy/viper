@@ -19,6 +19,19 @@ def fixture():
 
 
 class BenchmarkReport(unittest.TestCase):
+    def test_policy_condition_trial_and_training_embodiments_must_agree(self):
+        for defect in ('condition', 'trial', 'training_condition', 'training_embodiment'):
+            run = fixture()
+            run['condition'] = 'b_only'
+            for row in run['trials']:
+                row.update(controller='vla_only', robot='franka_panda')
+            run['training_run'] = {'condition': 'b_only', 'embodiment': 'franka_panda'}
+            if defect == 'condition': run['embodiment'] = 'openmanipulator_x'
+            if defect == 'trial': run['trials'][0]['robot'] = 'openmanipulator_x'
+            if defect == 'training_condition': run['training_run']['condition'] = 'a_to_b'
+            if defect == 'training_embodiment': run['training_run']['embodiment'] = 'openmanipulator_x'
+            with self.subTest(defect=defect), self.assertRaises(ValueError): validate_run(run)
+
     def test_counts_and_intervals(self):
         result = validate_run(fixture())
         self.assertEqual(result['successes'],20)

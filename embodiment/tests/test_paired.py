@@ -36,6 +36,39 @@ class Paired(unittest.TestCase):
 
 
 class PhysicalEvidenceGate(unittest.TestCase):
+    def test_raw_episode_identity_must_match_report(self):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        from embodiment.tests.test_benchmark_report import fixture
+        from embodiment.paired import verify_evidence
+        run = fixture()
+        run['condition'] = 'b_only'
+        run['policy_service'] = {'checkpoint_sha256': 'fixture'}
+        for trial in run['trials']:
+            trial.update(controller='vla_only', robot='franka_panda',
+                         evidence_sha256={'fixture': 'hash'}, fallback_protocol_sha256='fixture')
+        def episode(folder):
+            trial = next(t for t in run['trials'] if str(folder).endswith(str(t['seed'])))
+            metadata = {key: run[key] for key in ('embodiment', 'scene_revision', 'runtime_pin', 'source_sha256', 'policy_service')}
+            metadata.update({key: trial[key] for key in ('scenario_id', 'seed', 'target')})
+            return SimpleNamespace(metadata=metadata, outcome={k: v for k, v in trial.items() if k != 'evidence_sha256'}, rows=[])
+        with patch('embodiment.collection.hashes', return_value={'fixture': 'hash'}), \
+             patch('embodiment.perception.verify_trace'):
+            with patch('embodiment.replay.load_episode', side_effect=episode):
+                self.assertTrue(verify_evidence('/synthetic', run))
+            for key, value in (('embodiment', 'openmanipulator_x'), ('runtime_pin', {'wrong': True}),
+                               ('scene_revision', 'wrong'), ('scenario_id', 'wrong'),
+                               ('policy_service', {'checkpoint_sha256': 'fixture', 'wrong': True})):
+                def altered(folder):
+                    recorded = episode(folder)
+                    recorded.metadata[key] = value
+                    return recorded
+                with self.subTest(key=key), patch('embodiment.replay.load_episode', side_effect=altered):
+                    with self.assertRaises(ValueError): verify_evidence('/synthetic', run)
+            run['trials'][0]['fallback_protocol_sha256'] = 'wrong'
+            with patch('embodiment.replay.load_episode', side_effect=episode), self.assertRaises(ValueError):
+                verify_evidence('/synthetic', run)
+
     def test_report_without_raw_trial_hashes_cannot_be_published(self):
         from embodiment.tests.test_benchmark_report import fixture
         from embodiment.paired import verify_evidence
