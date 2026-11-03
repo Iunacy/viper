@@ -1,6 +1,7 @@
 """One camera-enabled expert scene per arm before the expensive qualification gate."""
 import math
 from pathlib import Path
+import time
 from .collection import atomic_json, execute, hashes, locked
 from .dataset import DOF, read_json
 from .qualify import source_provenance
@@ -51,9 +52,11 @@ def verify_robot(run, robot, provenance):
     return {'successes': 1, 'raw_frames': len(episode.rows), 'scope': 'startup diagnostic; does not replace 20-scene qualification'}
 
 
-def run(root, python, execute_stage=False, timeout=600, max_attempts=2):
+def run(root, python, execute_stage=False, timeout=600, max_attempts=2, *, deadline=None):
     if not 1 <= timeout <= 1200 or not 1 <= max_attempts <= 3:
         raise ValueError('smoke timeout 1..1200 and attempts 1..3 required')
+    if deadline is not None and not math.isfinite(deadline):
+        raise ValueError('finite invocation deadline required')
     root = Path(root).resolve()
     provenance = source_provenance()
     config = {'source': provenance, 'python': str(python), 'timeout': timeout, 'max_attempts': max_attempts}
@@ -84,6 +87,9 @@ def run(root, python, execute_stage=False, timeout=600, max_attempts=2):
                         raise ValueError('completed smoke evidence changed')
                     verify_robot(folder, robot, provenance)
                     continue
+                remaining = timeout if deadline is None else deadline-time.monotonic()
+                if remaining <= 0:
+                    raise TimeoutError('total session invocation deadline exceeded')
                 attempts = sorted(job.glob('attempt-*'))
                 if len(attempts) >= max_attempts:
                     raise RuntimeError('smoke attempt limit reached: '+robot)
@@ -91,7 +97,7 @@ def run(root, python, execute_stage=False, timeout=600, max_attempts=2):
                 attempt.mkdir()
                 command = list(result['commands'][robot])
                 command[command.index('--output')+1] = str(attempt/'run')
-                measured = execute(command, attempt, timeout, resource_monitor=True)
+                measured = execute(command, attempt, min(timeout, remaining), resource_monitor=True)
                 if measured['returncode'] or measured['timed_out']:
                     raise RuntimeError('smoke failed: '+str(attempt/'process.log'))
                 verify_robot(attempt/'run', robot, provenance)

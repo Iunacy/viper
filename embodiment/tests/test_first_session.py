@@ -56,6 +56,36 @@ class FirstSession(unittest.TestCase):
             self.assertEqual(len(result['blockers']), 2)
             self.assertFalse(result['simulation_executed'])
 
+    def test_execute_command_preserves_qualification_only_endpoint(self):
+        with tempfile.TemporaryDirectory() as temporary, self.mocks():
+            result = run(*self.arguments(Path(temporary)), stop_after='qualification')
+            command = result['execute_command']
+            self.assertEqual(command[command.index('--stop-after')+1], 'qualification')
+
+    def test_short_session_smoke_configuration_survives_preflight_timing_changes(self):
+        with tempfile.TemporaryDirectory() as temporary, self.mocks(), \
+             patch('embodiment.first_session.subprocess.run', side_effect=self.probe), \
+             patch('embodiment.first_session.verify_qualification', return_value={'status': 'PASS'}):
+            root = Path(temporary)
+            smoke_timeouts = []
+            def smoke(folder, python, execute, timeout, max_attempts, **kwargs):
+                smoke_timeouts.append(timeout)
+                if len(smoke_timeouts) > 1 and timeout != smoke_timeouts[0]:
+                    raise ValueError('smoke configuration changed')
+                return {'status': 'PASS', 'simulation_executed': True}
+            def worker(command, job, timeout, environment):
+                self.assertIn('embodiment.qualification_pair', command)
+                (root/'qualification').mkdir()
+                return {'returncode': 0, 'timed_out': False}
+            with patch('embodiment.simulation_smoke.run', side_effect=smoke), \
+                 patch('embodiment.first_session.execute', side_effect=worker):
+                for elapsed in (1., 2.):
+                    with patch('embodiment.first_session.time.monotonic', side_effect=(elapsed*i for i in range(20))):
+                        result = run(*self.arguments(root), execute_stage=True, total_timeout=120,
+                                     stop_after='qualification')
+                    self.assertEqual(result['status'], 'QUALIFIED', result['blockers'])
+            self.assertEqual(smoke_timeouts, [600, 600])
+
     def test_successful_stages_resume_only_after_integrity_and_provenance_validation(self):
         with tempfile.TemporaryDirectory() as temporary, self.mocks(), \
              patch('embodiment.first_session.subprocess.run', side_effect=self.probe), \

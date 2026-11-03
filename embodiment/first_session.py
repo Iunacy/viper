@@ -187,7 +187,8 @@ def run(root, simulation_python, reader_python, isaac_source, groot_source, robo
                 '--simulation-python', sim, '--reader-python', reader, '--isaac-source', str(isaac_source),
                 '--groot-source', str(groot_source), '--robot-cache', str(robot_cache), '--panda-assets', str(panda_assets),
                 '--episodes', str(episodes), '--timeout', str(timeout), '--max-attempts', str(max_attempts),
-                '--total-timeout', str(total_timeout), *(['--reader-library-path', str(reader_library_path)] if reader_library_path else []), '--execute']}
+                '--total-timeout', str(total_timeout), '--stop-after', stop_after,
+                *(['--reader-library-path', str(reader_library_path)] if reader_library_path else []), '--execute']}
         started = time.monotonic()
         deadline = started+total_timeout
         try:
@@ -249,7 +250,7 @@ def run(root, simulation_python, reader_python, isaac_source, groot_source, robo
             remaining = deadline-time.monotonic()
             if remaining < 2:
                 raise TimeoutError('total session invocation deadline exceeded')
-            smoke = startup_smoke(root/'smoke', sim, True, min(timeout, 600, int(remaining/2)), max_attempts)
+            smoke = startup_smoke(root/'smoke', sim, True, min(timeout, 600), max_attempts, deadline=deadline)
             result['stages']['smoke'] = smoke
             if smoke['status'] != 'PASS':
                 raise RuntimeError('simulation startup smoke failed: '+str(smoke.get('error')))
