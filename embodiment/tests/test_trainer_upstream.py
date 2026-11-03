@@ -57,6 +57,9 @@ class UpstreamOptimizerRecovery(unittest.TestCase):
             self.assertEqual(resumed.train_dataset.seed, 43)
             uninterrupted = trainer(root/'uninterrupted')
             uninterrupted.train()
+            uninterrupted.save_model()
+            self.assertFalse((root/'uninterrupted/trainer_state.json').exists())
+            self.assertTrue((root/'uninterrupted/checkpoint-2/trainer_state.json').is_file())
             for actual, expected in zip(resumed.model.parameters(), uninterrupted.model.parameters(), strict=True):
                 torch.testing.assert_close(actual, expected, rtol=0, atol=0)
             state = torch.load(root/'resumed/checkpoint-2/optimizer.pt', map_location='cpu', weights_only=True)

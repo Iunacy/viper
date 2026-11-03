@@ -129,7 +129,10 @@ def smoke(source, dataset, base, output, execute=False, timeout=1800, minimum_vr
         if trainer.get('global_step') != budget.steps:
             raise ValueError('checkpoint does not prove completion of the requested steps')
         result['training_executed'] = True
-        inference_checkpoint = checkpoint if already_complete else training_output
+        # Upstream save_model() writes the final weights but does not save
+        # TrainerState at the run root. Keep inference and physical admission
+        # bound to the exact optimizer checkpoint validated immediately above.
+        inference_checkpoint = checkpoint
         result['checkpoint_directory'] = str(inference_checkpoint)
         result['transfer_checkpoint'] = prepare_training_checkpoint(inference_checkpoint)
         policy = GrootPolicy.from_checkpoint(source, inference_checkpoint)

@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from embodiment.policy import checkpoint_digest, prepare_training_checkpoint, validate_checkpoint
+from embodiment.policy import GrootPolicy, checkpoint_digest, prepare_training_checkpoint, validate_checkpoint
 from embodiment.training import Budget, prepare, training_arguments, validate_upstream_arguments
 from embodiment.training_smoke import smoke, validate_resume
 
@@ -121,6 +121,61 @@ class TrainingSmoke(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'disagree'):
                 prepare_training_checkpoint(root)
             self.assertFalse((root/'processor_config.json').exists())
+
+    @unittest.skipUnless(importlib.util.find_spec('torch'), 'CPU torch required for synthetic smoke orchestration')
+    def test_fresh_and_resumed_smoke_use_step_checkpoint_with_trainer_state(self):
+        # CUDA capacity and inference are fixtures; no GR00T model is loaded.
+        from unittest.mock import Mock
+        import zipfile
+        import torch
+        from embodiment.benchmark import Action
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            base = root/'base'
+            base.mkdir()
+            self.checkpoint(base)
+            model = Mock()
+            model.policy.get_action.return_value = ({}, {})
+            model.decode.return_value = (Action((0., 0., 0.), 1.),)
+            def train(command, job, timeout, environment=None):
+                output = root/'fresh'
+                training = output/'training'
+                self.checkpoint(training)  # upstream final save: no root TrainerState
+                checkpoint = training/'checkpoint-2'
+                checkpoint.mkdir()
+                self.checkpoint(checkpoint)
+                (checkpoint/'trainer_state.json').write_text('{"global_step":2}')
+                for name in ('optimizer.pt', 'scheduler.pt', 'rng_state.pth'):
+                    with zipfile.ZipFile(checkpoint/name, 'w') as archive:
+                        archive.writestr('fixture', 'synthetic archive; no real training')
+                (output/'training_resources.json').write_text(json.dumps({
+                    'training_process_completed': True, 'trainable_parameters': {'fixture': {}},
+                    'peak_allocated_gpu_bytes': 0}))
+                return {'returncode': 0, 'wall_seconds': 1.}
+            with patch('embodiment.training_smoke.verify_source'), \
+                 patch('embodiment.training_smoke.validate_export', return_value={'split':'train', 'embodiment':'openmanipulator_x'}), \
+                 patch('embodiment.training_smoke.dataset_digest', return_value='synthetic-data'), \
+                 patch('embodiment.training_smoke.validate_with_upstream', return_value={}), \
+                 patch('embodiment.training_smoke.validate_upstream_arguments', return_value={}), \
+                 patch('embodiment.training_smoke.first_observation', return_value=object()), \
+                 patch('embodiment.collection.execute', side_effect=train) as worker, \
+                 patch.object(torch.cuda, 'is_available', return_value=True), \
+                 patch.object(torch.cuda, 'get_device_properties', return_value=Mock(total_memory=40*1024**3)), \
+                 patch.object(torch.cuda, 'get_device_name', return_value='synthetic GPU'), \
+                 patch.object(torch.cuda, 'max_memory_allocated', return_value=0), \
+                 patch.object(GrootPolicy, 'from_checkpoint', return_value=model) as load:
+                fresh = smoke(root, root/'data', base, root/'fresh', execute=True)
+                self.assertEqual(fresh['status'], 'PASS', fresh['errors'])
+                checkpoint = root/'fresh/training/checkpoint-2'
+                self.assertEqual(Path(fresh['checkpoint_directory']), checkpoint)
+                self.assertFalse((root/'fresh/training/trainer_state.json').exists())
+                self.assertEqual(load.call_args.args[1], checkpoint)
+                resumed = smoke(root, root/'data', base, root/'resumed', execute=True, resume_checkpoint=checkpoint)
+                self.assertEqual(resumed['status'], 'PASS', resumed['errors'])
+                self.assertEqual(Path(resumed['checkpoint_directory']), checkpoint)
+                self.assertFalse(resumed['training_executed_this_attempt'])
+                self.assertEqual(worker.call_count, 1)
+                self.assertEqual(load.call_args.args[1], checkpoint)
 
 
 if __name__ == '__main__':
