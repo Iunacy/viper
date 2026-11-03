@@ -45,3 +45,9 @@ Production preview was inspected in the in-app browser at 1280×720, 390×844 an
 Screenshots: [desktop home](interface-screenshots/home-desktop.jpg), [mobile home](interface-screenshots/home-mobile.jpg), [compact home](interface-screenshots/home-compact.jpg), [desktop lab](interface-screenshots/lab-desktop.jpg), [mobile lab](interface-screenshots/lab-mobile.jpg), [desktop research](interface-screenshots/research-desktop.jpg), [mobile research](interface-screenshots/research-mobile.jpg).
 
 Local automated validation: 15 checks passed across four test files, type checking passed, lint passed and the production build passed. The design detector returned no findings. This verifies the interface and its exported historical evidence, not new robot or GPU execution. The unavailable-WebGL fallback is covered by a focused component test; it disables all camera actions while leaving the recording workspace independent. Reduced motion and actual GPU/context loss were not exercised through OS/browser emulation in this session. The independent finish review’s sole material finding (enabled camera buttons during graphics failure) was resolved and received a SHIP verdict at that review scope.
+
+## Production deployment
+
+Public site: https://viper-delta-henna.vercel.app. Vercel project: `fourward-propagation/viper`, connected to `Iunacy/viper`, production branch `main`, root `web`, build `npm run build`, output `dist`. The initial ready deployment uses commit `e7023f9`. No application environment variables are required.
+
+Production smoke checks cover `/`, `/lab`, `/research`, the recording catalog and both robot geometry assets. For rollback after a future regression, select a previously verified Ready deployment in the Vercel project and promote it back to production; the historical robotics evidence remains unchanged.

@@ -10,7 +10,9 @@ OpenMANIPULATOR-X and Franka Panda pick up the requested colored cube, lift it, 
 
 In their historical simulation qualification runs, **both robots completed 20 of 20 pick-and-place trials**, with no wrong-color picks. These runs used classical controllers on different revisions. They show task execution by both bodies; they do not demonstrate learned transfer between them. Learned manipulation is still in development.
 
-The recording above is the public demo. The research viewer can also play, pause, and scrub through both robots’ motion, alongside their actions and tracking error, when the original local campaign recordings and robot assets are available. Those recordings and assets are not bundled in a fresh checkout.
+**[Enter the live laboratory](https://viper-delta-henna.vercel.app/lab)** · [Research](https://viper-delta-henna.vercel.app/research)
+
+Explore three recorded pick-and-place scenarios in 3D. Orbit either arm, scrub its motion, compare both robots, and inspect joint states and tracking error. The browser demo includes the recordings and needs no GPU server.
 
 ## Install local tools
 
@@ -20,10 +22,8 @@ On Linux, install [uv](https://docs.astral.sh/uv/getting-started/installation/),
 bash scripts/install.sh
 ```
 
-This sets up the CPU research tools; it does not install Isaac or model weights. The interactive viewer needs separate local recordings and robot assets. There is no hosted demo yet—the Vercel version will follow the frontend design.
+This sets up the CPU research tools; it does not install Isaac or model weights. To run the browser laboratory locally, see the [research interface setup](web/README.md).
 
 [Research details and limitations](docs/PRE_RENTAL_VERIFICATION.md) · [Changelog](CHANGELOG.md) · [Apache-2.0](LICENSE)
 
 VIPER was formerly named RELIC; older package names and recorded data retain that name. Third-party code, robot assets, and model weights keep their own licenses; see [NOTICE](NOTICE).
-
-Explore the interactive 3D laboratory locally: [research interface](web/README.md).
