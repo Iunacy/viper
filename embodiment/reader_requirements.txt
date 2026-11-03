@@ -1,0 +1,11 @@
+# CPU reader/exporter dependencies verified separately from GR00T training.
+# Install torch 2.9.0 and torchvision 0.24.0 from the CPU wheel index first.
+numpy==1.26.4
+pandas==2.2.3
+scipy==1.15.3
+transformers==4.57.3
+torchcodec==0.8.0
+av==14.2.0
+pyarrow==19.0.1
+pillow==12.3.0
+packaging==26.3

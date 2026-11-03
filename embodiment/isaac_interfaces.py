@@ -11,7 +11,7 @@ REQUIRED = {
     'source/isaaclab/isaaclab/assets/articulation/articulation.py': ('find_joints', 'find_bodies', 'set_joint_position_target', 'write_joint_state_to_sim'),
     'source/isaaclab/isaaclab/assets/articulation/articulation_data.py': ('body_pose_w', 'joint_pos_limits'),
     'source/isaaclab/isaaclab/sensors/contact_sensor/contact_sensor_data.py': ('net_forces_w', 'force_matrix_w'),
-    'source/isaaclab/isaaclab/sensors/camera/camera.py': ('set_world_poses_from_view',),
+    'source/isaaclab/isaaclab/sensors/camera/camera.py': ('set_world_poses_from_view', 'frame'),
     'source/isaaclab/isaaclab/sim/converters/urdf_converter.py': ('_get_urdf_import_config',),
 }
 

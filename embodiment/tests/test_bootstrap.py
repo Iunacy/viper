@@ -37,3 +37,16 @@ class IsolatedSetup(unittest.TestCase):
             self.assertEqual(result['status'], 'NOT_EXECUTED')
             self.assertEqual(result['commands']['qualification'][0], str(root/'cache/simulation/bin/python'))
             self.assertEqual(result['commands']['g3'][0], str(root/'cache/sources/GR00T/.venv/bin/python'))
+
+    def test_cpu_reader_setup_excludes_training_and_gpu_model_dependencies(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            result = plan(Path(temporary), 'reader')
+            commands = str(result['commands'])
+            self.assertIn('https://download.pytorch.org/whl/cpu', commands)
+            self.assertIn('reader_requirements.txt', commands)
+            self.assertIn('--reader-probe', commands)
+            self.assertNotIn('uv sync', commands)
+            for forbidden in ('deepspeed', 'flash-attn', 'launch_finetune', 'policy_service'):
+                self.assertNotIn(forbidden, commands)
+            with patch('embodiment.bootstrap.subprocess.run', side_effect=AssertionError('no installation')):
+                self.assertEqual(setup(Path(temporary), 'reader')['status'], 'NOT_EXECUTED')

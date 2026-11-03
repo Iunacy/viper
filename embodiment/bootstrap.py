@@ -16,7 +16,7 @@ UV_VERSION = '0.13.4'
 def plan(prefix, role, repository=None):
     prefix = Path(prefix).resolve()
     repo = Path(repository).resolve() if repository else Path(__file__).resolve().parents[1]
-    if role not in ('simulation', 'training'): raise ValueError('unknown environment role')
+    if role not in ('simulation', 'training', 'reader'): raise ValueError('unknown environment role')
     source = prefix/'sources'/('IsaacLab' if role == 'simulation' else 'GR00T')
     if role == 'simulation':
         commands = [
@@ -36,6 +36,15 @@ def plan(prefix, role, repository=None):
             [str(prefix/'asset_tools/bin/python'), '-m', 'embodiment.asset_cache', '--root', str(prefix/'assets')],
         ]
         url, commit, python = 'https://github.com/isaac-sim/IsaacLab.git', LAB_COMMIT, prefix/'simulation/bin/python'
+    elif role == 'reader':
+        python = prefix/'reader/bin/python'
+        commands = [['uv', 'venv', '--python', '3.12.15', str(prefix/'reader')],
+            ['uv', 'pip', 'install', '--python', str(python), 'torch==2.9.0', 'torchvision==0.24.0', '--index-url', 'https://download.pytorch.org/whl/cpu'],
+            ['uv', 'pip', 'install', '--python', str(python), '-r', str(repo/'embodiment/reader_requirements.txt')],
+            [str(python), '-m', 'embodiment.codec_runtime', '--root', str(prefix/'reader_codec')],
+            ['uv', 'pip', 'check', '--python', str(python)],
+            [str(python), '-m', 'embodiment.first_session', '--reader-probe', str(source), '--root', str(prefix)]]
+        url, commit = 'https://github.com/NVIDIA/Isaac-GR00T.git', GROOT_COMMIT
     else:
         commands = [['uv', 'sync', '--project', str(source), '--frozen', '--no-dev', '--python', '3.12.15'],
                     ['uv', 'pip', 'install', '--python', str(source/'.venv/bin/python'), 'av==14.2.0'],
@@ -45,7 +54,7 @@ def plan(prefix, role, repository=None):
         url, commit, python = 'https://github.com/NVIDIA/Isaac-GR00T.git', GROOT_COMMIT, source/'.venv/bin/python'
     return {'schema': 'viper.bootstrap.v1', 'role': role, 'prefix': str(prefix), 'source': str(source),
             'url': url, 'commit': commit, 'uv_version': UV_VERSION, 'python': str(python), 'commands': commands,
-            'minimum_free_disk_gib': 65 if role == 'simulation' else 40,
+            'minimum_free_disk_gib': {'simulation': 65, 'training': 40, 'reader': 12}[role],
             'cache': str(prefix/'cache/uv'), 'downloads_models': False, 'provisions_hardware': False}
 
 
@@ -88,8 +97,8 @@ def setup(prefix, role, execute=False, offline=False, reader_library_path=None):
             if command[:2] == ['uv', 'venv'] and (Path(command[-1])/'bin/python').is_file(): continue
             log = prefix/'setup'/f'{role}-{index}.log'
             command_environment = dict(environment)
-            if 'embodiment.runtime_probe' in command:
-                codec_path = str(Path(reader_library_path).resolve()) if reader_library_path else str(prefix/'codec')
+            if 'embodiment.runtime_probe' in command or '--reader-probe' in command:
+                codec_path = str(Path(reader_library_path).resolve()) if reader_library_path else str(prefix/('reader_codec' if role == 'reader' else 'codec'))
                 command_environment['LD_LIBRARY_PATH'] = os.pathsep.join(filter(None, (codec_path, environment.get('LD_LIBRARY_PATH'))))
                 command_environment['CUDA_VISIBLE_DEVICES'] = ''
             with log.open('ab') as stream:
@@ -109,7 +118,7 @@ def setup(prefix, role, execute=False, offline=False, reader_library_path=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--prefix', type=Path, required=True)
-    parser.add_argument('--role', choices=['simulation', 'training'], required=True)
+    parser.add_argument('--role', choices=['simulation', 'training', 'reader'], required=True)
     parser.add_argument('--execute', action='store_true')
     parser.add_argument('--offline', action='store_true')
     parser.add_argument('--reader-library-path', type=Path)
