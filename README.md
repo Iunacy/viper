@@ -10,7 +10,7 @@ OpenMANIPULATOR-X and Franka Panda pick up the requested colored cube, lift it, 
 
 In their historical simulation qualification runs, **both robots completed 20 of 20 pick-and-place trials**, with no wrong-color picks. These runs used classical controllers on different revisions. They show task execution by both bodies; they do not demonstrate learned transfer between them. Learned manipulation is still in development.
 
-**[Enter the live laboratory](https://viper-delta-henna.vercel.app/lab)** · [Research](https://viper-delta-henna.vercel.app/research)
+**[Enter the live laboratory](https://viperlab.vercel.app/lab)** · [Research](https://viperlab.vercel.app/research)
 
 Explore three recorded pick-and-place scenarios in 3D. Orbit either arm, scrub its motion, compare both robots, and inspect joint states and tracking error. The browser demo includes the recordings and needs no GPU server.
 

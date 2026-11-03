@@ -18,7 +18,7 @@ The homepage uses the same observed-state playback. Research presents historical
 npm ci --ignore-scripts && npm run build
 ```
 
-Serve `dist/` as static files. To preview locally, run `npm run preview`. For Vercel, set the project root to `web`, build command to `npm run build`, and output directory to `dist`. Included rewrites support `/lab` and `/research`. No backend, GPU server, API key or paid service is needed. Production: [VIPER](https://viper-delta-henna.vercel.app). The Vercel project `fourward-propagation/viper` is connected to this repository with `main` as its production branch and `web` as its root directory.
+Serve `dist/` as static files. To preview locally, run `npm run preview`. For Vercel, set the project root to `web`, build command to `npm run build`, and output directory to `dist`. Included rewrites support `/lab` and `/research`. No backend, GPU server, API key or paid service is needed. Production: [VIPER](https://viperlab.vercel.app). The Vercel project `fourward-propagation/viper` is connected to this repository with `main` as its production branch and `web` as its root directory.
 
 ## What the recordings show
 

@@ -48,6 +48,6 @@ Local automated validation: 15 checks passed across four test files, type checki
 
 ## Production deployment
 
-Public site: https://viper-delta-henna.vercel.app. Vercel project: `fourward-propagation/viper`, connected to `Iunacy/viper`, production branch `main`, root `web`, build `npm run build`, output `dist`. The initial ready deployment uses commit `e7023f9`. No application environment variables are required.
+Public site: https://viperlab.vercel.app. Vercel project: `fourward-propagation/viper`, connected to `Iunacy/viper`, production branch `main`, root `web`, build `npm run build`, output `dist`. The initial ready deployment uses commit `e7023f9`. No application environment variables are required.
 
 Production smoke checks cover `/`, `/lab`, `/research`, the recording catalog and both robot geometry assets. For rollback after a future regression, select a previously verified Ready deployment in the Vercel project and promote it back to production; the historical robotics evidence remains unchanged.
