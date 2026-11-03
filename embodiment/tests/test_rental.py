@@ -157,3 +157,33 @@ class RentalPipeline(unittest.TestCase):
             result = rental.pipeline(self.args(temp, 'g3'))
             self.assertEqual(result['status'], 'BLOCKED')
             self.assertIn('preflight failed', result['error'])
+
+    def test_sigterm_reaps_a_real_nested_worker_and_preserves_failure_evidence(self):
+        import os
+        import signal
+        import subprocess
+        import sys
+        import time
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            worker = 'import os,time,pathlib; pathlib.Path('+repr(str(root/'worker.pid'))+').write_text(str(os.getpid())); time.sleep(30)'
+            supervisor = ('from embodiment.rental import install_shutdown_handlers; install_shutdown_handlers(); '
+                'from embodiment.collection import execute; from pathlib import Path; import sys; '
+                'execute([sys.executable,"-c",'+repr(worker)+'],Path('+repr(temp)+'),60)')
+            process = subprocess.Popen([sys.executable, '-c', supervisor], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            try:
+                deadline = time.monotonic()+10
+                while not (root/'worker.pid').exists():
+                    if process.poll() is not None or time.monotonic() > deadline: self.fail('test worker did not start')
+                    time.sleep(.02)
+                pid = int((root/'worker.pid').read_text())
+                process.send_signal(signal.SIGTERM)
+                process.wait(timeout=15)
+                self.assertNotEqual(process.returncode, 0)
+                with self.assertRaises(ProcessLookupError): os.kill(pid, 0)
+                self.assertTrue((root/'process.json').is_file())
+                self.assertFalse(json.loads((root/'process.json').read_text()).get('descendant_processes_live', False))
+            finally:
+                if process.poll() is None:
+                    process.kill()
+                    process.wait()

@@ -33,7 +33,8 @@ and nine separate instruction flips. Neither a two-step G3 nor a completed
 failing M0 permits a learning/transfer claim. --steps/--save-steps must be frozen
 before starting a run. Do not reuse held-out scenes to tune a policy.
 
-All stages default to dry-run; no downloads, subprocesses or CUDA execution.
+Execution stages default to dry-run without subprocesses, downloads or CUDA.
+Doctor and report perform read-only inspections, including bounded subprocesses.
 'full' explicitly sequences setup, qualify, collect, g3, m0 and stops at failure.
 It requires all execution consents; setup alone never requires GPU/training
 consent or model weights. --background survives a terminal/SSH disconnect,
@@ -405,4 +406,16 @@ def main(argv=None):
     return 2 if result['status'] == 'BLOCKED' else 0
 
 
-if __name__ == '__main__': raise SystemExit(main())
+def install_shutdown_handlers():
+    import signal
+    def shutdown(signum, frame):
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+        signal.signal(signal.SIGHUP, signal.SIG_IGN)
+        raise KeyboardInterrupt('shutdown signal '+str(signum))
+    signal.signal(signal.SIGTERM, shutdown)
+    signal.signal(signal.SIGHUP, shutdown)
+
+
+if __name__ == '__main__':
+    install_shutdown_handlers()
+    raise SystemExit(main())

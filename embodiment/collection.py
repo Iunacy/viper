@@ -280,6 +280,7 @@ def execute(command, job, timeout, environment=None, shutdown_timeout=30, resour
         except (OSError, ValueError, subprocess.SubprocessError):
             pass
     terminal_since = None
+    interrupted_error = None
     shutdown_expired = False
     with (job/'process.log').open('xb') as log, (job/'.running').open('a') as lease:
         fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -321,8 +322,11 @@ def execute(command, job, timeout, environment=None, shutdown_timeout=30, resour
         except BaseException as error:
             stop_process_tree(process)
             if not isinstance(error, subprocess.TimeoutExpired):
-                raise
-            result = {'returncode': process.returncode, 'timed_out': True, 'shutdown_timeout': shutdown_expired}
+                interrupted_error = error
+                result = {'returncode': process.returncode or 130, 'timed_out': False, 'shutdown_timeout': False,
+                    'interrupted': type(error).__name__, 'error': str(error)}
+            else:
+                result = {'returncode': process.returncode, 'timed_out': True, 'shutdown_timeout': shutdown_expired}
     # An inherited lease outlives the direct parent when a descendant remains.
     # Never let a successful parent exit admit another GPU stage in that case.
     with (job/'.running').open('a') as probe:
@@ -339,6 +343,8 @@ def execute(command, job, timeout, environment=None, shutdown_timeout=30, resour
             'sampled_device_peak_used_bytes': [max(row[i] for row in samples if len(row)>i) for i in range(max(map(len, samples), default=0))],
             'gpu_samples': len(samples), 'scope': 'sampled system-wide GPU usage, including unrelated processes; child RSS sampled from /proc; not a per-process CUDA allocator peak'}
     atomic_json(job/'process.json', result)
+    if interrupted_error is not None:
+        raise interrupted_error
     return result
 
 
