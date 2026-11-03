@@ -1,0 +1,18 @@
+{
+  "schema": "viper.training_import_probe.v1",
+  "modules": {
+    "gr00t.experiment.experiment": "IMPORTED",
+    "gr00t.policy.gr00t_policy": "IMPORTED",
+    "torchcodec.decoders": "IMPORTED",
+    "deepspeed": "BLOCKED",
+    "flash_attn": "BLOCKED"
+  },
+  "errors": [
+    "deepspeed: ModuleNotFoundError: No module named 'deepspeed'",
+    "flash_attn: ModuleNotFoundError: No module named 'flash_attn'"
+  ],
+  "weights_loaded": false,
+  "optimizer_executed": false,
+  "inference_executed": false,
+  "ready": false
+}

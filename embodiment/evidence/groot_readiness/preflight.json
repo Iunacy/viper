@@ -1,0 +1,106 @@
+{
+  "schema": "viper.closed_loop_gate.v1",
+  "status": "BLOCKED",
+  "errors": [
+    "training_host: training interpreter contains a CPU-only PyTorch build; CUDA 12.8 development compiler required by installed DeepSpeed compatibility checks; use the pinned cloud image; insufficient total or free GPU memory for training; insufficient available host RAM; insufficient storage reserve",
+    "simulation_host: Isaac runtime license must be accepted through OMNI_KIT_ACCEPT_EULA before unattended Kit startup; insufficient total or free GPU memory for simulation; insufficient available host RAM; insufficient storage reserve",
+    "inputs: ValueError: fixture or unverified data cannot pass physical dataset validation"
+  ],
+  "simulation_executed": false,
+  "checkpoint_loaded": false,
+  "training_executed": false,
+  "learned_manipulation_demonstrated": false,
+  "transfer_demonstrated": false,
+  "stages": {
+    "training_host": {
+      "schema": "viper.host_preflight.v1",
+      "stage": "training",
+      "ready": false,
+      "blockers": [
+        "training interpreter contains a CPU-only PyTorch build",
+        "CUDA 12.8 development compiler required by installed DeepSpeed compatibility checks; use the pinned cloud image",
+        "insufficient total or free GPU memory for training",
+        "insufficient available host RAM",
+        "insufficient storage reserve"
+      ],
+      "requirements": {
+        "total_gib": 40,
+        "free_gib": 38,
+        "ram_gib": 32,
+        "disk_gib": 32
+      },
+      "python": "3.12.15 (main, Oct 14 2026, 01:05:27) [Clang 23.1.3 ]",
+      "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+      "compute_started": false,
+      "packages": {
+        "torch": "2.9.0+cpu",
+        "transformers": "4.57.3",
+        "safetensors": "0.8.0",
+        "pyarrow": "19.0.1",
+        "av": "14.2.0",
+        "torchcodec": "0.8.0",
+        "tyro": "0.9.17"
+      },
+      "isaac_requirements_source": "https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/requirements.html",
+      "torch_cuda_build": null,
+      "gpu": {
+        "name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+        "driver": "615.78.08",
+        "total_mib": 4096,
+        "free_mib": 2066
+      },
+      "memory_bytes": {
+        "MemTotal": 16364085248,
+        "MemAvailable": 7037898752
+      },
+      "volume": "/tmp/viper-readiness-audited-preflight",
+      "storage_free_bytes": 8099680256
+    },
+    "simulation_host": {
+      "schema": "viper.host_preflight.v1",
+      "stage": "simulation",
+      "ready": false,
+      "blockers": [
+        "Isaac runtime license must be accepted through OMNI_KIT_ACCEPT_EULA before unattended Kit startup",
+        "insufficient total or free GPU memory for simulation",
+        "insufficient available host RAM",
+        "insufficient storage reserve"
+      ],
+      "requirements": {
+        "total_gib": 16,
+        "free_gib": 12,
+        "ram_gib": 24,
+        "disk_gib": 12
+      },
+      "python": "3.11.17 (main, Oct 14 2026, 01:05:33) [Clang 23.1.3 ]",
+      "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+      "compute_started": false,
+      "packages": {
+        "isaacsim": "5.1.0.0",
+        "isaaclab": "0.47.2",
+        "torch": "2.7.0+cu128",
+        "numpy": "1.26.0",
+        "pillow": "11.3.0"
+      },
+      "isaac_requirements_source": "https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/requirements.html",
+      "isaaclab_commit": "3c6e67bb5c7ada942a6d1884ab69338f57596f77",
+      "gpu": {
+        "name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+        "driver": "615.78.08",
+        "total_mib": 4096,
+        "free_mib": 2066
+      },
+      "memory_bytes": {
+        "MemTotal": 16364085248,
+        "MemAvailable": 7131119616
+      },
+      "volume": "/tmp/viper-readiness-audited-preflight",
+      "storage_free_bytes": 8099651584
+    },
+    "inputs": {
+      "error": "ValueError: fixture or unverified data cannot pass physical dataset validation"
+    }
+  },
+  "policy_process_reaped": true,
+  "wall_seconds": 4.208903624999948
+}

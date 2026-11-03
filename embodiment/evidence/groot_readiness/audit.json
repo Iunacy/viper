@@ -1,0 +1,214 @@
+{
+  "schema": "viper.engineering_audit.v1",
+  "date": "2026-11-03",
+  "code_commit": "34a3484",
+  "baseline_commit": "b5d605c83d97ee97678a77e3edd436155689ca18",
+  "scope_sha256": "b886f3eaf406583a4d3ae96b065a1918124de0512a7db49dcac887baa5215e4b",
+  "upstream_commit": "944fe70c4fd54e3fcb80a7d7258a328f9c061176",
+  "reused_existing_branch_fixes": [
+    "a2f2be4d4049f6d072f89a954c7fe6c89471070e",
+    "a7abb8f13e262423fc59d3a8747ac3eb6102b16d"
+  ],
+  "confirmed_issues": [
+    {
+      "id": "timestamp_transport",
+      "finding": "HTTP observations discarded simulation timestamps and responses were not bound to observations.",
+      "resolution": "protocol v2 carries and checks timestamps, rejects repeats, and validates reset acknowledgment"
+    },
+    {
+      "id": "g3_admission",
+      "finding": "Full training accepted optimizer/inference smoke without physical target-robot execution.",
+      "resolution": "campaign revalidates raw closed-loop evidence, checkpoint, normalizer, binary and source identity"
+    },
+    {
+      "id": "synthetic_evidence",
+      "finding": "run_trial unconditionally labeled injected mock backends as real PhysX.",
+      "resolution": "synthetic backends produce nonphysical evidence rejected by physical readers"
+    },
+    {
+      "id": "interruption_evidence",
+      "finding": "policy interruption could bypass direct-loop safe stop; execution/perception traces were only written after terminal completion.",
+      "resolution": "safe stop covers interruptions and reset failures; traces flush every tick"
+    },
+    {
+      "id": "action_accounting",
+      "finding": "backend commands rejected before any physics tick could appear as applied in execution traces.",
+      "resolution": "no-time-advance rejection has null applied_action and an intervention reason"
+    },
+    {
+      "id": "model_identity",
+      "finding": "checkpoint validation accepted arbitrary model types containing gr00t.",
+      "resolution": "only N1.7 model identity and pinned NEW_EMBODIMENT projector index 10 are admitted"
+    },
+    {
+      "id": "interpreter_paths",
+      "finding": "Resolving a virtual-environment executable symlink bypasses its environment.",
+      "resolution": "smoke executable paths retain virtual-environment symlinks; regression checks this"
+    },
+    {
+      "id": "codec_libraries",
+      "finding": "TorchCodec reader library paths could break system FFmpeg and overwrite inherited driver paths.",
+      "resolution": "system exporter strips private PyAV bridges and isolated reader paths preserve driver search directories"
+    },
+    {
+      "id": "native_boundary",
+      "finding": "No reusable compiled physical action-chunk boundary was available to the isolated policy client and server.",
+      "resolution": "C++20 C ABI validates complete chunks in both runtimes, with binary identity in receipts"
+    },
+    {
+      "id": "physical_retry",
+      "finding": "A failed final physical attempt could prevent retry without deleting evidence.",
+      "resolution": "each retry gets a preserved attempt directory and an updated stable gate receipt"
+    }
+  ],
+  "unverified_compatibility_risks": [
+    "Full checkpoint load, bfloat16 inference, CUDA/FlashAttention/DeepSpeed execution and A-to-B optimizer/save/reload remain unexecuted here.",
+    "Actual camera freshness guard, renderer synchronization, native action boundary and articulation tracking must be validated together in pinned Isaac Lab/PhysX.",
+    "Simultaneous GR00T inference and RTX-rendered PhysX memory consumption is unmeasured; worker rechecks capacity after policy loading.",
+    "Closed-loop smoke verifies integration and measured movement even when tasks fail; M0 requires 50 frozen held-out scenes and counterfactual instructions.",
+    "A-to-B transfer and pretraining-overlap fairness require the scope v1.7 matched experiments; none are demonstrated by synthetic tests."
+  ],
+  "training_ready": false,
+  "blockers": [
+    {
+      "id": "host",
+      "evidence": "preflight.json",
+      "status": "BLOCKED",
+      "reason": "4 GiB GPU is below the repository training and camera-simulation memory gates; available RAM and audited output-volume reserve also fail."
+    },
+    {
+      "id": "training_runtime",
+      "evidence": "runtime_imports.json",
+      "status": "BLOCKED",
+      "reason": "Local GR00T interpreter has CPU-only torch and lacks DeepSpeed, FlashAttention and CUDA 12.8 compiler."
+    },
+    {
+      "id": "weights",
+      "status": "BLOCKED",
+      "reason": "Located model metadata has no complete local safetensors weights; no validated trained checkpoint was found or downloaded."
+    },
+    {
+      "id": "data",
+      "evidence": "preflight.json",
+      "status": "BLOCKED",
+      "reason": "Located LeRobot export is synthetic and correctly rejected; fresh physical pilot and leakage/provenance checks are required."
+    },
+    {
+      "id": "g0",
+      "status": "UNVERIFIED",
+      "reason": "Common-revision expert qualification and event registration/attribution evidence cannot be inferred from legacy claims."
+    },
+    {
+      "id": "g2",
+      "status": "NOT_AUTHORIZED",
+      "reason": "No paid provisioning, rental quote, spending cap or cloud approval was performed; use only an already approved host."
+    }
+  ],
+  "readiness_matrix": {
+    "offline_integration_verified": true,
+    "real_groot_checkpoint_verified": false,
+    "isaac_physx_execution_verified_for_this_revision": false,
+    "vla_only_manipulation_demonstrated": false,
+    "a_to_b_transfer_experimentally_demonstrated": false
+  },
+  "next_runtime_steps": [
+    {
+      "stage": "common_revision_qualification",
+      "command": [
+        "/opt/viper-runtime/simulation/bin/python",
+        "-m",
+        "embodiment.qualification_pair",
+        "--root",
+        "/workspace/runs/qualification",
+        "--python",
+        "/opt/viper-runtime/simulation/bin/python",
+        "--execute"
+      ]
+    },
+    {
+      "stage": "physical_pilot",
+      "command": [
+        "/opt/viper-runtime/sources/GR00T/.venv/bin/python",
+        "-m",
+        "embodiment.pilot",
+        "--root",
+        "/workspace/runs/pilot",
+        "--python",
+        "/opt/viper-runtime/simulation/bin/python",
+        "--data-python",
+        "/opt/viper-runtime/sources/GR00T/.venv/bin/python",
+        "--groot-source",
+        "/opt/viper-runtime/sources/GR00T",
+        "--execute"
+      ]
+    },
+    {
+      "stage": "native_build",
+      "command": [
+        "python",
+        "-m",
+        "embodiment.native_contract",
+        "--build",
+        "/workspace/runs/native"
+      ]
+    },
+    {
+      "stage": "g3_preflight",
+      "command": [
+        "/opt/viper-runtime/sources/GR00T/.venv/bin/python",
+        "-m",
+        "embodiment.cross_smoke",
+        "--source",
+        "/opt/viper-runtime/sources/GR00T",
+        "--dataset-a",
+        "/workspace/runs/pilot/exports/openmanipulator_x/train",
+        "--dataset-b",
+        "/workspace/runs/pilot/exports/franka_panda/train",
+        "--pretrained",
+        "/workspace/viper/models/groot",
+        "--output",
+        "/workspace/runs/g3",
+        "--simulation-python",
+        "/opt/viper-runtime/simulation/bin/python",
+        "--native-library",
+        "/workspace/runs/native/libviper_action_contract.so"
+      ]
+    },
+    {
+      "stage": "g3_optimizer_and_physx_execution",
+      "command": [
+        "/opt/viper-runtime/sources/GR00T/.venv/bin/python",
+        "-m",
+        "embodiment.cross_smoke",
+        "--source",
+        "/opt/viper-runtime/sources/GR00T",
+        "--dataset-a",
+        "/workspace/runs/pilot/exports/openmanipulator_x/train",
+        "--dataset-b",
+        "/workspace/runs/pilot/exports/franka_panda/train",
+        "--pretrained",
+        "/workspace/viper/models/groot",
+        "--output",
+        "/workspace/runs/g3",
+        "--simulation-python",
+        "/opt/viper-runtime/simulation/bin/python",
+        "--native-library",
+        "/workspace/runs/native/libviper_action_contract.so",
+        "--execute"
+      ]
+    }
+  ],
+  "execution_requirements": [
+    "clean committed checkout",
+    "already approved compatible host and accepted Isaac license",
+    "local pinned model weights and backbone; offline Hugging Face mode",
+    "fresh physical A/B training exports with disjoint held-out scenes",
+    "new run roots; preserve every failed attempt"
+  ],
+  "entry_point": [
+    "python",
+    "-m",
+    "embodiment.closed_loop_smoke",
+    "--help"
+  ]
+}
