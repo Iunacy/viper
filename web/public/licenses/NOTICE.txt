@@ -1,0 +1,19 @@
+VIPER web interface: Copyright 2026 VIPER contributors. Apache-2.0.
+
+Robot geometry is converted from pinned upstream descriptions, retaining the
+original geometry. No new dynamics are executed by this web interface.
+OpenMANIPULATOR-X: ROBOTIS CO., LTD. Apache-2.0.
+https://github.com/ROBOTIS-GIT/open_manipulator
+Pinned source: ee9a720bcc45acda9c0df8fe689b1182844307db
+Franka Panda: Franka Emika GmbH. Apache-2.0.
+franka_description 0.7.1 distributed with Isaac Sim 5.1.0.
+https://github.com/frankaemika/franka_ros
+Source file hashes: embodiment/assets/panda_replay_manifest.json in VIPER.
+Converted via the existing embodiment/replay_render.py pipeline.
+
+Barlow and Barlow Condensed: Jeremy Tribby, SIL Open Font License 1.1.
+IBM Plex Mono: IBM Corp., SIL Open Font License 1.1.
+Font license texts are included in this directory.
+React and React DOM: Meta Platforms, Inc. and affiliates. MIT.
+Three.js: three.js authors. MIT.
+JavaScript license texts are included in this directory.

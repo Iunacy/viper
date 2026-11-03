@@ -25,3 +25,5 @@ This sets up the CPU research tools; it does not install Isaac or model weights.
 [Research details and limitations](docs/PRE_RENTAL_VERIFICATION.md) · [Changelog](CHANGELOG.md) · [Apache-2.0](LICENSE)
 
 VIPER was formerly named RELIC; older package names and recorded data retain that name. Third-party code, robot assets, and model weights keep their own licenses; see [NOTICE](NOTICE).
+
+Explore the interactive 3D laboratory locally: [research interface](web/README.md).

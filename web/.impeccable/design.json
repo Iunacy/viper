@@ -1,0 +1,458 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-03T14:54:21.734684+00:00",
+  "title": "Design System: VIPER",
+  "extensions": {
+    "colorMeta": {
+      "ice": {
+        "role": "primary",
+        "displayName": "Ice",
+        "tonalRamp": [
+          "oklch(15% 0.05697 237.155)",
+          "oklch(26% 0.05697 237.155)",
+          "oklch(38% 0.05697 237.155)",
+          "oklch(49% 0.05697 237.155)",
+          "oklch(61% 0.05697 237.155)",
+          "oklch(72% 0.05697 237.155)",
+          "oklch(84% 0.05697 237.155)",
+          "oklch(95% 0.05697 237.155)"
+        ]
+      },
+      "ice-hover": {
+        "role": "primary",
+        "displayName": "Ice Hover",
+        "tonalRamp": [
+          "oklch(15% 0.03096 237.554)",
+          "oklch(26% 0.03096 237.554)",
+          "oklch(38% 0.03096 237.554)",
+          "oklch(49% 0.03096 237.554)",
+          "oklch(61% 0.03096 237.554)",
+          "oklch(72% 0.03096 237.554)",
+          "oklch(84% 0.03096 237.554)",
+          "oklch(95% 0.03096 237.554)"
+        ]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "tonalRamp": [
+          "oklch(15% 0.00521 248.116)",
+          "oklch(26% 0.00521 248.116)",
+          "oklch(38% 0.00521 248.116)",
+          "oklch(49% 0.00521 248.116)",
+          "oklch(61% 0.00521 248.116)",
+          "oklch(72% 0.00521 248.116)",
+          "oklch(84% 0.00521 248.116)",
+          "oklch(95% 0.00521 248.116)"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "tonalRamp": [
+          "oklch(15% 0.00751 248.183)",
+          "oklch(26% 0.00751 248.183)",
+          "oklch(38% 0.00751 248.183)",
+          "oklch(49% 0.00751 248.183)",
+          "oklch(61% 0.00751 248.183)",
+          "oklch(72% 0.00751 248.183)",
+          "oklch(84% 0.00751 248.183)",
+          "oklch(95% 0.00751 248.183)"
+        ]
+      },
+      "toolbar": {
+        "role": "neutral",
+        "displayName": "Toolbar",
+        "tonalRamp": [
+          "oklch(15% 0.00763 248.212)",
+          "oklch(26% 0.00763 248.212)",
+          "oklch(38% 0.00763 248.212)",
+          "oklch(49% 0.00763 248.212)",
+          "oklch(61% 0.00763 248.212)",
+          "oklch(72% 0.00763 248.212)",
+          "oklch(84% 0.00763 248.212)",
+          "oklch(95% 0.00763 248.212)"
+        ]
+      },
+      "control": {
+        "role": "neutral",
+        "displayName": "Control",
+        "tonalRamp": [
+          "oklch(15% 0.01074 242.198)",
+          "oklch(26% 0.01074 242.198)",
+          "oklch(38% 0.01074 242.198)",
+          "oklch(49% 0.01074 242.198)",
+          "oklch(61% 0.01074 242.198)",
+          "oklch(72% 0.01074 242.198)",
+          "oklch(84% 0.01074 242.198)",
+          "oklch(95% 0.01074 242.198)"
+        ]
+      },
+      "control-hover": {
+        "role": "neutral",
+        "displayName": "Control Hover",
+        "tonalRamp": [
+          "oklch(15% 0.01699 244.823)",
+          "oklch(26% 0.01699 244.823)",
+          "oklch(38% 0.01699 244.823)",
+          "oklch(49% 0.01699 244.823)",
+          "oklch(61% 0.01699 244.823)",
+          "oklch(72% 0.01699 244.823)",
+          "oklch(84% 0.01699 244.823)",
+          "oklch(95% 0.01699 244.823)"
+        ]
+      },
+      "divider": {
+        "role": "neutral",
+        "displayName": "Divider",
+        "tonalRamp": [
+          "oklch(15% 0.01427 244.057)",
+          "oklch(26% 0.01427 244.057)",
+          "oklch(38% 0.01427 244.057)",
+          "oklch(49% 0.01427 244.057)",
+          "oklch(61% 0.01427 244.057)",
+          "oklch(72% 0.01427 244.057)",
+          "oklch(84% 0.01427 244.057)",
+          "oklch(95% 0.01427 244.057)"
+        ]
+      },
+      "control-hover-border": {
+        "role": "neutral",
+        "displayName": "Control Hover Border",
+        "tonalRamp": [
+          "oklch(15% 0.03343 242.302)",
+          "oklch(26% 0.03343 242.302)",
+          "oklch(38% 0.03343 242.302)",
+          "oklch(49% 0.03343 242.302)",
+          "oklch(61% 0.03343 242.302)",
+          "oklch(72% 0.03343 242.302)",
+          "oklch(84% 0.03343 242.302)",
+          "oklch(95% 0.03343 242.302)"
+        ]
+      },
+      "foreground": {
+        "role": "neutral",
+        "displayName": "Foreground",
+        "tonalRamp": [
+          "oklch(15% 0.00420 236.498)",
+          "oklch(26% 0.00420 236.498)",
+          "oklch(38% 0.00420 236.498)",
+          "oklch(49% 0.00420 236.498)",
+          "oklch(61% 0.00420 236.498)",
+          "oklch(72% 0.00420 236.498)",
+          "oklch(84% 0.00420 236.498)",
+          "oklch(95% 0.00420 236.498)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "tonalRamp": [
+          "oklch(15% 0.01723 245.163)",
+          "oklch(26% 0.01723 245.163)",
+          "oklch(38% 0.01723 245.163)",
+          "oklch(49% 0.01723 245.163)",
+          "oklch(61% 0.01723 245.163)",
+          "oklch(72% 0.01723 245.163)",
+          "oklch(84% 0.01723 245.163)",
+          "oklch(95% 0.01723 245.163)"
+        ]
+      },
+      "prose": {
+        "role": "neutral",
+        "displayName": "Prose",
+        "tonalRamp": [
+          "oklch(15% 0.01405 241.002)",
+          "oklch(26% 0.01405 241.002)",
+          "oklch(38% 0.01405 241.002)",
+          "oklch(49% 0.01405 241.002)",
+          "oklch(61% 0.01405 241.002)",
+          "oklch(72% 0.01405 241.002)",
+          "oklch(84% 0.01405 241.002)",
+          "oklch(95% 0.01405 241.002)"
+        ]
+      },
+      "status-border": {
+        "role": "neutral",
+        "displayName": "Status Border",
+        "tonalRamp": [
+          "oklch(15% 0.03293 237.063)",
+          "oklch(26% 0.03293 237.063)",
+          "oklch(38% 0.03293 237.063)",
+          "oklch(49% 0.03293 237.063)",
+          "oklch(61% 0.03293 237.063)",
+          "oklch(72% 0.03293 237.063)",
+          "oklch(84% 0.03293 237.063)",
+          "oklch(95% 0.03293 237.063)"
+        ]
+      },
+      "experimental": {
+        "role": "neutral",
+        "displayName": "Experimental",
+        "tonalRamp": [
+          "oklch(15% 0.07562 79.055)",
+          "oklch(26% 0.07562 79.055)",
+          "oklch(38% 0.07562 79.055)",
+          "oklch(49% 0.07562 79.055)",
+          "oklch(61% 0.07562 79.055)",
+          "oklch(72% 0.07562 79.055)",
+          "oklch(84% 0.07562 79.055)",
+          "oklch(95% 0.07562 79.055)"
+        ]
+      },
+      "experimental-border": {
+        "role": "neutral",
+        "displayName": "Experimental Border",
+        "tonalRamp": [
+          "oklch(15% 0.04103 76.405)",
+          "oklch(26% 0.04103 76.405)",
+          "oklch(38% 0.04103 76.405)",
+          "oklch(49% 0.04103 76.405)",
+          "oklch(61% 0.04103 76.405)",
+          "oklch(72% 0.04103 76.405)",
+          "oklch(84% 0.04103 76.405)",
+          "oklch(95% 0.04103 76.405)"
+        ]
+      },
+      "planned": {
+        "role": "neutral",
+        "displayName": "Planned",
+        "tonalRamp": [
+          "oklch(15% 0.01440 248.009)",
+          "oklch(26% 0.01440 248.009)",
+          "oklch(38% 0.01440 248.009)",
+          "oklch(49% 0.01440 248.009)",
+          "oklch(61% 0.01440 248.009)",
+          "oklch(72% 0.01440 248.009)",
+          "oklch(84% 0.01440 248.009)",
+          "oklch(95% 0.01440 248.009)"
+        ]
+      },
+      "planned-border": {
+        "role": "neutral",
+        "displayName": "Planned Border",
+        "tonalRamp": [
+          "oklch(15% 0.02256 243.415)",
+          "oklch(26% 0.02256 243.415)",
+          "oklch(38% 0.02256 243.415)",
+          "oklch(49% 0.02256 243.415)",
+          "oklch(61% 0.02256 243.415)",
+          "oklch(72% 0.02256 243.415)",
+          "oklch(84% 0.02256 243.415)",
+          "oklch(95% 0.02256 243.415)"
+        ]
+      },
+      "chart-cursor": {
+        "role": "neutral",
+        "displayName": "Chart Cursor",
+        "tonalRamp": [
+          "oklch(15% 0.10392 82.276)",
+          "oklch(26% 0.10392 82.276)",
+          "oklch(38% 0.10392 82.276)",
+          "oklch(49% 0.10392 82.276)",
+          "oklch(61% 0.10392 82.276)",
+          "oklch(72% 0.10392 82.276)",
+          "oklch(84% 0.10392 82.276)",
+          "oklch(95% 0.10392 82.276)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Desktop hero headline."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Research introduction."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Research section headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Research prose."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Technical labels and recording metadata."
+      },
+      "measurement": {
+        "displayName": "Measurement",
+        "purpose": "Coordinate values."
+      },
+      "action": {
+        "displayName": "Action",
+        "purpose": "Primary entry links."
+      }
+    },
+    "shadows": [
+      {
+        "name": "mobile-inspector",
+        "value": "-18px 0 40px #0006",
+        "purpose": "Structural separation of the mobile inspector overlay."
+      }
+    ],
+    "motion": [
+      {
+        "name": "hero-entrance",
+        "value": "entrance 0.85s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "purpose": "Subtle introduction of hero copy."
+      },
+      {
+        "name": "primary-background",
+        "value": "background 0.2s",
+        "purpose": "Primary action hover."
+      },
+      {
+        "name": "primary-transform",
+        "value": "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Primary hover displacement."
+      },
+      {
+        "name": "route-exit",
+        "value": "out 0.16s ease-out",
+        "purpose": "Old route fade."
+      },
+      {
+        "name": "route-entrance",
+        "value": "entrance 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "New route introduction."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation: none; transition: none; scroll-behavior: auto",
+        "purpose": "Reduced-motion CSS overrides; hero starts paused."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide",
+        "value": "1600px"
+      },
+      {
+        "name": "intermediate",
+        "value": "1050px"
+      },
+      {
+        "name": "mobile",
+        "value": "700px"
+      },
+      {
+        "name": "narrow",
+        "value": "380px"
+      },
+      {
+        "name": "compact-height",
+        "value": "720px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary entry link",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Dominant entry into the laboratory.",
+      "html": "<a class=\"ds-primary\" href=\"#lab\">ENTER LAB <span aria-hidden=\"true\">\u2197</span></a>",
+      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:space-between;gap:45px;background:var(--ice, #b4ddf8);color:#101214;font:11px var(--mono, \"IBM Plex Mono\", monospace);letter-spacing:.06em;padding:17px 21px;min-height:48px;text-decoration:none;transition:background .2s,transform .3s cubic-bezier(.16,1,.3,1)}.ds-primary:hover{color:#101214;background:#d7edfc;transform:translateY(-2px)}.ds-primary:focus-visible{outline:2px solid var(--ice, #b4ddf8);outline-offset:4px;}.ds-primary span{font-size:18px}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none}}"
+    },
+    {
+      "name": "Workspace control",
+      "kind": "button",
+      "refersTo": "button-control",
+      "description": "Secondary action with pressed and disabled states.",
+      "html": "<button class=\"ds-control\" type=\"button\">Compare</button>",
+      "css": ".ds-control{font:12px \"Barlow\",sans-serif;color:#edf0f2;background:#191e22;border:1px solid var(--line, #30373d);border-radius:2px;padding:9px 12px;cursor:pointer;}.ds-control:hover{border-color:#778b9b;background:#252d34}.ds-control[aria-pressed=\"true\"]{background:var(--ice, #b4ddf8);color:#101214;border-color:var(--ice, #b4ddf8)}.ds-control:disabled{opacity:.45;cursor:wait}.ds-control:focus-visible{outline:2px solid var(--ice, #b4ddf8);outline-offset:4px;}"
+    },
+    {
+      "name": "Native select",
+      "kind": "input",
+      "refersTo": "select-control",
+      "description": "Native select for robot or playback choices.",
+      "html": "<label class=\"ds-select-label\">Playback speed <select class=\"ds-select\"><option>1\u00d7</option><option>0.5\u00d7</option><option>2\u00d7</option></select></label>",
+      "css": ".ds-select-label{font:10px var(--mono, \"IBM Plex Mono\", monospace);color:var(--muted, #a1abb4)}.ds-select{font:12px \"Barlow\",sans-serif;color:#edf0f2;background:#191e22;border:1px solid var(--line, #30373d);border-radius:2px;padding:9px 12px;cursor:pointer;}.ds-select:hover{border-color:#778b9b;background:#252d34}.ds-select:focus-visible{outline:2px solid var(--ice, #b4ddf8);outline-offset:4px;}"
+    },
+    {
+      "name": "Main navigation",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Compact route navigation with a visible current page.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main\"><a href=\"#home\">Home</a><a href=\"#lab\" aria-current=\"page\">Lab</a><a href=\"#research\">Research</a></nav>",
+      "css": ".ds-nav{display:flex;gap:30px;align-items:center;font:14px \"Barlow\",sans-serif;color:#edf0f2}.ds-nav a{color:inherit;text-decoration:none}.ds-nav a[aria-current=\"page\"],.ds-nav a:hover{color:var(--ice, #b4ddf8)}.ds-nav a:focus-visible{outline:2px solid var(--ice, #b4ddf8);outline-offset:4px;}"
+    },
+    {
+      "name": "Evidence status",
+      "kind": "chip",
+      "refersTo": "status",
+      "description": "Written evidence qualifiers with semantic color.",
+      "html": "<div class=\"ds-status-row\"><span class=\"ds-status\">VERIFIED / HISTORICAL</span><span class=\"ds-status ds-experimental\">EXPERIMENTAL</span><span class=\"ds-status ds-planned\">NOT IMPLEMENTED</span></div>",
+      "css": ".ds-status-row{display:flex;gap:12px;flex-wrap:wrap}.ds-status{font:8px var(--mono, \"IBM Plex Mono\", monospace);letter-spacing:.035em;padding:7px 9px;border:1px solid #3d515e;color:var(--ice, #b4ddf8);height:fit-content}.ds-experimental{color:#e8c895;border-color:#62523b}.ds-planned{color:#b5bdc5;border-color:#45515b}"
+    },
+    {
+      "name": "Inspector surface",
+      "kind": "custom",
+      "refersTo": "inspector",
+      "description": "Flat technical panel for recording information.",
+      "html": "<aside class=\"ds-inspector\"><div class=\"ds-inspector-content\"><div class=\"ds-section-label\">RECORDING IDENTITY</div><p class=\"ds-inspector-text\">Recording provenance and source artifacts</p></div></aside>",
+      "css": ".ds-inspector{width:305px;max-width:100%;background:var(--panel, #16191c);color:#edf0f2;border-left:1px solid var(--line, #30373d)}.ds-inspector-content{padding:22px 20px}.ds-section-label{font:8px var(--mono, \"IBM Plex Mono\", monospace);letter-spacing:.035em;color:#c4cdd4;margin-bottom:15px}.ds-inspector-text{font:12px/1.5 \"Barlow\",sans-serif}"
+    },
+    {
+      "name": "Playback timeline",
+      "kind": "input",
+      "refersTo": "timeline",
+      "description": "Native range control for deliberate recording seeking.",
+      "html": "<input class=\"ds-timeline\" aria-label=\"Recording position\" type=\"range\" min=\"0\" max=\"100\" value=\"28\">",
+      "css": ".ds-timeline{width:100%;accent-color:var(--ice, #b4ddf8);height:18px;cursor:pointer;margin:12px 0 6px}.ds-timeline:focus-visible{outline:2px solid var(--ice, #b4ddf8);outline-offset:4px;}.ds-timeline:disabled{opacity:.45;cursor:wait}"
+    },
+    {
+      "name": "Inspector tabs",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Underlined selection within the inspector.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\" aria-label=\"Inspector view\"><button class=\"ds-tab\" type=\"button\" role=\"tab\" aria-selected=\"true\">Telemetry</button><button class=\"ds-tab\" type=\"button\" role=\"tab\" aria-selected=\"false\">Recording</button></div>",
+      "css": ".ds-tabs{display:flex;border-bottom:1px solid var(--line, #30373d);gap:18px;padding:0 20px}.ds-tab{background:none;border:0;padding:18px 0;font:12px \"Barlow\",sans-serif;border-bottom:2px solid transparent;border-radius:0;color:var(--muted, #a1abb4);cursor:pointer}.ds-tab:hover{background:#252d34;border-bottom-color:#778b9b}.ds-tab[aria-selected=\"true\"]{color:var(--ice, #b4ddf8);border-bottom-color:var(--ice, #b4ddf8)}.ds-tab:focus-visible{outline:2px solid var(--ice, #b4ddf8);outline-offset:4px;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Graphite robotics laboratory",
+    "overview": "A graphite exhibition space opens into a precise, inspectable robotics workstation. Near-black graphite and deep charcoal establish the ground; soft white, cool gray and restrained ice blue keep the interface technical and calm. Real robot geometry supplies the cinematic focal material.\n\nUse technical sans typography for hierarchy and reading, and monospaced values for measurements and recording identity. Thin dividers and tonal surfaces organize dense controls. Motion stays subtle and respects reduced-motion preferences.",
+    "keyCharacteristics": [
+      "Near-black graphite and deep charcoal surfaces.",
+      "Soft white and cool gray with restrained ice blue.",
+      "Technical sans typography and monospaced measurements.",
+      "Real robot geometry, inspectable evidence and subtle motion."
+    ],
+    "rules": [
+      {
+        "name": "The Evidence Status Rule",
+        "body": "Pair every evidence status color with a readable status label.",
+        "section": "colors"
+      },
+      {
+        "name": "The Measurement Type Rule",
+        "body": "Use mono for measured values and recording identity, and sans for reading and interface hierarchy.",
+        "section": "typography"
+      },
+      {
+        "name": "The Structural Depth Rule",
+        "body": "Reserve interface shadows for the mobile inspector overlay; use surfaces and separators for ordinary grouping.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use real robot geometry and measured recording values.",
+      "Do reserve ice blue for emphasis, selected controls, links and data traces.",
+      "Do pair evidence status color with explicit text.",
+      "Do retain visible keyboard focus and reduced-motion behavior.",
+      "Do keep physical units, provenance and recording identity legible."
+    ],
+    "donts": [
+      "Don't introduce a generic dashboard card grid as the visual identity.",
+      "Don't fabricate telemetry or decorate the interface with invented signals.",
+      "Don't add ornamental glow, heavy shadows or competing accent palettes.",
+      "Don't use motion as the only way to communicate state."
+    ]
+  }
+}

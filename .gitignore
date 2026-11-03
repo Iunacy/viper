@@ -27,3 +27,6 @@ __pycache__/
 /embodiment/cache/
 /embodiment/runs/
 /embodiment/evidence/
+/web/node_modules/
+/web/dist/
+/web/coverage/
