@@ -58,6 +58,7 @@ class Observation:
     arm_dof: int = 4
     safety_events: tuple = ()
     contact_forces: dict = field(default_factory=dict)
+    ee_quaternion: tuple | None = None  # world frame, wxyz; optional for legacy/synthetic observations
 
 
 class Embodiment(Protocol):

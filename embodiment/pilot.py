@@ -14,11 +14,15 @@ from .qualify import source_provenance
 from .scenarios import plan, validate_plans
 
 
-def prepare(root, count=12, python=sys.executable, data_python=sys.executable):
+def prepare(root, count=12, python=sys.executable, data_python=sys.executable, timeout=3600):
     if type(count) is not int or not 10 <= count <= 20:
         raise ValueError('pilot requires 10 to 20 episodes per robot')
+    if type(timeout) is not int or not 1 <= timeout <= 7200:
+        raise ValueError('pilot process timeout must be in 1..7200 seconds')
     plans = {split: plan(split, count if split == 'train' else 6) for split in ('train', 'validation', 'evaluation')}
     validate_plans(plans)
+    attempt_limit = 3*count
+    max_jobs = attempt_limit
     configuration = {'schema': 'viper.pilot.v1', 'scene_revision': SCENE_REVISION, **source_provenance(),
         'camera': {'eye': CAMERA_EYE, 'look': CAMERA_LOOK, 'color_order': 'RGB', 'observation_dt': CONTROL_DT},
         'contracts': {robot: manifest(robot) for robot in DOF},
@@ -26,14 +30,15 @@ def prepare(root, count=12, python=sys.executable, data_python=sys.executable):
                               'instruction': f'Pick up the {case.target} cube and place it in the bin.'} for case in cases]
                       for split, cases in plans.items()},
         'simulation_executed': False, 'training_ready': False,
-        'attempt_schedule': {split: [asdict(case) for case in plan(split, 19)] for split in plans},
+        'attempt_schedule': {split: [asdict(case) for case in plan(split, attempt_limit)] for split in plans},
         'split_commands': {robot: {split: [str(data_python), '-m', 'embodiment.collection',
             '--python', str(python), '--root', str(Path(root).resolve()/robot/split), '--robot', robot,
-            '--split', split, '--target', str(len(cases)), '--batch-size', '2', '--max-jobs', '10',
+            '--split', split, '--target', str(len(cases)), '--batch-size', '2', '--max-jobs', str(max_jobs), '--attempt-limit', str(attempt_limit), '--timeout', str(timeout),
             '--export', str(Path(root).resolve()/'exports'/robot/split)] for split, cases in plans.items()} for robot in DOF},
+        'attempt_limit_per_split': attempt_limit,
         'coverage': 'collection receipts retain every failed, incomplete and accepted attempt; replacements use frozen schedule',
         'commands': {robot: [str(data_python), '-m', 'embodiment.collection', '--python', str(python), '--root', str(Path(root).resolve()/robot/'train'),
-            '--robot', robot, '--split', 'train', '--target', str(count), '--batch-size', '2', '--max-jobs', '10',
+            '--robot', robot, '--split', 'train', '--target', str(count), '--batch-size', '2', '--max-jobs', str(max_jobs), '--attempt-limit', str(attempt_limit), '--timeout', str(timeout),
             '--export', str(Path(root).resolve()/'exports'/robot/'train')] for robot in DOF}}
     with locked(Path(root)):
         from .dataset import read_json
@@ -46,11 +51,11 @@ def prepare(root, count=12, python=sys.executable, data_python=sys.executable):
 
 
 def run(root, count=12, python=sys.executable, data_python=sys.executable, groot_source=None,
-        execute=False, reader_library_path=None):
+        execute=False, reader_library_path=None, timeout=3600):
     from .collection import hashes
     from .dataset import read_json
     root = Path(root).resolve()
-    configuration = prepare(root, count, python, data_python)
+    configuration = prepare(root, count, python, data_python, timeout)
     result = {'schema': 'viper.pilot_execution.v1', 'status': 'NOT_EXECUTED',
               'simulation_executed': False, 'training_ready': False, 'collections': {}, 'errors': []}
     if not execute: return {**result, 'commands': configuration['split_commands']}
@@ -85,7 +90,7 @@ def run(root, count=12, python=sys.executable, data_python=sys.executable, groot
                     attempt = job/f'attempt-{len(list(job.glob("attempt-*"))):04d}'
                     attempt.mkdir()
                     if not dataset.exists():
-                        process = run_process(command, attempt, 3600)
+                        process = run_process(command, attempt, timeout*3*count+300)
                         if process['returncode'] != 0: raise RuntimeError('collection incomplete; inspect preserved attempt log')
                     validation = subprocess.run([str(data_python), '-m', 'embodiment.dataset', '--validate-export', str(dataset)],
                                                 capture_output=True, text=True, timeout=300)
@@ -95,7 +100,8 @@ def run(root, count=12, python=sys.executable, data_python=sys.executable, groot
                     if any(row['scenario_id'] not in scheduled or row['metadata'].get('source_sha256') != configuration['source_sha256'] for row in rows):
                         raise ValueError('pilot source or attempted scene differs from frozen plan')
                     result['simulation_executed'] = True
-                    if any(row['metadata'].get('episode_contract') != 'viper.physical_episode.v2' for row in rows):
+                    if any(row['metadata'].get('episode_contract') != 'viper.physical_episode.v2' or
+                           row['metadata'].get('sensor_contract') != 'viper.physical_sensors.v1' for row in rows):
                         raise ValueError('pilot requires new physical terminal-stability evidence')
                     environment = {**os.environ, 'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1'}
                     if reader_library_path:
@@ -103,13 +109,19 @@ def run(root, count=12, python=sys.executable, data_python=sys.executable, groot
                     upstream = subprocess.run([str(data_python), '-m', 'embodiment.upstream_validation', '--source', str(groot_source),
                         '--dataset', str(dataset), '--decode-video'], capture_output=True, text=True, timeout=300, env=environment)
                     if upstream.returncode: raise ValueError('upstream reader validation failed: '+upstream.stderr[-1500:])
-                    saved = {'dataset': str(dataset), 'validation': json.loads(validation.stdout),
+                    progress = read_json(collection_root/'progress.json')
+                    if progress.get('status') != 'COMPLETE' or progress.get('balanced_successful_episodes') != len(configuration['scenarios'][split]):
+                        raise ValueError('pilot collection did not reach its frozen successful demonstration target')
+                    saved = {'progress': progress, 'dataset': str(dataset), 'validation': json.loads(validation.stdout),
                              'reader_process_succeeded': True, 'reader_output': upstream.stdout,
                              'dataset_files': hashes(dataset), 'collection_files': hashes(collection_root)}
                     atomic_json(receipt, saved)
                     result['collections'][label] = saved
                 except Exception as error:
                     result['errors'].append({'collection': label, 'error': f'{type(error).__name__}: {error}'})
+                    result.update(status='INCOMPLETE', training_ready=False)
+                    atomic_json(root/'execution/result.json', result)
+                    return result
                 atomic_json(root/'execution/result.json', result)
         ready = len(result['collections']) == 6 and not result['errors']
         if source_provenance() != source: raise ValueError('source changed during pilot')
@@ -127,7 +139,8 @@ if __name__ == '__main__':
     parser.add_argument('--groot-source', type=Path)
     parser.add_argument('--reader-library-path', type=Path)
     parser.add_argument('--execute', action='store_true')
+    parser.add_argument('--timeout', type=int, default=3600)
     args = parser.parse_args()
-    result = run(args.root, args.episodes, args.python, args.data_python, args.groot_source, args.execute, args.reader_library_path)
+    result = run(args.root, args.episodes, args.python, args.data_python, args.groot_source, args.execute, args.reader_library_path, args.timeout)
     print(json.dumps(result, indent=2))
     raise SystemExit(2 if result['status'] in ('BLOCKED', 'INCOMPLETE') else 0)

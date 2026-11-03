@@ -108,7 +108,16 @@ def main():
         (args.output/'articulation.json').write_text(json.dumps(checks,indent=2)+'\n')
         for case in cases:
             seed,target = case['seed'],case['target']
-            obs = backend.reset(seed)
+            try:
+                obs = backend.reset(seed)
+                readiness = backend.scene_readiness(obs, target)
+                scene_checks = args.output/'scene_checks'
+                scene_checks.mkdir(exist_ok=True)
+                (scene_checks/f'{seed}.json').write_text(json.dumps(readiness, indent=2)+'\n')
+            except Exception as rejected:
+                with (args.output/'rejected_scenes.jsonl').open('a') as stream:
+                    stream.write(json.dumps({'case': case, 'reason': f'{type(rejected).__name__}: {rejected}'})+'\n')
+                raise
             executed = True
             initial_positions = {color:list(pose) for color,pose in obs.cubes.items()}
             safety_events = []
@@ -132,7 +141,7 @@ def main():
                           'cube_yaw':'radial_about_openmanipulator_base_joint',
                           'light_intensity_range':[1800,2800],
                           'grasp_evidence':'bilateral_finger_contact_and_lift',
-                          'episode_contract':'viper.physical_episode.v2',
+                          'episode_contract':'viper.physical_episode.v2','sensor_contract':'viper.physical_sensors.v1',
                           'robot_contract':robot_contract(args.robot)})
             try:
                 while app.is_running():
@@ -180,10 +189,12 @@ def main():
     finally:
         report = campaign_report(trials,executed,completed,error,known.mode,cases,known.robot)
         _save(known.output,report,provenance)
-        if 'backend' in locals():
-            backend.safe_stop()
-        if app is not None:
-            app.close(wait_for_replicator=False)
+        try:
+            if 'backend' in locals():
+                backend.safe_stop()
+        finally:
+            if app is not None:
+                app.close(wait_for_replicator=False)
     print(json.dumps(report,indent=2))
     return 0 if report['status'] in ('PASS','COMPLETE') else 1 if report['status'] in ('FAIL','COMPLETE_WITH_FAILURES') else 2
 
@@ -193,7 +204,7 @@ def source_provenance():
     return {'relic_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root.parent,text=True).strip(),
             'relic_worktree_dirty':bool(subprocess.check_output(['git','status','--porcelain'],cwd=root.parent,text=True).strip()),
             'source_sha256':{str(path.relative_to(root)):hashlib.sha256(path.read_bytes()).hexdigest()
-                             for path in sorted([*root.glob('*.py'), *root.glob('native/*.cpp'), *root.glob('native/*.h'), *root.glob('native/CMakeLists.txt')])}}
+                             for path in sorted([*root.glob('*.py'), *root.glob('native/*.cpp'), *root.glob('native/*.h'), *root.glob('native/CMakeLists.txt'), *root.glob('*requirements.txt'), *root.glob('runtime_constraints.txt'), *root.glob('assets/*.json'), *root.glob('assets/*.urdf')])}}
 
 
 def _save(output,report,provenance=None):

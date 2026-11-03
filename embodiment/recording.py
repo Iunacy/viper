@@ -49,11 +49,27 @@ def validate_telemetry(row):
     return row
 
 
+def validate_sensor_sample(row, physical, robot):
+    import math
+    from .contract import ADAPTERS
+    if physical.get('timestamp') != row['timestamp'] or physical.get('camera_frame') != row['frame']:
+        raise ValueError('RGB and sensor observations are misaligned')
+    pose = physical.get('ee_pose', ())
+    finite(pose, 7)
+    if list(pose[:3]) != row['ee_position'] or abs(sum(v*v for v in pose[3:])-1) > 1e-3:
+        raise ValueError('end-effector pose differs from native observation')
+    aperture = physical.get('gripper_open')
+    finite((aperture,), 1)
+    if not 0 <= aperture <= 1 or not math.isclose(aperture, ADAPTERS[robot].aperture(row['joint_position']), abs_tol=1e-6):
+        raise ValueError('measured gripper aperture differs from native joints')
+
+
 class Recorder:
     def __init__(self,path,instruction,metadata=None):
         self.path = Path(path)
         self.path.mkdir(parents=True,exist_ok=False)
         self.instruction = instruction
+        self.metadata = metadata or {}
         self.last_time = -1
         self.count = 0
         self.file = (self.path/'samples.jsonl').open('x')
@@ -80,8 +96,14 @@ class Recorder:
         self.last_time = validate_sample(row,self.last_time)
         self.file.write(json.dumps(row,allow_nan=False)+'\n')
         self.file.flush()
-        self.telemetry.write(json.dumps({'timestamp':obs.time,'cube_poses':obs.cubes,'contacts':obs.contacts,'contact_forces':obs.contact_forces,
-                                         'cube_speeds':obs.cube_speeds, 'unsafe':obs.unsafe,'safety_events':list(obs.safety_events)},allow_nan=False)+'\n')
+        physical = {'timestamp': obs.time, 'cube_poses': obs.cubes, 'contacts': obs.contacts,
+                    'contact_forces': obs.contact_forces, 'cube_speeds': obs.cube_speeds,
+                    'unsafe': obs.unsafe, 'safety_events': list(obs.safety_events)}
+        if self.metadata.get('sensor_contract') == 'viper.physical_sensors.v1':
+            physical.update(ee_pose=[*obs.ee, *(obs.ee_quaternion or ())],
+                            gripper_open=obs.gripper_open, camera_frame=filename)
+            validate_sensor_sample(row, physical, self.metadata['embodiment'])
+        self.telemetry.write(json.dumps(physical, allow_nan=False)+'\n')
         self.telemetry.flush()
         self.count += 1
 

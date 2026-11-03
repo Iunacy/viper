@@ -305,11 +305,21 @@ class IsaacBackend:
             if abs(q[-2]-target) > .003 or abs(q[-2]-q[-1]) > .002:
                 raise RuntimeError('physical gripper opening/closing or mimic check failed')
             endpoints.append(list(q[-2:]))
+        observation = self.observe()
+        self.guard.state(observation)
+        image = self.frame()
+        if self.camera is not None and (image is None or image.dtype.name != 'uint8' or image.shape != (480, 640, 3)):
+            raise RuntimeError('qualification requires synchronized 480x640 RGB camera')
         checks = self.kinematic_check()
-        return {'fixed_base':True, **checks, 'manufacturer_collision_matrix': getattr(self, 'collision_filters', None),
+        return {'fixed_base':True, 'camera_verified': self.camera is not None, 'native_state_verified': True,
+                'sensors_verified': True, 'joint_count': len(observation.joints), 'joint_names': [*self.arm_names, *self.finger_names], **checks, 'manufacturer_collision_matrix': getattr(self, 'collision_filters', None),
                 'empty_gripper_endpoints':endpoints,'physical_checks_executed':True,
                 'body_masses_kg':dict(zip(self.robot.body_names,self.robot.root_physx_view.get_masses()[0].cpu().tolist(),strict=True)),
                 'mass_validation':'URDF links; fixed world body excluded' if self.embodiment == 'openmanipulator_x' else 'measured USD masses; no URDF mass equivalence claim'}
+
+    def scene_readiness(self, observation, target):
+        from .scene import endpoint_readiness
+        return endpoint_readiness(self.embodiment, self.kinematics, observation, target)
 
     def collision_state(self):
         if not self.collision_sensors:
@@ -366,7 +376,7 @@ class IsaacBackend:
         cubes = {c:tuple(o.data.root_pose_w[0].cpu().tolist()) for c,o in self.cubes.items()}
         speeds = {c:float(torch.linalg.vector_norm(o.data.root_lin_vel_w[0]) +
                           CUBE/2*torch.linalg.vector_norm(o.data.root_ang_vel_w[0])) for c,o in self.cubes.items()}
-        unsafe = (self.abort or not all(math.isfinite(v) for v in (*q,*dq,*ee)) or
+        unsafe = (self.abort or not all(math.isfinite(v) for v in (*q,*dq,*ee,w,x,y,z)) or abs(w*w+x*x+y*y+z*z-1)>1e-3 or
                   (not self.initializing and not workspace(ee)) or
                   any(not lo-.015 <= v <= hi+.015 for v,(lo,hi) in zip(q,limits)) or
                   max(map(abs,dq[:dof])) > 1.2 or max(map(abs,dq[dof:])) > .15 or
@@ -381,7 +391,8 @@ class IsaacBackend:
             unsafe = True
         return Observation(self.time,ee,q,dq,cubes,speeds,unsafe,contacts,
                            max(0.,min(1.,(q[-2]-self.gripper_closed)/(self.gripper_open-self.gripper_closed))),dof,tuple(self.safety_events) or (('unsafe_state',) if unsafe else ()),
-                           contact_forces={color:tuple(values[i] for values in forces) for i,color in enumerate(COLORS)})
+                           contact_forces={color:tuple(values[i] for values in forces) for i,color in enumerate(COLORS)},
+                           ee_quaternion=(w,x,y,z))
 
     def step(self,action):
         obs = self.observe()

@@ -41,3 +41,27 @@ def variation(kind='baseline', seed=0):
     if kind == 'geometry': return Scene(geometry='cylinder')
     if kind == 'camera': return Scene(camera_eye=tuple(value+rng.uniform(-.015, .015) for value in CAMERA_EYE))
     return Scene()
+
+
+def endpoint_readiness(robot, kinematics, observation, target):
+    from .benchmark import GRASP_Z, BIN, workspace
+    from .panda import GRASP_Z as PANDA_GRASP_Z
+    grasp_z = GRASP_Z if robot == 'openmanipulator_x' else PANDA_GRASP_Z
+    position = observation.cubes[target]
+    goals = [(*position[:2], .085), (*position[:2], grasp_z), (*BIN[:2], .085), (*BIN[:2], .065)]
+    solutions, errors = [], []
+    if kinematics.robot != robot:
+        raise ValueError('kinematics embodiment differs from scene')
+    reference = observation.joints[:len(kinematics.names)]
+    for goal in goals:
+        if not workspace(goal):
+            raise ValueError('scene goal outside frozen workspace')
+        reference = kinematics.inverse(goal, reference)
+        pose = kinematics.forward(reference)
+        error = math.dist(tuple(float(v) for v in pose[:3, 3]), goal)
+        if error > .003:
+            raise ValueError('scene inverse kinematics fails forward round trip')
+        errors.append(error)
+        solutions.append(list(reference))
+    return {'reachable': True, 'goals_m': goals, 'joint_solutions': solutions, 'fk_errors_m': errors,
+            'scope': 'independent URDF endpoint IK; collision-free paths and task success require expert PhysX execution'}

@@ -118,8 +118,11 @@ def load_episode(path: Path, require_physics: bool = True, expert_only: bool = T
         telemetry = [json.loads(line) for line in (path/'telemetry.jsonl').read_text().splitlines()]
         if len(telemetry) != len(rows) or any(abs(a['timestamp']-b['timestamp']) > 1e-8 for a,b in zip(rows,telemetry,strict=True)):
             raise ValueError('physical telemetry is not aligned with demonstrations')
-        for item in telemetry:
+        for row, item in zip(rows, telemetry, strict=True):
             validate_telemetry(item)
+            if metadata.get('sensor_contract') == 'viper.physical_sensors.v1':
+                from .recording import validate_sensor_sample
+                validate_sensor_sample(row, item, robot)
         lifted_with_contact = any(item['contacts'].get(target) is True
                                   and len(item.get('contact_forces', {}).get(target, [])) == 2
                                   and all(type(force) in (int, float) and math.isfinite(force) and force > .005

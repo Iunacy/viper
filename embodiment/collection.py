@@ -12,7 +12,7 @@ import subprocess
 import sys
 import time
 
-from .dataset import DOF, export, load_episode, read_json, validate_collection
+from .dataset import DOF, export, file_digest, load_episode, read_json, validate_collection
 from .qualify import source_provenance
 from .scenarios import SPLITS, plan
 
@@ -92,6 +92,16 @@ def inspect_job(job, robot, split, source_hashes):
             raise ValueError('collection receipt omits assigned scenarios')
         if any(not isinstance(item.get('reason'), str) or not item['reason'] for item in receipt['failures']):
             raise ValueError('collection receipt failure reason missing')
+        for failed in receipt['failures']:
+            if 'evidence_sha256' in failed:
+                folder = job/'run'/f"trial_{failed['case']['seed']:02d}"
+                current = hashes(folder) if folder.exists() else None
+                rejected_file = job/'run/rejected_scenes.jsonl'
+                rejected_digest = file_digest(rejected_file) if rejected_file.exists() else None
+                if current != failed['evidence_sha256'] or rejected_digest != failed.get('rejection_report_sha256'):
+                    raise ValueError('failed or rejected attempt evidence changed')
+            if failed.get('category', 'legacy_unclassified') not in ('expert_failure', 'rejected_scene', 'incomplete_episode', 'legacy_unclassified'):
+                raise ValueError('unknown failure category')
         for accepted in receipt['successes']:
             if accepted.get('folder') != f"trial_{accepted['case']['seed']:02d}":
                 raise ValueError('collection receipt folder differs from assigned case')
@@ -105,6 +115,21 @@ def inspect_job(job, robot, split, source_hashes):
             validate_collection([path])
         return receipt
     successes, failures = [], []
+    rejected_file = job/'run/rejected_scenes.jsonl'
+    rejected = {}
+    if rejected_file.exists():
+        for line in rejected_file.read_text().splitlines():
+            entry = json.loads(line)
+            if not isinstance(entry, dict):
+                raise ValueError('malformed scene rejection')
+            case = entry.get('case')
+            if case not in expected or case['scenario_id'] in rejected or not isinstance(entry.get('reason'), str):
+                raise ValueError('scene rejection is duplicate, unassigned or malformed')
+            rejected[case['scenario_id']] = entry['reason']
+    def failure(case, reason, category, folder):
+        return {'case': case, 'reason': reason, 'category': category,
+                'evidence_sha256': hashes(folder) if folder.exists() else None,
+                'rejection_report_sha256': file_digest(rejected_file) if rejected_file.exists() else None}
     for case in expected:
         folder = f"trial_{case['seed']:02d}"
         path = job/'run'/folder
@@ -112,12 +137,14 @@ def inspect_job(job, robot, split, source_hashes):
             episode = load_episode(path)
             validate_assignment(episode, case, robot, source_hashes)
             if not episode.outcome['success']:
-                failures.append({'case': case, 'reason': episode.outcome.get('failure_reason', 'physical_failure')})
+                failures.append(failure(case, episode.outcome.get('failure_reason', 'physical_failure'), 'expert_failure', path))
                 continue
             validate_collection([path])
             successes.append({'case': case, 'folder': folder, 'sha256': hashes(path)})
         except (OSError, ValueError, KeyError, TypeError) as error:
-            failures.append({'case': case, 'reason': f'{type(error).__name__}: {error}'})
+            reason = rejected.get(case['scenario_id'])
+            failures.append(failure(case, reason or f'{type(error).__name__}: {error}',
+                                    'rejected_scene' if reason else 'incomplete_episode', path))
     receipt = {'request': request, 'successes': successes, 'failures': failures}
     atomic_json(receipt_path, receipt)
     return receipt
@@ -189,17 +216,88 @@ def progress(root, robot, split, verified_jobs=None):
     return successes, failures, next_index, jobs
 
 
-def execute(command, job, timeout, environment=None, shutdown_timeout=30):
+def stop_process_tree(process):
+    """Terminate nested simulator sessions as well as their orchestration parent."""
+    import signal
+    parents = {}
+    for entry in Path('/proc').iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            parent = next(line.split()[1] for line in (entry/'status').read_text().splitlines() if line.startswith('PPid:'))
+            parents[int(entry.name)] = int(parent)
+        except (OSError, StopIteration, ValueError):
+            pass
+    descendants = {process.pid}
+    changed = True
+    while changed:
+        previous = len(descendants)
+        descendants.update(pid for pid, parent in parents.items() if parent in descendants)
+        changed = len(descendants) != previous
+    groups = {process.pid}
+    for pid in descendants:
+        try:
+            group = os.getpgid(pid)
+            if group != os.getpgrp():
+                groups.add(group)
+        except ProcessLookupError:
+            pass
+    for group in groups:
+        try: os.killpg(group, signal.SIGTERM)
+        except ProcessLookupError: pass
+    try:
+        process.wait(timeout=20)
+    except subprocess.TimeoutExpired:
+        pass
+    # Descendants may have independent sessions and cannot be reaped by us;
+    # signal every discovered group even if the direct parent already exited.
+    for group in groups:
+        try: os.killpg(group, signal.SIGKILL)
+        except ProcessLookupError: pass
+    process.wait()
+
+
+def execute(command, job, timeout, environment=None, shutdown_timeout=30, resource_monitor=False):
     if timeout <= 0 or shutdown_timeout <= 0:
         raise ValueError('process deadlines must be positive')
     started = time.monotonic()
+    samples = []
+    peak_rss = None
+    def sample(pid):
+        nonlocal peak_rss
+        if not resource_monitor:
+            return
+        try:
+            values = Path(f'/proc/{pid}/status').read_text().splitlines()
+            rss = next(int(line.split()[1])*1024 for line in values if line.startswith('VmHWM:'))
+            peak_rss = max(peak_rss or 0, rss)
+        except (OSError, StopIteration, ValueError):
+            pass
+        try:
+            value = subprocess.run(['nvidia-smi', '--query-gpu=memory.used', '--format=csv,noheader,nounits'],
+                text=True, capture_output=True, timeout=3, check=True)
+            samples.append([int(row.strip())*1024**2 for row in value.stdout.splitlines()])
+        except (OSError, ValueError, subprocess.SubprocessError):
+            pass
     terminal_since = None
     shutdown_expired = False
     with (job/'process.log').open('xb') as log, (job/'.running').open('a') as lease:
         fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        child_environment = dict(os.environ if environment is None else environment)
+        inherited = []
+        for value in child_environment.get('VIPER_RUNNING_LEASE_FDS', '').split(','):
+            if not value.isdigit(): continue
+            try:
+                if os.readlink('/proc/self/fd/'+value).endswith('/.running'):
+                    inherited.append(int(value))
+            except OSError:
+                pass
+        leases = sorted(set([*inherited, lease.fileno()]))
+        child_environment['VIPER_RUNNING_LEASE_FDS'] = ','.join(map(str, leases))
         process = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, start_new_session=True,
-                                   pass_fds=(lease.fileno(),), cwd=Path(__file__).resolve().parents[1], env=environment)
+                                   pass_fds=tuple(leases), cwd=Path(__file__).resolve().parents[1], env=child_environment)
         try:
+            sample(process.pid)
             while True:
                 remaining = timeout - (time.monotonic() - started)
                 if remaining <= 0:
@@ -208,6 +306,7 @@ def execute(command, job, timeout, environment=None, shutdown_timeout=30):
                     code = process.wait(timeout=min(1., remaining, shutdown_timeout))
                     break
                 except subprocess.TimeoutExpired:
+                    sample(process.pid)
                     report_path = job/'run/report.json'
                     try:
                         report = read_json(report_path)
@@ -220,33 +319,45 @@ def execute(command, job, timeout, environment=None, shutdown_timeout=30):
                         raise subprocess.TimeoutExpired(command, shutdown_timeout)
             result = {'returncode': code, 'timed_out': False, 'shutdown_timeout': False}
         except BaseException as error:
-            import signal
-            os.killpg(process.pid, signal.SIGTERM)
-            try:
-                process.wait(timeout=20)
-            except subprocess.TimeoutExpired:
-                os.killpg(process.pid, signal.SIGKILL)
-                process.wait()
+            stop_process_tree(process)
             if not isinstance(error, subprocess.TimeoutExpired):
                 raise
             result = {'returncode': process.returncode, 'timed_out': True, 'shutdown_timeout': shutdown_expired}
+    # An inherited lease outlives the direct parent when a descendant remains.
+    # Never let a successful parent exit admit another GPU stage in that case.
+    with (job/'.running').open('a') as probe:
+        try:
+            fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            result['descendant_processes_live'] = False
+        except BlockingIOError:
+            result['descendant_processes_live'] = True
+            if result['returncode'] == 0:
+                result['returncode'] = 2
     result['wall_seconds'] = time.monotonic() - started
+    if resource_monitor:
+        result['resources'] = {'sampled_child_peak_rss_bytes': peak_rss,
+            'sampled_device_peak_used_bytes': [max(row[i] for row in samples if len(row)>i) for i in range(max(map(len, samples), default=0))],
+            'gpu_samples': len(samples), 'scope': 'sampled system-wide GPU usage, including unrelated processes; child RSS sampled from /proc; not a per-process CUDA allocator peak'}
     atomic_json(job/'process.json', result)
     return result
 
 
 def collect(root, robot, split, target, batch_size=10, max_jobs=30, timeout=3600,
-            python=sys.executable, device='cuda:0', runner=execute, reserve_bytes=8 * 1024**3):
+            python=sys.executable, device='cuda:0', runner=execute, reserve_bytes=8 * 1024**3, attempt_limit=None):
     if robot not in DOF or split not in SPLITS:
         raise ValueError('invalid embodiment or split')
     if any(type(value) is not int or value <= 0 for value in (target, batch_size, max_jobs, timeout)):
         raise ValueError('collection counts and timeout must be positive integers')
     if type(reserve_bytes) is not int or reserve_bytes < 0:
         raise ValueError('storage reserve must be a nonnegative integer')
+    if attempt_limit is not None and (type(attempt_limit) is not int or not target <= attempt_limit <= 100000):
+        raise ValueError('attempt limit must cover the target and remain within the scenario schedule')
     root = Path(root).resolve()
     with locked(root):
         configuration = {'schema': 'relic.collection.v1', 'embodiment': robot, 'split': split,
                          'source_sha256': source_provenance()['source_sha256']}
+        if attempt_limit is not None:
+            configuration.update(attempt_limit=attempt_limit, target=target)
         config_path = root/'collection.json'
         if config_path.exists():
             if read_json(config_path) != configuration:
@@ -261,9 +372,11 @@ def collect(root, robot, split, target, batch_size=10, max_jobs=30, timeout=3600
         stalled = 0
         for _ in range(max_jobs):
             selected, _ = balanced_selection(paths, split, target)
-            if len(selected) >= target or stalled >= 3:
+            if len(selected) >= target or stalled >= 3 or (attempt_limit is not None and offset >= attempt_limit):
                 break
             count = min(batch_size if jobs else 1, target - len(selected))
+            if attempt_limit is not None:
+                count = min(count, attempt_limit-offset)
             storage = storage_budget(root, count, jobs, reserve_bytes)
             atomic_json(root/'storage.json', storage)
             if not storage['sufficient']:
@@ -283,7 +396,10 @@ def collect(root, robot, split, target, batch_size=10, max_jobs=30, timeout=3600
                        '--headless', '--enable_cameras', '--device', device]
             atomic_json(job/'command.json', command)
             before = len(paths)
-            runner(command, job, timeout)
+            if runner is execute:
+                runner(command, job, timeout, resource_monitor=True)
+            else:
+                runner(command, job, timeout)
             paths, failures, offset, jobs = progress(root, robot, split, verified_jobs)
             stalled = stalled + 1 if len(paths) == before else 0
             summarize(root, target, paths, failures, jobs)
@@ -298,15 +414,22 @@ def summarize(root, target, paths, failures, jobs):
     metadata = [read_json(path/'metadata.json') for path in paths]
     split = read_json(root/'collection.json')['split']
     selected, surplus = balanced_selection(paths, split, target)
+    gpu_peaks = [item.get('resources', {}).get('sampled_device_peak_used_bytes', []) for item in measurements]
     summary = {'schema': 'relic.collection_progress.v1', 'target_successes': target,
                'successful_episodes': len(paths), 'failed_or_incomplete_attempts': len(failures),
                'balanced_successful_episodes': len(selected),
                'status': 'COMPLETE' if len(selected) >= target else 'INCOMPLETE',
+               'attempted_scenes': len(paths)+len(failures),
+               'accepted_demonstration_rate': len(selected)/(len(paths)+len(failures)) if paths or failures else None,
+               'artifact_bytes': sum(path.stat().st_size for path in root.rglob('*') if path.is_file() and path.name not in ('progress.json', 'export.json')),
                'jobs': len(jobs), 'measured_process_seconds': seconds,
                'successful_colors': dict(Counter(item['target'] for item in metadata)),
                'successful_regions': dict(Counter(str(item['region']) for item in metadata)),
                'successful_episodes_per_hour': len(paths)*3600/seconds if complete_timing and seconds > 0 else None,
                'throughput_scope': 'simulator startup, physics, camera rendering and episode writing; export excluded',
+               'resources': {'sampled_device_peak_used_bytes': [max(row[i] for row in gpu_peaks if len(row)>i) for i in range(max(map(len, gpu_peaks), default=0))],
+                    'scope': 'sampled system-wide GPU usage during simulator jobs; not isolated to this collection'},
+               'failure_categories': dict(Counter(item.get('category', 'legacy_unclassified') for item in failures)),
                'timing_complete': complete_timing, 'failures': failures,
                'episodes': [str(path.relative_to(root)) for path in paths],
                'balanced_episodes': [str(path.relative_to(root)) for path in selected],
@@ -325,6 +448,7 @@ def main():
     parser.add_argument('--target', type=int)
     parser.add_argument('--batch-size', type=int, default=10)
     parser.add_argument('--max-jobs', type=int, default=30)
+    parser.add_argument('--attempt-limit', type=int)
     parser.add_argument('--timeout', type=int, default=3600)
     parser.add_argument('--python', default=sys.executable)
     parser.add_argument('--device', default='cuda:0')
@@ -333,8 +457,8 @@ def main():
     args = parser.parse_args()
     target = args.target if args.target is not None else {'train': 60, 'validation': 12, 'evaluation': 20}[args.split]
     summary = collect(args.root, args.robot, args.split, target, args.batch_size, args.max_jobs,
-                      args.timeout, args.python, args.device, reserve_bytes=args.reserve_gib * 1024**3)
-    if args.export:
+                      args.timeout, args.python, args.device, reserve_bytes=args.reserve_gib * 1024**3, attempt_limit=args.attempt_limit)
+    if args.export and summary['status'] == 'COMPLETE':
         with locked(args.root):
             paths, _, _, _ = progress(args.root.resolve(), args.robot, args.split)
             paths, _ = balanced_selection(paths, args.split, target)

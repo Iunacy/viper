@@ -196,3 +196,67 @@ class CollectionRecovery(unittest.TestCase):
             self.assertEqual(result['failed_or_incomplete_attempts'], 1)
             self.assertTrue(result['surplus_episodes'])
             self.assertEqual(len(balanced_selection(selected, 'train', 6)[0]), 6)
+
+
+class BoundedPilotCollection(unittest.TestCase):
+    def test_attempt_budget_survives_restarts_and_never_regenerates_scenes(self):
+        with tempfile.TemporaryDirectory() as temporary, CollectionRecovery().mocks():
+            root = Path(temporary)
+            result = collect(root, 'openmanipulator_x', 'train', 10,
+                             runner=lambda *args: None, attempt_limit=10)
+            self.assertEqual(result['status'], 'INCOMPLETE')
+            for _ in range(3):
+                result = collect(root, 'openmanipulator_x', 'train', 10,
+                                 runner=lambda *args: None, attempt_limit=10)
+            requests = [json.loads(path.read_text()) for path in root.glob('jobs/job-*/request.json')]
+            self.assertEqual(sum(item['count'] for item in requests), 10)
+            self.assertEqual(result['attempted_scenes'], 10)
+            with self.assertRaises(ValueError):
+                collect(root, 'openmanipulator_x', 'train', 10, attempt_limit=11)
+
+    def test_incomplete_collection_never_publishes_a_partial_export(self):
+        import sys
+        from embodiment.collection import main
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            args = ['collection', '--root', str(root), '--robot', 'openmanipulator_x', '--split', 'train',
+                    '--target', '10', '--export', str(root/'export')]
+            with patch.object(sys, 'argv', args), \
+                 patch('embodiment.collection.collect', return_value={'status': 'INCOMPLETE'}), \
+                 patch('embodiment.collection.export', side_effect=AssertionError('no partial publication')):
+                self.assertEqual(main(), 2)
+                self.assertFalse((root/'export').exists())
+
+    def test_timeout_stops_nested_simulator_process_groups(self):
+        import sys
+        import os
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            marker = root/'child.pid'
+            script = ("import pathlib,subprocess,sys,time; "
+                      "p=subprocess.Popen([sys.executable,'-c','import time; time.sleep(30)'],start_new_session=True); "
+                      "pathlib.Path("+repr(str(marker))+").write_text(str(p.pid)); time.sleep(30)")
+            result = execute([sys.executable, '-c', script], root, 1)
+            self.assertTrue(result['timed_out'])
+            self.assertTrue(marker.is_file())
+            pid = int(marker.read_text())
+            try:
+                state = Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()[0]
+            except FileNotFoundError:
+                state = None
+            self.assertIn(state, (None, 'Z'), 'nested simulator must not survive its stage timeout')
+
+    def test_rejected_scenes_are_distinct_and_their_evidence_is_immutable(self):
+        with tempfile.TemporaryDirectory() as temporary, CollectionRecovery().mocks():
+            root = Path(temporary)
+            def reject(command, job, timeout):
+                request = json.loads((job/'request.json').read_text())
+                (job/'run').mkdir()
+                entries = [{'case': case, 'reason': 'synthetic unreachable scene'} for case in request['cases']]
+                (job/'run/rejected_scenes.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in entries))
+            result = collect(root, 'openmanipulator_x', 'train', 1, runner=reject)
+            self.assertEqual(result['failure_categories'], {'rejected_scene': 3})
+            rejected = root/'jobs/job-000000/run/rejected_scenes.jsonl'
+            rejected.write_text('corrupted')
+            with self.assertRaisesRegex(ValueError, 'attempt evidence changed'):
+                collect(root, 'openmanipulator_x', 'train', 1, runner=reject)
