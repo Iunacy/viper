@@ -10,7 +10,7 @@ from .qualify import source_provenance
 
 STAGES = ('interfaces', 'simulation_host', 'contact', 'qualification', 'manipulation', 'baseline',
           'manipulation_mass', 'manipulation_friction', 'manipulation_geometry', 'manipulation_camera',
-          'pilot', 'training_host', 'g3_preflight', 'g3',
+          'pilot', 'training_host', 'action_contract', 'g3_preflight', 'g3',
           'train_a', 'train_b_only', 'train_a_to_b', 'evaluate_a', 'evaluate_b_only', 'evaluate_a_to_b',
           'evaluate_b_only_noise', 'evaluate_a_to_b_noise', 'compare', 'compare_noise', 'artifacts')
 
@@ -22,7 +22,8 @@ def commands(root, simulation_python, training_python, isaac_source, groot_sourc
     extra = ['--reader-library-path', str(reader_library_path)] if reader_library_path else []
     smoke = [train, '-m', 'embodiment.cross_smoke', '--source', str(groot_source),
              '--dataset-a', str(pilot/'exports/openmanipulator_x/train'), '--dataset-b', str(pilot/'exports/franka_panda/train'),
-             '--pretrained', str(pretrained), '--output', str(root/'g3')]
+             '--pretrained', str(pretrained), '--output', str(root/'g3'),
+             '--simulation-python', sim, '--native-library', str(root/'native/libviper_action_contract.so')]
     planned = {
         'interfaces': [train, '-m', 'embodiment.isaac_interfaces', '--source', str(isaac_source)],
         'simulation_host': [sim, '-m', 'embodiment.host', '--stage', 'simulation', '--volume', str(root)],
@@ -35,6 +36,7 @@ def commands(root, simulation_python, training_python, isaac_source, groot_sourc
         'pilot': [train, '-m', 'embodiment.pilot', '--root', str(pilot), '--episodes', '12', '--python', sim,
                   '--data-python', train, '--groot-source', str(groot_source), *extra, '--execute'],
         'training_host': [train, '-m', 'embodiment.cloud', '--source', str(groot_source), '--pretrained', str(pretrained), '--volume', str(root)],
+        'action_contract': [train, '-m', 'embodiment.native_contract', '--build', str(root/'native')],
         'g3_preflight': smoke,
         'g3': [*smoke, '--execute'],
         'compare': [train, '-m', 'embodiment.campaign_report', '--root', str(root/'campaign'), '--reference', str(root/'baseline')],
@@ -73,7 +75,7 @@ def run(root, simulation_python, training_python, isaac_source, groot_source, pr
         if stage not in STAGES: raise ValueError('select an explicit workflow stage')
         if configuration['source']['relic_worktree_dirty']: raise ValueError('approved-host stages require a clean committed revision')
         checks = []
-        if stage in ('contact', 'qualification', 'pilot', 'baseline') or stage.startswith(('evaluate_', 'manipulation')):
+        if stage in ('contact', 'qualification', 'pilot', 'baseline', 'g3') or stage.startswith(('evaluate_', 'manipulation')):
             checks.append(planned['simulation_host'])
         if stage in ('pilot', 'g3_preflight', 'g3', 'baseline') or stage.startswith(('train_', 'evaluate_', 'manipulation')):
             if read_json(root/'qualification/result.json')['status'] != 'PASS': raise ValueError('common-revision qualification required')
@@ -105,7 +107,7 @@ def run(root, simulation_python, training_python, isaac_source, groot_source, pr
                 if file_digest(asset_root/name) != item['sha256']: raise ValueError('Panda USD cache integrity failure')
             environment['VIPER_PANDA_USD'] = str(usd)
         if reader_library_path and (stage in ('g3', 'g3_preflight') or stage.startswith(('train_', 'evaluate_'))):
-            environment['LD_LIBRARY_PATH'] = str(reader_library_path)
+            environment['LD_LIBRARY_PATH'] = os.pathsep.join(filter(None, (str(reader_library_path), environment.get('LD_LIBRARY_PATH'))))
         timeout = 15000 if stage.startswith(('train_', 'evaluate_')) else (7200 if stage in ('pilot', 'baseline') or stage.startswith('manipulation') else 3600)
         measured = execute(planned[stage], attempt, timeout, environment)
         result.update(status='PROCESS_COMPLETED' if measured['returncode'] == 0 else 'BLOCKED', stage=stage, process=measured,

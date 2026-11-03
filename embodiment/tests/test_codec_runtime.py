@@ -26,3 +26,18 @@ class NativeCodecBridge(unittest.TestCase):
                 capture_output=True, text=True, timeout=60)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn('VideoDecoder', result.stdout)
+
+
+class SystemCodecIsolation(unittest.TestCase):
+    def test_exporter_removes_private_codec_bridge_but_preserves_driver_paths(self):
+        from embodiment.codec_runtime import system_codec_environment
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            bridge = root/'codec'
+            bridge.mkdir()
+            (bridge/'libavcodec-wheelhash.so.61.1.0').touch()
+            environment = {'LD_LIBRARY_PATH': str(bridge)+os.pathsep+'/driver/lib', 'OTHER': 'retained'}
+            cleaned = system_codec_environment(environment)
+            self.assertEqual(cleaned['LD_LIBRARY_PATH'], '/driver/lib')
+            self.assertEqual(cleaned['OTHER'], 'retained')
+            self.assertEqual(environment['LD_LIBRARY_PATH'], str(bridge)+os.pathsep+'/driver/lib')

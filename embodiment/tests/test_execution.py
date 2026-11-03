@@ -118,3 +118,23 @@ class Execution(unittest.TestCase):
         self.assertTrue(backend.stopped)
         self.assertEqual(len(backend.commands), 1)
         self.assertEqual(executor.result()['failure_reason'], 'unsafe_movement')
+
+    def test_policy_interrupt_safe_stops_before_propagating(self):
+        class Interrupted(MockPolicy):
+            def actions(self, observation):
+                raise KeyboardInterrupt()
+        backend = Backend()
+        loop = ClosedLoop(backend, Interrupted(), 'red')
+        with self.assertRaises(KeyboardInterrupt):
+            loop.tick(observation(), None)
+        self.assertTrue(backend.stopped)
+        self.assertEqual(backend.commands, [])
+
+    def test_backend_rejection_is_not_logged_as_an_applied_command(self):
+        class Rejected(Backend):
+            def step(self, action):
+                return observation()
+        loop = ClosedLoop(Rejected(), MockPolicy(), 'red')
+        loop.tick(observation(), None)
+        self.assertIsNone(loop.action_trace[-1]['applied_action'])
+        self.assertEqual(loop.action_trace[-1]['intervention'], 'backend_rejected_before_physics_step')

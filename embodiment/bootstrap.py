@@ -89,7 +89,8 @@ def setup(prefix, role, execute=False, offline=False, reader_library_path=None):
             log = prefix/'setup'/f'{role}-{index}.log'
             command_environment = dict(environment)
             if 'embodiment.runtime_probe' in command:
-                command_environment['LD_LIBRARY_PATH'] = str(Path(reader_library_path).resolve()) if reader_library_path else str(prefix/'codec')
+                codec_path = str(Path(reader_library_path).resolve()) if reader_library_path else str(prefix/'codec')
+                command_environment['LD_LIBRARY_PATH'] = os.pathsep.join(filter(None, (codec_path, environment.get('LD_LIBRARY_PATH'))))
                 command_environment['CUDA_VISIBLE_DEVICES'] = ''
             with log.open('ab') as stream:
                 process = subprocess.run(command, stdin=subprocess.DEVNULL, stdout=stream, stderr=subprocess.STDOUT,

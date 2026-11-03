@@ -29,6 +29,8 @@ class FaithfulUrdfConverter(UrdfConverter):
 
 
 class IsaacBackend:
+    evidence_source = 'isaac_lab_physx'
+
     def __init__(self,device='cuda:0',cameras=False,robot='openmanipulator_x',collision_audit=False,scene=None):
         if robot not in ('openmanipulator_x','franka_panda'):
             raise ValueError('unsupported embodiment')
@@ -238,6 +240,7 @@ class IsaacBackend:
         self.safety_events = []
         self.guard = Guard(self.safety_config)
         self.time = 0.
+        self._last_camera_sample = None
         self.reference = ik(HOME) if self.embodiment == 'openmanipulator_x' else tuple(self.robot.data.default_joint_pos[0,self.arm_ids].cpu().tolist())
         if initial_joints is not None:
             self.reference = tuple(initial_joints)
@@ -437,4 +440,11 @@ class IsaacBackend:
     def frame(self):
         if self.camera is None:
             return None
-        return self.camera.data.output['rgb'][0,:,:,:3].cpu().numpy()
+        image = self.camera.data.output['rgb'][0,:,:,:3].cpu().numpy().copy()
+        frame_id = int(self.camera.frame[0])
+        previous = getattr(self, '_last_camera_sample', None)
+        if previous is not None and self.time > previous[0]+1e-8 and frame_id <= previous[1]:
+            self.safe_stop()
+            raise SafetyViolation('stale_camera_frame')
+        self._last_camera_sample = (self.time, frame_id)
+        return image

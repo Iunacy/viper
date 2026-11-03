@@ -29,3 +29,29 @@ if __name__ == '__main__':
     parser.add_argument('--root', type=Path, required=True)
     args = parser.parse_args()
     print(prepare(args.root))
+
+
+def system_codec_environment(environment=None):
+    """Keep private PyAV wheel libraries out of the system FFmpeg process.
+
+    The pinned TorchCodec bridge is for the Python reader only. Its hashed
+    FFmpeg dependencies must not override a different system FFmpeg ABI.
+    Preserve unrelated CUDA/driver search paths needed by later subprocesses.
+    """
+    import os
+    result = dict(os.environ if environment is None else environment)
+    paths = result.get('LD_LIBRARY_PATH', '').split(os.pathsep)
+    retained = []
+    for name in paths:
+        if not name:
+            continue
+        directory = Path(name)
+        wheel_bridge = any(directory.glob('libavcodec-*.so.*'))
+        wheel_bridge |= any('av.libs' in str(path.resolve()) for path in directory.glob('libavcodec.so.*'))
+        if not wheel_bridge:
+            retained.append(name)
+    if retained:
+        result['LD_LIBRARY_PATH'] = os.pathsep.join(retained)
+    else:
+        result.pop('LD_LIBRARY_PATH', None)
+    return result

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 import hashlib
+import os
 import sys
 from typing import Any, Protocol
 from .benchmark import Action, Observation, finite
@@ -14,8 +15,8 @@ def validate_checkpoint(checkpoint: Path, require_processor: bool = True):
     if not checkpoint.is_dir() or not (checkpoint/'config.json').is_file():
         raise ValueError('local GR00T checkpoint configuration required')
     config = read_json(checkpoint/'config.json')
-    if 'gr00t' not in str(config.get('model_type', '')).lower():
-        raise ValueError('checkpoint is not a GR00T model')
+    if str(config.get('model_type', '')).lower().replace('_', '') != 'gr00tn1d7':
+        raise ValueError('checkpoint is not the pinned GR00T N1.7 model')
     index = checkpoint/'model.safetensors.index.json'
     if index.exists():
         mapping = read_json(index).get('weight_map', {})
@@ -117,12 +118,15 @@ class Policy(Protocol):
 
 
 class GrootPolicy:
-    def __init__(self, policy, horizon: int = 16, embodiment=None):
+    def __init__(self, policy, horizon: int = 16, embodiment=None, native_boundary=True):
         if type(horizon) is not int or not 1 <= horizon <= 16:
             raise ValueError('invalid inference horizon')
         self.policy = policy
         self.horizon = horizon
         self.embodiment = embodiment
+        from .native_contract import NativeContract
+        library = os.environ.get('VIPER_ACTION_CONTRACT_LIBRARY') if native_boundary else None
+        self.native_contract = NativeContract(library) if library else None
 
     @classmethod
     def from_checkpoint(cls, source: Path, checkpoint: Path, device: str = 'cuda:0'):
@@ -131,6 +135,10 @@ class GrootPolicy:
         validate_checkpoint(checkpoint)
         from .checkpoint_compatibility import validate_processor
         compatibility = validate_processor(checkpoint)
+        saved = validate_checkpoint(checkpoint)
+        ids = read_json(Path(saved['processor'])/'embodiment_id.json')
+        if type(ids.get('new_embodiment')) is not int or ids['new_embodiment'] != 10:
+            raise ValueError('checkpoint NEW_EMBODIMENT projector index differs from pinned upstream')
         sys.path.insert(0,str(Path(source).resolve()))
         from gr00t.policy.gr00t_policy import Gr00tPolicy
         return cls(Gr00tPolicy('NEW_EMBODIMENT',str(checkpoint),device=device,strict=True), embodiment=compatibility['embodiment'])
@@ -180,8 +188,12 @@ class GrootPolicy:
         length = delta.shape[1]
         if not 1 <= length <= self.horizon or gripper.shape != (1,length,1):
             raise ValueError('GR00T chunk horizon or gripper shape mismatch')
+        if delta.dtype.kind not in 'fi' or gripper.dtype.kind not in 'fi':
+            raise ValueError('GR00T actions must be real numeric arrays')
         if not np.isfinite(delta).all() or not np.isfinite(gripper).all():
             raise ValueError('nonfinite GR00T action')
+        if self.native_contract is not None:
+            self.native_contract.validate(np.concatenate((delta[0], gripper[0]), axis=1))
         return tuple(Action(tuple(float(v) for v in delta[0,i]),float(gripper[0,i,0])) for i in range(length))
 
 

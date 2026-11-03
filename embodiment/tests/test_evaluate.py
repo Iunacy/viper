@@ -59,7 +59,10 @@ class EvaluationRecording(unittest.TestCase):
             self.assertEqual(len(backend.commands), 1)
             self.assertTrue(backend.stopped)
             self.assertFalse(hasattr(policy.inputs[0], 'cubes'))
-            episode = load_episode(output, expert_only=False)
+            self.assertFalse(result['simulation_executed'])
+            with self.assertRaisesRegex(ValueError, 'physical scripted'):
+                load_episode(output, expert_only=False)
+            episode = load_episode(output, require_physics=False, expert_only=False)
             self.assertEqual(len(episode.rows), 2)
             self.assertEqual(episode.rows[0]['action'], [0., 0., 0., 1.])
             with self.assertRaisesRegex(ValueError, 'scripted demonstration'):

@@ -45,45 +45,61 @@ def run_trial(backend, policy, case, output, provenance, config, running, distur
     disturbance = disturbance or Perturbation()
     perception = observation_condition(disturbance.kind, disturbance.magnitude)
     policy = DisturbedPolicy(policy, disturbance)
-    observation = backend.reset(case.seed)
+    physical = getattr(backend, 'evidence_source', None) == 'isaac_lab_physx'
     metadata = {**asdict(case), **provenance, 'embodiment': backend.embodiment,
                 'joint_names': [*backend.arm_names, *backend.finger_names], 'control_dt': CONTROL_DT,
-                'simulation_executed': True, 'physics_engine': 'physx', 'evidence_source': 'isaac_lab_physx',
+                'simulation_executed': physical, 'physics_engine': 'physx' if physical else 'synthetic',
+                'evidence_source': 'isaac_lab_physx' if physical else 'synthetic_test',
                 'controller': 'vla_only', 'purpose': 'evaluation', 'scene_revision': SCENE_REVISION,
                 'runtime_pin': {'isaacsim': SIM, 'isaaclab_commit': LAB_COMMIT,
                                 'robot_commit': MANIFEST['commit']},
                 'policy_service': policy.metadata, 'observation_condition': perception}
-    recorder = Recorder(output, f'Pick up the {case.target} cube and place it in the bin.', metadata)
-    wrapper = RecordedBackend(backend, recorder)
+    recorder = execution_stream = perception_stream = None
     try:
+        observation = backend.reset(case.seed)
+        recorder = Recorder(output, f'Pick up the {case.target} cube and place it in the bin.', metadata)
+        wrapper = RecordedBackend(backend, recorder)
+        execution_stream = (output/'execution.jsonl').open('x')
+        perception_stream = (output/'perception.jsonl').open('x')
+        execution_count = perception_count = 0
         loop = ClosedLoop(wrapper, policy, case.target, config)
         wrapper.loop = loop
         while running():
             image = backend.frame()
             wrapper.current, wrapper.image = observation, image
-            next_observation = loop.tick(observation, image)
+            try:
+                next_observation = loop.tick(observation, image)
+            finally:
+                for trace in loop.action_trace[execution_count:]:
+                    execution_stream.write(json.dumps(trace, allow_nan=False)+'\n')
+                for trace in policy.trace[perception_count:]:
+                    perception_stream.write(json.dumps(trace, allow_nan=False)+'\n')
+                execution_count, perception_count = len(loop.action_trace), len(policy.trace)
+                execution_stream.flush()
+                perception_stream.flush()
             if next_observation is None:
                 neutral = Action((0., 0., 0.), observation.gripper_open if observation.gripper_open is not None else 1.)
                 recorder.append(observation, neutral, 'done' if loop.success else 'failed', loop.success, image)
                 result = {**asdict(case), **loop.result(), 'duration': observation.time,
-                          'robot': backend.embodiment, 'simulation_executed': True,
+                          'robot': backend.embodiment, 'simulation_executed': physical,
                           'final_object_pose': list(observation.cubes[case.target])}
                 recorder.close(result)
                 metadata['controller'] = result['controller']
                 atomic_json(output/'metadata.json', {**read_json(output/'metadata.json'), **metadata})
-                load_episode(output, expert_only=False)
-                with (output/'execution.jsonl').open('x') as stream:
-                    for trace in loop.action_trace:
-                        stream.write(json.dumps(trace, allow_nan=False)+'\n')
-                with (output/'perception.jsonl').open('x') as stream:
-                    for trace in policy.trace: stream.write(json.dumps(trace, allow_nan=False)+'\n')
+                load_episode(output, require_physics=physical, expert_only=False)
                 result['evidence_sha256'] = hashes(output)
                 return result
             observation = next_observation
         raise RuntimeError('simulation application stopped before trial completed')
     finally:
-        recorder.abort()
-        backend.safe_stop()
+        try:
+            for stream in (execution_stream, perception_stream):
+                if stream is not None:
+                    stream.close()
+            if recorder is not None:
+                recorder.abort()
+        finally:
+            backend.safe_stop()
 
 
 def main():

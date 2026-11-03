@@ -2,6 +2,9 @@ import argparse
 import base64
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+import math
+import os
+import time
 from pathlib import Path
 import urllib.error
 import urllib.request
@@ -16,19 +19,22 @@ MAX_MESSAGE = 8 * 1024 * 1024
 
 def encode_observation(observation):
     import numpy as np
+    GrootPolicy(None, native_boundary=False).pack(observation)
+    if isinstance(observation.timestamp, bool) or not isinstance(observation.timestamp, (float, int)) or not math.isfinite(observation.timestamp) or observation.timestamp < 0:
+        raise ValueError('physical observation timestamp required')
     if not isinstance(observation.image, np.ndarray) or observation.image.dtype != np.uint8:
         raise ValueError('uint8 camera observation required')
     return {'embodiment': observation.embodiment, 'instruction': observation.instruction,
             'joint_position': observation.joint_position, 'joint_velocity': observation.joint_velocity,
             'ee_position': observation.ee_position, 'gripper_open': observation.gripper_open,
-            'image_shape': list(observation.image.shape),
+            'timestamp': observation.timestamp, 'image_shape': list(observation.image.shape),
             'image_base64': base64.b64encode(observation.image.tobytes()).decode('ascii')}
 
 
 def decode_observation(payload):
     import numpy as np
     expected = {'embodiment', 'instruction', 'joint_position', 'joint_velocity', 'ee_position',
-                'gripper_open', 'image_shape', 'image_base64'}
+                'gripper_open', 'timestamp', 'image_shape', 'image_base64'}
     if not isinstance(payload, dict) or set(payload) != expected:
         raise ValueError('policy observation fields differ from the authorized schema')
     shape = payload['image_shape']
@@ -39,19 +45,26 @@ def decode_observation(payload):
     if len(raw) != shape[0]*shape[1]*shape[2] or len(raw) > MAX_MESSAGE:
         raise ValueError('invalid camera byte count')
     image = np.frombuffer(raw, dtype=np.uint8).reshape(shape).copy()
-    return PolicyInput(payload['embodiment'], payload['instruction'], tuple(payload['joint_position']),
-                       tuple(payload['joint_velocity']), tuple(payload['ee_position']), payload['gripper_open'], image)
+    observation = PolicyInput(payload['embodiment'], payload['instruction'], tuple(payload['joint_position']),
+                       tuple(payload['joint_velocity']), tuple(payload['ee_position']), payload['gripper_open'], image, payload['timestamp'])
+    GrootPolicy(None, native_boundary=False).pack(observation)
+    if isinstance(observation.timestamp, bool) or not isinstance(observation.timestamp, (float, int)) or not math.isfinite(observation.timestamp) or observation.timestamp < 0:
+        raise ValueError('physical observation timestamp required')
+    return observation
 
 
 class RemotePolicy:
     def __init__(self, port=8766, timeout=30):
         if type(port) is not int or not 1 <= port <= 65535 or not 0 < timeout <= 120:
             raise ValueError('invalid local policy connection')
+        from .native_contract import NativeContract
+        library = os.environ.get('VIPER_ACTION_CONTRACT_LIBRARY')
+        self.native_contract = NativeContract(library) if library else None
         self.url = f'http://127.0.0.1:{port}'
         self.timeout = timeout
         self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
         self.metadata = self.request('/metadata')
-        if (self.metadata.get('schema') != 'relic.policy_service.v1'
+        if (self.metadata.get('schema') != 'relic.policy_service.v2'
                 or self.metadata.get('groot_commit') != GROOT_COMMIT
                 or not self.metadata.get('checkpoint_sha256')):
             raise ValueError('unverified policy service provenance')
@@ -74,23 +87,31 @@ class RemotePolicy:
     def reset(self):
         if self.request('/metadata') != self.metadata:
             raise ValueError('policy service changed during evaluation')
-        self.request('/reset', {})
+        if self.request('/reset', {}) != {'reset': True}:
+            raise ValueError('policy reset was not acknowledged')
 
     def actions(self, observation):
+        started = time.monotonic()
         response = self.request('/actions', encode_observation(observation))
-        if not isinstance(response, dict) or set(response) != {'actions', 'checkpoint_sha256'}:
+        if not isinstance(response, dict) or set(response) != {'actions', 'checkpoint_sha256', 'observation_timestamp'}:
             raise ValueError('invalid policy response')
         if response['checkpoint_sha256'] != self.metadata['checkpoint_sha256']:
             raise ValueError('policy checkpoint changed during evaluation')
+        if response['observation_timestamp'] != observation.timestamp:
+            raise ValueError('policy response belongs to a different observation')
+        self.last_inference_seconds = time.monotonic()-started
         rows = response['actions']
         if not isinstance(rows, list) or not 1 <= len(rows) <= 16:
             raise ValueError('invalid policy action horizon')
         if any(not isinstance(row, list) or len(row) != 4 for row in rows):
             raise ValueError('invalid policy action shape')
+        if self.native_contract is not None:
+            self.native_contract.validate(rows)
         return tuple(Action(tuple(row[:3]), row[3]) for row in rows)
 
 
 def handler(policy, metadata):
+    state = {'last_timestamp': None}
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, format, *args):
             pass
@@ -116,13 +137,19 @@ def handler(policy, metadata):
                     if payload != {}:
                         raise ValueError('reset payload must be empty')
                     policy.reset()
+                    state['last_timestamp'] = None
                     self.send(200, {'reset': True})
                 elif self.path == '/actions':
                     import torch
+                    observation = decode_observation(payload)
+                    if state['last_timestamp'] is not None and observation.timestamp <= state['last_timestamp']:
+                        raise ValueError('stale or repeated observation')
+                    state['last_timestamp'] = observation.timestamp
                     with torch.inference_mode():
-                        actions = policy.actions(decode_observation(payload))
+                        actions = policy.actions(observation)
                     self.send(200, {'actions': [[*action.delta, action.gripper] for action in actions],
-                                    'checkpoint_sha256': metadata['checkpoint_sha256']})
+                                    'checkpoint_sha256': metadata['checkpoint_sha256'],
+                                    'observation_timestamp': observation.timestamp})
                 else:
                     self.send(404, {'error': 'unknown endpoint'})
             except Exception as error:
@@ -139,9 +166,16 @@ def main():
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         parser.error('invalid port')
+    digest = checkpoint_digest(args.checkpoint)
     policy = GrootPolicy.from_checkpoint(args.source, args.checkpoint, args.device)
-    metadata = {'schema': 'relic.policy_service.v1', 'groot_commit': GROOT_COMMIT,
-                'checkpoint': str(args.checkpoint.resolve()), 'checkpoint_sha256': checkpoint_digest(args.checkpoint),
+    if checkpoint_digest(args.checkpoint) != digest:
+        raise ValueError('checkpoint changed during policy loading')
+    from .contract import manifest
+    from .dataset import file_digest
+    metadata = {'schema': 'relic.policy_service.v2', 'groot_commit': GROOT_COMMIT,
+                'checkpoint': str(args.checkpoint.resolve()), 'checkpoint_sha256': digest, 'embodiment': policy.embodiment,
+                'contract': manifest(policy.embodiment),
+                'native_contract_sha256': file_digest(policy.native_contract.path) if policy.native_contract else None,
                 'source_sha256': source_provenance()['source_sha256']}
     with HTTPServer(('127.0.0.1', args.port), handler(policy, metadata)) as server:
         print(json.dumps(metadata), flush=True)

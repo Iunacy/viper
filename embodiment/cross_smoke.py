@@ -15,7 +15,7 @@ from .transfer import prepare
 from .upstream_validation import validate_with_upstream, verify_source
 
 
-def workflow(source, dataset_a, dataset_b, pretrained, output, execute=False, timeout=1800):
+def workflow(source, dataset_a, dataset_b, pretrained, output, execute=False, timeout=1800, simulation_python=None, native_library=None):
     source, dataset_a, dataset_b, pretrained, output = map(lambda path: Path(path).resolve(),
                                                          (source, dataset_a, dataset_b, pretrained, output))
     with locked(output):
@@ -24,6 +24,13 @@ def workflow(source, dataset_a, dataset_b, pretrained, output, execute=False, ti
                   'stages': {}, 'paid_compute_go': False}
         started = time.monotonic()
         try:
+            if type(timeout) is not int or timeout <= 0:
+                raise ValueError('positive integer timeout required')
+            if (simulation_python is None) != (native_library is None):
+                raise ValueError('both simulation interpreter and native library required for closed-loop gate')
+            if native_library is not None:
+                from .native_contract import NativeContract
+                NativeContract(native_library)
             verify_source(source)
             datasets = {}
             for robot, path in (('openmanipulator_x', dataset_a), ('franka_panda', dataset_b)):
@@ -48,6 +55,10 @@ def workflow(source, dataset_a, dataset_b, pretrained, output, execute=False, ti
                 result['next_command'] = [sys.executable, '-m', 'embodiment.cross_smoke', '--source', str(source),
                     '--dataset-a', str(dataset_a), '--dataset-b', str(dataset_b), '--pretrained', str(pretrained),
                     '--output', str(output), '--execute', '--timeout', str(timeout)]
+                if simulation_python is not None:
+                    result['next_command'] += ['--simulation-python', str(simulation_python)]
+                if native_library is not None:
+                    result['next_command'] += ['--native-library', str(native_library)]
                 return result
             import torch
             if not torch.cuda.is_available(): raise RuntimeError('CUDA GPU required')
@@ -105,7 +116,33 @@ def workflow(source, dataset_a, dataset_b, pretrained, output, execute=False, ti
                 raise ValueError('VIPER source changed during smoke execution')
             result.update(status='OPTIMIZER_AND_INFERENCE_PASS', training_executed=True,
                           remaining_gate='real closed-loop Robot B simulation; this status is not full G3 PASS')
-        except Exception as error:
+            if simulation_python is not None or native_library is not None:
+                if simulation_python is None or native_library is None:
+                    raise ValueError('both simulation interpreter and native library required for closed-loop gate')
+                import gc
+                gc.collect()
+                torch.cuda.empty_cache()
+                from dataclasses import asdict
+                from .closed_loop_smoke import run as closed_loop
+                from .scenarios import plan
+                request = {'source': str(source), 'checkpoint': result['stages']['robot_b']['checkpoint'],
+                           'dataset': str(dataset_b), 'robot': 'franka_panda',
+                           'training_python': sys.executable, 'simulation_python': str(Path(simulation_python).absolute()),
+                           'native_library': str(Path(native_library).resolve()), 'policy_timeout': 30,
+                           'cases': [asdict(case) for case in plan('validation', 3)]}
+                # Preserve the optimizer receipt even when the physical gate fails.
+                result['stages']['closed_loop'] = closed_loop(request, output/'closed_loop', True, timeout)
+                result['closed_loop_executed'] = result['stages']['closed_loop']['simulation_executed']
+                if result['stages']['closed_loop']['status'] != 'PASS':
+                    result['status'] = 'BLOCKED'
+                    result['errors'].extend(result['stages']['closed_loop']['errors'])
+                    result['remaining_gate'] = 'physical closed-loop gate blocked; inspect closed_loop/result.json'
+                else:
+                    result['remaining_gate'] = None
+                    result['g3_closed_loop_verified'] = True
+
+        except (Exception, KeyboardInterrupt) as error:
+            result['status'] = 'BLOCKED'
             result['errors'].append(f'{type(error).__name__}: {error}')
         finally:
             result['wall_seconds'] = time.monotonic()-started
@@ -119,8 +156,10 @@ def main():
         parser.add_argument('--'+name, type=Path, required=True)
     parser.add_argument('--execute', action='store_true', help='opt in on an already approved GPU host; never provisions hardware')
     parser.add_argument('--timeout', type=int, default=1800)
+    parser.add_argument('--simulation-python', type=Path, help='opt in to the final G3 physical gate with --execute')
+    parser.add_argument('--native-library', type=Path, help='compiled embodiment/native C++ action boundary')
     args = parser.parse_args()
-    result = workflow(args.source, args.dataset_a, args.dataset_b, args.pretrained, args.output, args.execute, args.timeout)
+    result = workflow(args.source, args.dataset_a, args.dataset_b, args.pretrained, args.output, args.execute, args.timeout, args.simulation_python, args.native_library)
     print(json.dumps(result, indent=2))
     return 0 if result['status'] != 'BLOCKED' else 2
 

@@ -82,6 +82,24 @@ def run(source, dataset_a, dataset_b, pretrained, root, simulation_python, smoke
                 g3_inputs['datasets']['openmanipulator_x']['sha256'] != configuration['dataset_a'] or
                 g3_inputs['datasets']['franka_panda']['sha256'] != configuration['dataset_b']):
             raise ValueError('G3 source or datasets differ from full training campaign')
+        # Optimizer/inference alone cannot admit full training: G3 also requires
+        # the same B checkpoint to move the real target articulation in PhysX.
+        from .closed_loop_smoke import verify_report
+        gate = read_json(smoke_root/'closed_loop/result.json')
+        target = g3['stages']['robot_b']
+        if (gate.get('status') != 'PASS' or gate.get('simulation_executed') is not True or
+                gate['request']['robot'] != 'franka_panda' or
+                gate['request']['provenance']['source_sha256'] != configuration['source']['source_sha256'] or
+                gate['request']['verified']['checkpoint_sha256'] != target['checkpoint_sha256'] or
+                gate['request']['verified']['dataset_sha256'] != configuration['dataset_b'] or
+                checkpoint_digest(Path(target['checkpoint'])) != target['checkpoint_sha256']):
+            raise ValueError('matching real G3 closed-loop execution gate required')
+        from .dataset import file_digest
+        if file_digest(Path(gate['request']['native_library'])) != gate['request']['verified']['native_contract_sha256']:
+            raise ValueError('G3 native action boundary changed')
+        if file_digest(Path(gate['report'])) != gate['report_sha256']:
+            raise ValueError('G3 physical report changed')
+        verify_report(gate['report'], gate['request'])
         from .dataset import file_digest
         if any(file_digest(pretrained/name) != digest for name, digest in g3_inputs['pretrained_files'].items()):
             raise ValueError('pretrained weights changed after G3 validation')

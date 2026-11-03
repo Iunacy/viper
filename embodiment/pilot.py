@@ -98,7 +98,8 @@ def run(root, count=12, python=sys.executable, data_python=sys.executable, groot
                     if any(row['metadata'].get('episode_contract') != 'viper.physical_episode.v2' for row in rows):
                         raise ValueError('pilot requires new physical terminal-stability evidence')
                     environment = {**os.environ, 'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1'}
-                    if reader_library_path: environment['LD_LIBRARY_PATH'] = str(reader_library_path)
+                    if reader_library_path:
+                        environment['LD_LIBRARY_PATH'] = os.pathsep.join(filter(None, (str(reader_library_path), environment.get('LD_LIBRARY_PATH'))))
                     upstream = subprocess.run([str(data_python), '-m', 'embodiment.upstream_validation', '--source', str(groot_source),
                         '--dataset', str(dataset), '--decode-video'], capture_output=True, text=True, timeout=300, env=environment)
                     if upstream.returncode: raise ValueError('upstream reader validation failed: '+upstream.stderr[-1500:])

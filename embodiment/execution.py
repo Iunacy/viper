@@ -136,6 +136,9 @@ class ClosedLoop:
             if hasattr(response, 'ee'):
                 trace.update(response_timestamp=response.time, observed_next_ee=response.ee,
                              tracking_error_m=math.dist(response.ee, target))
+            if hasattr(response, 'time') and response.time <= obs.time:
+                trace.update(applied_action=None, intervention='backend_rejected_before_physics_step')
+            trace['inference_seconds'] = getattr(self.policy, 'last_inference_seconds', None)
             self.action_trace.append(trace)
             return response
         except SafetyViolation as error:
@@ -143,7 +146,7 @@ class ClosedLoop:
             self.safety_events.append(str(error))
             self.backend.safe_stop()
             return None
-        except Exception:
+        except BaseException:
             self.backend.safe_stop()
             raise
 

@@ -238,9 +238,10 @@ def _export(paths: list[Path], output: Path, require_physics: bool = True) -> di
         frames = [episode.path/row['frame'] for row in episode.rows]
         if any(frame != episode.path/f'camera/{i:06d}.png' for i, frame in enumerate(frames)):
             raise ValueError('noncanonical camera sequence')
+        from .codec_runtime import system_codec_environment
         subprocess.run(['ffmpeg','-nostdin','-v','error','-framerate','30','-i',str(episode.path/'camera/%06d.png'),
                         '-frames:v',str(len(frames)),'-an','-c:v','libx264','-pix_fmt','yuv420p','-crf','18',str(video)],
-                       check=True, capture_output=True, timeout=300)
+                       check=True, capture_output=True, timeout=300, env=system_codec_environment())
         columns = []
         for frame_index, row in enumerate(episode.rows):
             values = state(row, robot)
