@@ -22,4 +22,4 @@ cmake --build build-dev/contract --parallel 2
 printf '\nCPU development setup complete. No model weights or GPU runtimes installed.\n'
 printf 'Test: ctest --test-dir build-dev --output-on-failure\n'
 printf 'Offline checks: .venv/bin/python -m unittest discover -s embodiment/tests -v\n'
-printf 'Viewer (requires cached robot assets): VIPER_VIEWER_PYTHON=.venv/bin/python bash interactive/run.sh\n'
+printf 'Viewer (requires local campaign recordings and cached robot assets): VIPER_VIEWER_PYTHON=.venv/bin/python bash interactive/run.sh\n'

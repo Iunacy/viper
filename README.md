@@ -10,9 +10,9 @@ OpenMANIPULATOR-X and Franka Panda pick up the requested colored cube, lift it, 
 
 In their historical simulation qualification runs, **both robots completed 20 of 20 pick-and-place trials**, with no wrong-color picks. These runs used classical controllers on different revisions. They show task execution by both bodies; they do not demonstrate learned transfer between them. Learned manipulation is still in development.
 
-Watch the recording above, or use the local viewer to play, pause, and scrub through the robots’ motion together. The viewer shows the applied actions, tracking error, and safety interventions alongside the replay. It does not drive a physical robot.
+The recording above is the public demo. The research viewer can also play, pause, and scrub through both robots’ motion, alongside their actions and tracking error, when the original local campaign recordings and robot assets are available. Those recordings and assets are not bundled in a fresh checkout.
 
-## Run locally
+## Install local tools
 
 On Linux, install [uv](https://docs.astral.sh/uv/getting-started/installation/), CMake 3.24+, a C++20 compiler, and FFmpeg, then run:
 
@@ -20,13 +20,7 @@ On Linux, install [uv](https://docs.astral.sh/uv/getting-started/installation/),
 bash scripts/install.sh
 ```
 
-Start the recorded-evidence viewer with:
-
-```bash
-VIPER_VIEWER_PYTHON=.venv/bin/python bash interactive/run.sh
-```
-
-Open [localhost:8765](http://127.0.0.1:8765). Rendering also requires the pinned robot assets described in the [viewer setup guide](interactive/README.md); installation alone does not provide those assets. There is no hosted demo yet—the Vercel version will follow the frontend design.
+This sets up the CPU research tools; it does not install Isaac or model weights. The interactive viewer needs separate local recordings and robot assets. There is no hosted demo yet—the Vercel version will follow the frontend design.
 
 [Research details and limitations](docs/PRE_RENTAL_VERIFICATION.md) · [Changelog](CHANGELOG.md) · [Apache-2.0](LICENSE)
 

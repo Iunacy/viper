@@ -1,0 +1,9 @@
+# Development security status — 2026-11-03
+
+The initial public CPU setup was audited with `pip-audit` against its installed environment. Reported Pillow, PyArrow and test-build Setuptools issues were addressed with Pillow 13.0.0, PyArrow 23.0.1 and Setuptools 84.2.1 respectively. Targeted image/export tests passed after each library change. The subsequent CPU-environment audit reported no known vulnerabilities. This is advisory-database coverage, not a guarantee of security.
+
+The frozen GR00T reader and Isaac research environments retain their existing pins. The newer public CPU setup is separate; it is not the qualified upstream training reader. In particular, historical Pillow 12.3.0 / PyArrow 19.0.1 pins have published advisories. Those environments are for controlled, locally generated research artifacts, not untrusted user uploads or a public service. Their dependency migration and full runtime validation remain required before accepting external files or deploying that backend. Review this deferral before the GPU session and before any hosted service, no later than 2026-11-10. No model/runtime acceptance criterion has been weakened by relabeling the public development environment.
+
+Gitleaks 8.30.1 scanned all reachable local branches/tags/history. The only initial detections were repeated copies of the public SHA-256 for `integration/evidence/ui_api.json`; its digest was verified against the file bytes. `.gitleaks.toml` exempts only that exact checksum and extends all default detectors. The final scan reported no credential findings, and GitHub's secret-scanning alert list was empty. No history rewrite was necessary. No scanner can prove that every possible credential format is absent.
+
+Original code is Apache-2.0 by the owner's selection. Vendored materials and externally acquired model/runtime assets retain their own licenses and access conditions. The project remains an experimental alpha with no hosted authenticated service.

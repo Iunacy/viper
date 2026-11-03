@@ -16,6 +16,11 @@ Development snapshot. Learned manipulation and cross-embodiment transfer remain 
 - First-session retries preserve deadlines and qualification-only command scope.
 - Replay GIF export isolates system FFmpeg from private reader libraries.
 
+### Security
+
+- Public CPU setup uses patched Pillow and PyArrow releases. Experiment runtime pins remain separate for reproducibility.
+- Complete Git history is scanned for secrets; one verified public evidence checksum is narrowly exempted.
+
 ### Limitations
 
 - Actual GR00T training, checkpoint reload/inference, current-revision Isaac qualification and learned closed-loop results require the selected GPU runtime and authorized weights.
