@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from embodiment.dual_media import produce
 from embodiment.replay import load_qualified_pair
@@ -44,8 +45,12 @@ class RecordedPhysicalMedia(unittest.TestCase):
 
     def test_real_replay_media_encodes_decodes_and_preserves_source_indices(self):
         import av
+        import subprocess
+        from embodiment.codec_runtime import system_codec_environment
         with tempfile.TemporaryDirectory() as temporary:
-            result = produce(load_qualified_pair(0), Path(temporary)/'media', fps=1, speed=8., gif=True)
+            with patch('embodiment.dual_media.subprocess.run', wraps=subprocess.run) as ffmpeg:
+                result = produce(load_qualified_pair(0), Path(temporary)/'media', fps=1, speed=8., gif=True)
+            self.assertEqual(ffmpeg.call_args.kwargs.get('env'), system_codec_environment())
             self.assertEqual(result['playback_speed'], 8.)
             self.assertFalse(result['learned_transfer_demonstrated'])
             self.assertEqual(result['source_frame_indices'][0]['franka_panda'], 0)

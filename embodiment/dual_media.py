@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 
 from .collection import atomic_json
+from .codec_runtime import system_codec_environment
 from .dataset import file_digest
 from .replay import load_qualified_pair, validate_pair
 
@@ -101,7 +102,8 @@ def produce(episodes, output, fps=15, speed=1., gif=False, renderer_factory=None
         if gif:
             subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-i', str(output/'comparison.mp4'), '-vf',
                 'fps=10,scale=960:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer:bayer_scale=3',
-                '-loop', '0', str(output/'simulation.gif')], check=True, timeout=120)
+                '-loop', '0', str(output/'simulation.gif')], check=True, timeout=120,
+                env=system_codec_environment())
             from PIL import Image
             with Image.open(output/'simulation.gif') as check:
                 for index in range(check.n_frames):
