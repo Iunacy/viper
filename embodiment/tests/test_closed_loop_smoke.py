@@ -189,3 +189,42 @@ class SmokeOrchestration(unittest.TestCase):
             path.write_text(json.dumps(report))
             with self.assertRaisesRegex(ValueError, 'unassisted'):
                 verify_report(path, request)
+
+    def test_successful_orchestration_keeps_learning_claims_false_and_reaps_service(self):
+        # Probe/service/worker receipts are injected. This is not physical evidence.
+        provenance = {'source_sha256': {'synthetic': 'fixture'}, 'relic_worktree_dirty': False}
+        metadata = {'checkpoint_sha256': 'synthetic', 'source_sha256': provenance['source_sha256'],
+                    'native_contract_sha256': 'synthetic'}
+        process = Mock()
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)/'smoke'
+            def simulate(command, job, timeout, environment):
+                self.assertEqual(command[0], '/simulation/python')
+                self.assertIn('--worker-request', command)
+                self.assertEqual(environment['HF_HUB_OFFLINE'], '1')
+                self.assertGreater(timeout, 0)
+                result = job/'run'
+                result.mkdir()
+                (result/'articulation.json').write_text('{}')
+                (result/'report.json').write_text('{"synthetic_fixture":true}')
+                return {'returncode': 0, 'timed_out': False}
+            with patch('embodiment.closed_loop_smoke.source_provenance', return_value=provenance), \
+                 patch('embodiment.closed_loop_smoke.subprocess.run', side_effect=self.probe), \
+                 patch('embodiment.closed_loop_smoke.subprocess.Popen', return_value=process), \
+                 patch('embodiment.closed_loop_smoke.wait_service', return_value=metadata), \
+                 patch('embodiment.closed_loop_smoke.execute', side_effect=simulate), \
+                 patch('embodiment.closed_loop_smoke.verify_report', return_value={'physical_policy_actions': 3}) as verify, \
+                 patch('embodiment.closed_loop_smoke.checkpoint_digest', return_value='synthetic'), \
+                 patch('embodiment.training.dataset_digest', return_value='synthetic'), \
+                 patch('embodiment.closed_loop_smoke.file_digest', return_value='synthetic'), \
+                 patch('embodiment.closed_loop_smoke.stop_process') as cleanup:
+                result = run(self.request(), output, True)
+                self.assertEqual(result['status'], 'PASS', result['errors'])
+                self.assertTrue(result['checkpoint_loaded'])
+                self.assertTrue(result['simulation_executed'])
+                self.assertTrue(result['policy_process_reaped'])
+                self.assertFalse(result['learned_manipulation_demonstrated'])
+                self.assertFalse(result['transfer_demonstrated'])
+                self.assertFalse(result['training_executed'])
+                self.assertEqual(verify.call_args.args[1]['policy_service'], metadata)
+                cleanup.assert_called_once_with(process)
