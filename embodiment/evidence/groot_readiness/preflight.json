@@ -47,14 +47,14 @@
         "name": "NVIDIA GeForce RTX 3050 Laptop GPU",
         "driver": "615.78.08",
         "total_mib": 4096,
-        "free_mib": 2066
+        "free_mib": 2104
       },
       "memory_bytes": {
         "MemTotal": 16364085248,
-        "MemAvailable": 7037898752
+        "MemAvailable": 7101444096
       },
-      "volume": "/tmp/viper-readiness-audited-preflight",
-      "storage_free_bytes": 8099680256
+      "volume": "/tmp/viper-readiness-step-preflight",
+      "storage_free_bytes": 8099532800
     },
     "simulation_host": {
       "schema": "viper.host_preflight.v1",
@@ -88,19 +88,19 @@
         "name": "NVIDIA GeForce RTX 3050 Laptop GPU",
         "driver": "615.78.08",
         "total_mib": 4096,
-        "free_mib": 2066
+        "free_mib": 2104
       },
       "memory_bytes": {
         "MemTotal": 16364085248,
-        "MemAvailable": 7131119616
+        "MemAvailable": 7166042112
       },
-      "volume": "/tmp/viper-readiness-audited-preflight",
-      "storage_free_bytes": 8099651584
+      "volume": "/tmp/viper-readiness-step-preflight",
+      "storage_free_bytes": 8099528704
     },
     "inputs": {
       "error": "ValueError: fixture or unverified data cannot pass physical dataset validation"
     }
   },
   "policy_process_reaped": true,
-  "wall_seconds": 4.208903624999948
+  "wall_seconds": 3.70435154300003
 }

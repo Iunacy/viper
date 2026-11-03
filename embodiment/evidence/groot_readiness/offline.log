@@ -180,6 +180,7 @@ test_resume_requires_complete_integrity_checked_optimizer_state (test_training_s
 test_checkpoint_identity_excludes_training_logs_and_nested_checkpoints (test_training_smoke.TrainingSmoke.test_checkpoint_identity_excludes_training_logs_and_nested_checkpoints) ... ok
 test_checkpoint_requires_complete_shards_and_processor (test_training_smoke.TrainingSmoke.test_checkpoint_requires_complete_shards_and_processor) ... ok
 test_final_output_is_transfer_source_even_without_final_periodic_save (test_training_smoke.TrainingSmoke.test_final_output_is_transfer_source_even_without_final_periodic_save) ... ok
+test_fresh_and_resumed_smoke_use_step_checkpoint_with_trainer_state (test_training_smoke.TrainingSmoke.test_fresh_and_resumed_smoke_use_step_checkpoint_with_trainer_state) ... skipped 'CPU torch required for synthetic smoke orchestration'
 test_invalid_tensor_contents_and_incorrect_index_are_rejected (test_training_smoke.TrainingSmoke.test_invalid_tensor_contents_and_incorrect_index_are_rejected) ... ok
 test_preflight_cannot_claim_training (test_training_smoke.TrainingSmoke.test_preflight_cannot_claim_training) ... ok
 test_transfer_preparation_copies_only_saved_processor_and_is_restartable (test_training_smoke.TrainingSmoke.test_transfer_preparation_copies_only_saved_processor_and_is_restartable) ... ok
@@ -193,9 +194,9 @@ test_both_embodiments_decode_chunk_and_normalize_with_real_upstream (test_upstre
 test_exact_shard_catalog_and_metadata_are_hashed_without_model_loading (test_weights.WeightIntegrity.test_exact_shard_catalog_and_metadata_are_hashed_without_model_loading) ... ok
 
 ----------------------------------------------------------------------
-Ran 193 tests in 12.258s
+Ran 194 tests in 10.420s
 
-OK (skipped=18)
+OK (skipped=19)
 {
   "status": "PREFLIGHT_ONLY"
 }

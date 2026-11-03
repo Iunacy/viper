@@ -1,7 +1,7 @@
 {
   "schema": "viper.engineering_audit.v1",
   "date": "2026-11-03",
-  "code_commit": "34a3484",
+  "code_commit": "2abd5e5",
   "baseline_commit": "b5d605c83d97ee97678a77e3edd436155689ca18",
   "scope_sha256": "b886f3eaf406583a4d3ae96b065a1918124de0512a7db49dcac887baa5215e4b",
   "upstream_commit": "944fe70c4fd54e3fcb80a7d7258a328f9c061176",
@@ -59,6 +59,11 @@
       "id": "physical_retry",
       "finding": "A failed final physical attempt could prevent retry without deleting evidence.",
       "resolution": "each retry gets a preserved attempt directory and an updated stable gate receipt"
+    },
+    {
+      "id": "optimizer_checkpoint_handoff",
+      "finding": "Pinned GR00T finishes with trainer.save_model(), which does not save trainer_state.json at the final run root. Fresh G3 smoke handed that root to a physical gate requiring TrainerState.",
+      "resolution": "Fresh and resumed smoke both infer and transfer from the exact validated checkpoint-2; the real upstream trainer and synthetic fresh/resume regressions verify the handoff."
     }
   ],
   "unverified_compatibility_risks": [
@@ -210,5 +215,127 @@
     "-m",
     "embodiment.closed_loop_smoke",
     "--help"
-  ]
+  ],
+  "mission_coverage": {
+    "audit_existing_pipeline": {
+      "status": "OFFLINE_VERIFIED",
+      "evidence": [
+        "confirmed_issues",
+        "unverified_compatibility_risks",
+        "upstream_commit"
+      ]
+    },
+    "checkpoint_load_and_native_normalizers": {
+      "status": "OFFLINE_VERIFIED_RUNTIME_PENDING",
+      "evidence": [
+        "embodiment/policy.py",
+        "embodiment/checkpoint_compatibility.py",
+        "embodiment/tests/test_policy.py",
+        "embodiment/tests/test_processor_upstream.py"
+      ]
+    },
+    "synchronized_rgb_and_native_state": {
+      "status": "IMPLEMENTED_PHYSX_PENDING",
+      "evidence": [
+        "embodiment/isaac_backend.py",
+        "embodiment/policy_service.py",
+        "embodiment/tests/test_policy_service.py"
+      ]
+    },
+    "pinned_input_action_chunk_and_decode": {
+      "status": "OFFLINE_VERIFIED",
+      "evidence": [
+        "embodiment/tests/test_contract_upstream.py",
+        "embodiment/tests/test_upstream.py"
+      ]
+    },
+    "physical_contract_kinematics_and_safety": {
+      "status": "OFFLINE_VERIFIED_PHYSX_PENDING",
+      "evidence": [
+        "embodiment/native",
+        "embodiment/safety.py",
+        "embodiment/tests/test_native_contract.py",
+        "embodiment/tests/test_contract.py",
+        "embodiment/tests/test_safety.py"
+      ]
+    },
+    "articulation_physx_and_feedback": {
+      "status": "IMPLEMENTED_PHYSX_PENDING",
+      "evidence": [
+        "embodiment/isaac_backend.py",
+        "embodiment/execution.py",
+        "embodiment/tests/test_execution.py",
+        "embodiment/tests/test_closed_loop_smoke.py"
+      ]
+    },
+    "trajectory_provenance_and_outcomes": {
+      "status": "OFFLINE_VERIFIED_PHYSICAL_RECORDING_PENDING",
+      "evidence": [
+        "embodiment/evaluate.py",
+        "embodiment/tests/test_evaluate.py",
+        "embodiment/tests/test_closed_loop_smoke.py"
+      ]
+    },
+    "single_explicit_bounded_smoke_entry_point": {
+      "status": "OFFLINE_VERIFIED_REAL_CHECKPOINT_PENDING",
+      "command": [
+        "python",
+        "-m",
+        "embodiment.closed_loop_smoke",
+        "--help"
+      ],
+      "evidence": [
+        "embodiment/closed_loop_smoke.py",
+        "embodiment/tests/test_closed_loop_smoke.py"
+      ]
+    },
+    "upstream_optimizer_and_inference_handoff": {
+      "status": "SYNTHETIC_AND_UPSTREAM_MECHANICS_VERIFIED_REAL_GR00T_PENDING",
+      "evidence": [
+        "embodiment/training_smoke.py",
+        "embodiment/tests/test_training_smoke.py",
+        "embodiment/tests/test_trainer_upstream.py"
+      ]
+    },
+    "no_mock_or_fallback_learning_claims": {
+      "status": "OFFLINE_VERIFIED",
+      "evidence": [
+        "embodiment/tests/test_evaluate.py",
+        "embodiment/tests/test_execution.py",
+        "embodiment/tests/test_closed_loop_smoke.py"
+      ]
+    },
+    "regression_and_foundation_preservation": {
+      "status": "VERIFIED",
+      "evidence": [
+        "verification.json",
+        "upstream.log",
+        "offline.log"
+      ]
+    },
+    "machine_readable_runtime_blockers": {
+      "status": "VERIFIED",
+      "evidence": [
+        "preflight.json",
+        "runtime_imports.json",
+        "blockers",
+        "readiness_matrix"
+      ]
+    },
+    "developer_real_runtime_entry_point": {
+      "status": "PROVIDED_IN_CODE_HELP_AND_MACHINE_COMMANDS",
+      "evidence": [
+        "embodiment/closed_loop_smoke.py",
+        "next_runtime_steps"
+      ]
+    },
+    "training_readiness": {
+      "status": "BLOCKED",
+      "evidence": [
+        "blockers",
+        "preflight.json",
+        "runtime_imports.json"
+      ]
+    }
+  }
 }

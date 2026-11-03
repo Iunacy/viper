@@ -1,8 +1,8 @@
 {
   "schema": "viper.offline_verification.v1",
   "source": {
-    "relic_commit": "34a34843e936388028dbe2213f64207a79467536",
-    "relic_worktree_dirty": false,
+    "relic_commit": "2abd5e58ca7f5e5fb5a90d12a11df11b0f4f4a2a",
+    "relic_worktree_dirty": true,
     "source_sha256": {
       "__init__.py": "7ad4e0a2933c402c44a1681393d2e72c42a5e6276b5657c0ed8eeb3c74739c7a",
       "artifacts.py": "082cf023c558750b5234666d4502b77a6925eb4281c23fb961edc10976433451",
@@ -70,7 +70,7 @@
       "scene.py": "439768d2d7589f5c39c477e215b7377d0e9f402cb1dd48bc2b8d3196eae37eb1",
       "training.py": "206ee2b45984ec66815186916542227d232bb9b813cd3410350476774eb56fe0",
       "training_campaign.py": "6b84dded486b343a9ca8f149234804e3ae0ef500f1de0b08fe4d1a5d2262ceef",
-      "training_smoke.py": "2fb30de200046d9f0e1ac9752f42503dde6ddff2571cf58467fdbe8de50bf1b9",
+      "training_smoke.py": "a4d0dc273c6c877592efb0420af8bcd47e3f9c53548d3ad469d405ee1879ec62",
       "training_worker.py": "a5913addc978a3b10c04b96410d3179bc63a8dfd013023ca9fa94e58095922a2",
       "transfer.py": "812be222efa40dc3caccd7e4854b2b1dde5d167bd64fe8fa7c3b936b2c579c82",
       "upstream_validation.py": "18281d057dafb7c08fa4a493bd246e11facb9befb709df7782cfb7236cc00efc",
@@ -79,22 +79,30 @@
   },
   "tests": {
     "upstream": {
-      "tests": 193,
-      "passed": 189,
+      "tests": 195,
+      "passed": 191,
       "skipped": 4,
       "failed": 0,
       "log": "upstream.log",
-      "log_sha256": "995f94a809317b7a889ce013894ba01d321bc4fce7a1969cb7bf4779006a66bb",
+      "log_sha256": "363f21da5f8904ac64ca6144bfc0cae10ebc27d354ce55965e8fb1858a318e43",
       "scope": "CPU regression, synthetic orchestration and pinned upstream interfaces; no GR00T model training or GPU execution"
     },
     "offline": {
-      "tests": 193,
+      "tests": 194,
       "passed": 175,
-      "skipped": 18,
+      "skipped": 19,
       "failed": 0,
       "log": "offline.log",
-      "log_sha256": "26a8c290fca6e8af7f4b708b05dde9f5acf994b28f6179babaf590f5af24b340",
-      "scope": "CPU regression, synthetic orchestration and pinned upstream interfaces; no GR00T model training or GPU execution"
+      "log_sha256": "e619df6e8a1065f6fdbefdb7c42cddc5bd4d05b56326307e4dff36a912774a63",
+      "scope": "CPU data environment suite at ccc27fc; the later orchestration-only addition is included in the current upstream suite and the supplemental smoke run."
+    },
+    "supplemental_smoke": {
+      "tests": 9,
+      "passed": 9,
+      "skipped": 0,
+      "failed": 0,
+      "scope": "synthetic orchestration including the successful path; no real GR00T or PhysX execution",
+      "log_sha256": "f9410571fb497f77f24375831d255c69f10fdba639b182100976ec6f03b28c92"
     }
   },
   "foundation": {
